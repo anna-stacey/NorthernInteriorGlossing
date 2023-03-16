@@ -1,3 +1,5 @@
+import click
+
 # Returns a list of lines in the file, "\n" within the line removed
 def read_file(file_path):
     with open(file_path) as f:
@@ -38,17 +40,21 @@ def evaluate(output, gold_output):
     accuracy = round(accuracy * 100, 2)
     print(f"Accuracy: {accuracy}% on {seg_count} words.")
 
-def main():
+@click.command()
+@click.option("--output_file", help="The name of the output file.")
+@click.option("--gold_output_file", help="The name of the gold output file.")
+def main(output_file, gold_output_file):
+    print("Comparing these files:", output_file, gold_output_file)
+    
     # Get the test results
-    file_path = "test_fairseq.output"
-    output = read_file(file_path)
-    formatted_output = format_fairseq_output(output)
+    output = read_file(output_file)
+    output = format_fairseq_output(output)
 
     # Get the gold labels
-    gold_file_path = "test_gold.output"
-    gold_output = read_file(gold_file_path)
-
-    evaluate(formatted_output, gold_output)
+    gold_output = read_file(gold_output_file)
+    
+    # Compare!
+    evaluate(output, gold_output)
 
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':

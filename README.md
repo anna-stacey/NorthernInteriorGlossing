@@ -1,6 +1,6 @@
 # St’át’imcets Glossing
 
-The data comes from Sqwéqwel’ Múta7 Sptakwlh: St’át’imcets Narratives by Qwa7yán’ak (Alexander, 2016), and consists of 18 stories:  
+The data comes from *Sqwéqwel’ Múta7 Sptakwlh: St’át’imcets Narratives* by Qwa7yán’ak (Alexander, 2016), and consists of 18 stories:  
     - Legends  
         1. Ta skalúl7a múta7 ta smém̓lhatsa / The Owl and the Girl  
         2. Mulhatswíl'c i smelhmém'lhatsa / When Girls Become Women  
@@ -16,12 +16,12 @@ The data comes from Sqwéqwel’ Múta7 Sptakwlh: St’át’imcets Narratives b
         9. I kel7án tsicw ta xzúma tsunám'calten / When I First Went to Residential School  
         10. I t'iqmin'tsálemas ta Indian Agent-a / When the Indian Agent Came for Me
     - Later Life and Work  
-        11. I kel7án úts'qa7 lhélta xzúma tsunám'calten / When I First Left Residential School
-        12. I ns7al7á7el'ksta / All My Little Bits of Work
-        13. I zet'q'án7an lta xzúma sxetq / When the Side of the Big Hole Caved in on Me
-        14. 'A7xa7 i ts'ánts'en'a / Grasshoppers are Powerful
-        15. Cw7aoz aylh lhkúnsa kw nskaxékcala / I Can't Count Anymore
-        16. Na pél'pa nqatsk / My Lost Older Brother
+        11. I kel7án úts'qa7 lhélta xzúma tsunám'calten / When I First Left Residential School  
+        12. I ns7al7á7el'ksta / All My Little Bits of Work  
+        13. I zet'q'án7an lta xzúma sxetq / When the Side of the Big Hole Caved in on Me  
+        14. 'A7xa7 i ts'ánts'en'a / Grasshoppers are Powerful  
+        15. Cw7aoz aylh lhkúnsa kw nskaxékcala / I Can't Count Anymore  
+        16. Na pél'pa nqatsk / My Lost Older Brother  
     - Reflections  
         17. Ta tsuwa7lhkálha nqwal'útten múta7 nt'ákmen / Our Own Language and Traditional Ways
         18. Ta xzúma tmícwlhkalh / Our Big Land

@@ -309,16 +309,32 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
     pred_y_grams = []
     y_stems = []
     y_grams = []
+    # We need to build up the lists sentence-by-sentence, bc of the way evaluation works
+    pred_y_stems_sentence = []
+    pred_y_grams_sentence = []
+    y_stems_sentence = []
+    y_grams_sentence = []
     # Go sentence by sentence
     for sentence_without_stems, sentence_with_stems, gold_sentence in zip(interim_pred_y, pred_y, y):
         # Morpheme by morpheme
         for gloss_without_stems, gloss_with_stems, gold_gloss in zip(sentence_without_stems, sentence_with_stems, gold_sentence):
             if gloss_without_stems == 'STEM': # It's a stem
-                pred_y_stems.append(gloss_with_stems)
-                y_stems.append(gold_gloss)
+                pred_y_stems_sentence.append(gloss_with_stems)
+                y_stems_sentence.append(gold_gloss)
             else: # It's a gram
-                pred_y_grams.append(gloss_without_stems)
-                y_grams.append(gold_gloss)
+                pred_y_grams_sentence.append(gloss_without_stems)
+                y_grams_sentence.append(gold_gloss)
+    
+        # End of sentence reached; add it to our lists and reset
+        pred_y_stems.append(pred_y_stems_sentence)
+        pred_y_grams.append(pred_y_grams_sentence)
+        y_stems.append(y_stems_sentence)
+        y_grams.append(y_grams_sentence)
+        pred_y_stems_sentence = []
+        pred_y_grams_sentence = []
+        y_stems_sentence = []
+        y_grams_sentence = []
+
 
     print(f"Accuracy for stems: {round(get_accuracy(y_stems, pred_y_stems) * 100, 2)}%.")
     print(f"Accuracy for grams: {round(get_accuracy(y_grams, pred_y_grams) * 100, 2)}%.")

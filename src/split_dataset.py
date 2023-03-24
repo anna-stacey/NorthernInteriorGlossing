@@ -28,6 +28,7 @@ def create_datasets():
     test = speaker_2_sentences
     print("Test data:", len(test), "sentences.")
 
+    print("Finished splitting the three datasets.")
     return train, dev, test
 
 # Read in each file from this speaker, and return all the example sentences stored in one big list
@@ -75,4 +76,5 @@ def main():
     create_file_of_sentences(dev, "dev.txt")
     create_file_of_sentences(test, "test.txt")
 
-main()
+if __name__ == '__main__':
+    main()

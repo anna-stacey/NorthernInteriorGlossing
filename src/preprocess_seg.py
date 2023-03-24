@@ -1,9 +1,10 @@
-# We want to make 6 files
-# One for train input, train output, dev input, dev output, test input, test output
+# We want to make 8 files
+# Input/output for train/dev/test = 2 x 3 = 6
+# Then input/output for the pipeline (formatted slightly differently) = 2
 
 import click
 import re
-from gloss import read_datasets
+from gloss import read_datasets, read_file
 
 # Given a list of words, creates a file where each word is on a new line, with spaces in between the chars
 def create_file_of_words(list, file_name):
@@ -60,7 +61,7 @@ def sentence_list_to_word_list(sentence_list):
     
 # Convert from a list of sentences, to all the words in just one list
 def sentence_list_to_word_list_with_summary(sentence_list):
-    file = open("test_data_summary.txt", "w")
+    file = open("pipeline_data_summary.txt", "w")
     overall_list = []
     for sentence in sentence_list:
         word_count = 0
@@ -125,9 +126,12 @@ def format_data(X, y, forPipeline):
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
 @click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
-def main(train_file, dev_file, test_file):
+@click.option("--pipeline_file", help = "The name of the file containing all sentences in the set to be used as input to the pipeline.")
+def main(train_file, dev_file, test_file, pipeline_file):
     # Break down the data into three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
+    pipeline = read_file(pipeline_file)
+
     # Grab the lines we're interested in - unsegmented transcription for input, segmented orthographic transcription for output
     train_X = [sentence[0] for sentence in train]
     train_y = [sentence[1] for sentence in train]
@@ -135,6 +139,8 @@ def main(train_file, dev_file, test_file):
     dev_y = [sentence[1] for sentence in dev]
     test_X = [sentence[0] for sentence in test]
     test_y = [sentence[1] for sentence in test]
+    pipeline_X = [sentence[0] for sentence in pipeline]
+    pipeline_y = [sentence[1] for sentence in pipeline]
 
     # Convert these to the appropriate format for fairseq
     train_X_formatted, train_y_formatted = format_data(train_X, train_y, False)
@@ -155,10 +161,10 @@ def main(train_file, dev_file, test_file):
     # When we run the entire pipeline, we will be evaluating post-gloss, sentence-by-sentence
     # In this case, misaligned sentences in the test set are not so destructive
     # So at least for now, we want a version of the test data that keeps these sentences in
-    test_X_full_formatted, test_y_full_formatted = format_data(test_X, test_y, True)
+    pipeline_X_full_formatted, pipeline_y_full_formatted = format_data(pipeline_X, pipeline_y, True)
     # No assert here - the counts may be different
-    create_file_of_words(test_X_full_formatted, "test_for_pipeline.input")
-    create_file_of_words(test_y_full_formatted, "test_for_pipeline_gold.output")   
+    create_file_of_words(pipeline_X_full_formatted, "pipeline.input")
+    create_file_of_words(pipeline_y_full_formatted, "pipeline_gold.output")   
 
 if __name__ == '__main__':
     main()

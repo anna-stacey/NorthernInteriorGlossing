@@ -1,6 +1,6 @@
 import click
 from test_seg import read_file, format_fairseq_output
-from gloss import create_datasets, extract_X_and_y, format_X_and_y, train_system, evaluate_system
+from gloss import read_datasets, extract_X_and_y, format_X_and_y, train_system, evaluate_system
 
 # Convert from a list of words, to a list of sentences
 def reassemble_sentences(word_list, word_count_by_sentence):
@@ -18,7 +18,10 @@ def reassemble_sentences(word_list, word_count_by_sentence):
 @click.command()
 @click.option("--seg_output_file", help="The name of the output file from the segmentation.")
 @click.option("--data_summary_file", help="A text file summary containing the word count in each sentence, created when we preprocess for segmentation.")
-def main(seg_output_file, data_summary_file):
+@click.option("--gloss_train_file", help = "The name of the file containing all sentences in the train set.")
+@click.option("--gloss_dev_file", help = "The name of the file containing all sentences in the dev set.")
+@click.option("--gloss_test_file", help = "The name of the file containing all sentences in the test set.")
+def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, gloss_test_file):
     # Read in our word counts, for re-assembling sentences
     word_count_by_sentence = read_file(data_summary_file)
     # Read in the fairseq output (segmented words)
@@ -31,7 +34,7 @@ def main(seg_output_file, data_summary_file):
     test_X = reassemble_sentences(seg_output, word_count_by_sentence)
 
     # Ok! Now we have our input prepped. Now let's get our gold standard glosses
-    train, throwaway, test = create_datasets()
+    train, throwaway, test = read_datasets(gloss_train_file, gloss_dev_file, gloss_test_file)
     throwaway, test_y = extract_X_and_y(test)
     # print(len(test_X), len(test_y))
 

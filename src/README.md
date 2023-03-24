@@ -1,5 +1,8 @@
 # Automatic Segmentation and Glossing for Gitksan
 
+## Create the Train, Dev, and Test Datasets
+``python3 split_dataset.py``
+
 ## Preprocess and Train the Segmentation Model
 Takes a while.
 ``sh prepare_seg.sh``
@@ -10,7 +13,7 @@ Takes a couple of mintutes.
 
 ## Run (and Train) the Glossing Model
 Doesn't take any time.
-``python3 gloss.py``
+``sh run_gloss.sh``
 
 ## Run the Entire Pipeline
 The segmentation model must be trained first. 

@@ -1,9 +1,22 @@
 # We want to make 6 files
 # One for train input, train output, dev input, dev output, test input, test output
 
+import click
 import re
-from gloss import create_datasets
+from gloss import read_datasets
 
+# Given a list of words, creates a file where each word is on a new line, with spaces in between the chars
+def create_file_of_words(list, file_name):
+    file = open(file_name, "w")
+    for word in list:
+        if len(word) > 0:
+            for i, char in enumerate(word):
+                file.write(char)
+                if i < len(word) - 1: # non-final char
+                    file.write(" ")
+                else: # final char - this should end the line
+                    file.write("\n")
+    file.close()
 
 # Char removal that applies to both unsegmented and segmented lines
 def general_preprocess(sentence, isSegmented):
@@ -101,29 +114,20 @@ def format_data(X, y, forPipeline):
     else:
         X_preprocessed = sentence_list_to_word_list(X_preprocessed)
         y_preprocessed = sentence_list_to_word_list(y_preprocessed)
+
     # We want the words char by char
     X_preprocessed = words_to_char_lists(X_preprocessed)
     y_preprocessed = words_to_char_lists(y_preprocessed)
 
     return X_preprocessed, y_preprocessed
 
-# Given a list, creates a file where each list entry is on a new line
-def create_file(list, file_name):
-    file = open(file_name, "w")
-    for word in list:
-        if len(word) > 0:
-            for i, char in enumerate(word):
-                file.write(char)
-                if i < len(word) - 1: # non-final char
-                    file.write(" ")
-                else: # final char - this should end the line
-                    file.write("\n")
-    file.close()
-
-
-def main():
+@click.command()
+@click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
+@click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
+@click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
+def main(train_file, dev_file, test_file):
     # Break down the data into three sets
-    train, dev, test = create_datasets()
+    train, dev, test = read_datasets(train_file, dev_file, test_file)
     # Grab the lines we're interested in - unsegmented transcription for input, segmented orthographic transcription for output
     train_X = [sentence[0] for sentence in train]
     train_y = [sentence[1] for sentence in train]
@@ -134,22 +138,27 @@ def main():
 
     # Convert these to the appropriate format for fairseq
     train_X_formatted, train_y_formatted = format_data(train_X, train_y, False)
-    create_file(train_X_formatted, "train.input")
-    create_file(train_y_formatted, "train.output")
+    assert(len(train_X_formatted) == len(train_y_formatted))
+    create_file_of_words(train_X_formatted, "train.input")
+    create_file_of_words(train_y_formatted, "train.output")
 
     dev_X_formatted, dev_y_formatted = format_data(dev_X, dev_y, False)
-    create_file(dev_X_formatted, "dev.input")
-    create_file(dev_y_formatted, "dev.output")
+    assert(len(train_X_formatted) == len(train_y_formatted))
+    create_file_of_words(dev_X_formatted, "dev.input")
+    create_file_of_words(dev_y_formatted, "dev.output")
 
     test_X_formatted, test_y_formatted = format_data(test_X, test_y, False)
-    create_file(test_X_formatted, "test.input")
-    create_file(test_y_formatted, "test_gold.output")
+    assert(len(train_X_formatted) == len(train_y_formatted))
+    create_file_of_words(test_X_formatted, "test.input")
+    create_file_of_words(test_y_formatted, "test_gold.output")
 
     # When we run the entire pipeline, we will be evaluating post-gloss, sentence-by-sentence
     # In this case, misaligned sentences in the test set are not so destructive
     # So at least for now, we want a version of the test data that keeps these sentences in
     test_X_full_formatted, test_y_full_formatted = format_data(test_X, test_y, True)
-    create_file(test_X_full_formatted, "test_for_pipeline.input")
-    create_file(test_y_full_formatted, "test_for_pipeline_gold.output")   
+    # No assert here - the counts may be different
+    create_file_of_words(test_X_full_formatted, "test_for_pipeline.input")
+    create_file_of_words(test_y_full_formatted, "test_for_pipeline_gold.output")   
 
-main()
+if __name__ == '__main__':
+    main()

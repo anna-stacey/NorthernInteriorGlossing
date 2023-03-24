@@ -1,62 +1,12 @@
-from os import getcwd, walk
+import click
 import re
 import sklearn_crfsuite
+from split_dataset import read_file
 
-# Returns a list of examples (where each example is a list containing the 5 lines)
-def read_file(file_path):
-    with open(file_path) as f:
-        lines = f.readlines()
-        lines.append("\n") # So that the final sentence also ends in a blank line
-
-    sentences = []
-    current_sentence = []
-    for i, line in enumerate(lines):
-        if (i + 1) % 6 == 0: # Every 6th line is a blank line marking the end of the current sentence
-            sentences.append(current_sentence)
-            current_sentence = []
-        else:
-            current_sentence.append(line)
-    return(sentences)
-
-# Read in each file from this speaker, and return all the example sentences stored in one big list
-def read_all_files_for_speaker(folder_path):
-    sentences = []
-    for root, dirs, files in walk(getcwd() + folder_path):
-        for file in files:
-            if file.endswith(".txt"):
-                sentences.extend(read_file(getcwd() + folder_path + file)[:])
-          
-    return sentences
-
-# Returns a train, dev, and test dataset
-def create_datasets():
-    speaker_1_folder_path = "/plaintext/BS/"
-    speaker_1_sentences = read_all_files_for_speaker(speaker_1_folder_path)
-    print(f"Speaker 1: {len(speaker_1_sentences)} sentences.")
-
-    speaker_2_folder_path = "/plaintext/HH/"
-    speaker_2_sentences = read_all_files_for_speaker(speaker_2_folder_path)
-    print(f"Speaker 2: {len(speaker_2_sentences)} sentences.")
-
-    speaker_3_folder_path = "/plaintext/VG/"
-    speaker_3_sentences = read_all_files_for_speaker(speaker_3_folder_path)
-    print(f"Speaker 3: {len(speaker_3_sentences)} sentences.")
-
-    # Total amount of sentences in the data = 1294
-    # Because speaker 2 has the least data available, that will be our test set
-    # Training set is then speaker 1 + speaker 3 = 924
-    # We want ~20% for dev = 185 sentences
-    # Probably best to group data by story (more realistic?), so we'll find a story cutoff close to that
-    # Dev data = last six stories from speaker 3 (starts from sentence 299)
-
-    train = speaker_1_sentences + speaker_3_sentences[:298]
-    print("Train data:", len(train), "sentences.")
-    dev = speaker_3_sentences[298:]
-    print("Dev data:", len(dev), "sentences.")
-    test = speaker_2_sentences
-    print("Test data:", len(test), "sentences.")
-    print("")
-
+def read_datasets(train_file, dev_file, test_file):
+    train = read_file(train_file)
+    dev = read_file(dev_file)
+    test = read_file(test_file)
     return train, dev, test
 
 # Returns the X and y lines from the dataset
@@ -65,7 +15,6 @@ def extract_X_and_y(dataset):
     y = [sentence[3] for sentence in dataset]
 
     return X, y
-
 
 # Gets the word, as a list of morphemes, and the current morpheme's position
 # This is done so we can look at the neighbouring morphemes and the word the morpheme is a part of
@@ -401,9 +350,14 @@ def evaluate_system(X, y, crf, stem_dict):
     # print_mislabelled(X, y, pred_y)
     get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
 
-def main():
+@click.command()
+@click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
+@click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
+@click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
+def main(train_file, dev_file, test_file):
     # Read the files and break them down into the three sets
-    train, dev, test = create_datasets()
+    train, dev, test = read_datasets(train_file, dev_file, test_file)
+
     # Grab the appropriate lines from each sentence
     train_X, train_y = extract_X_and_y(train)
     dev_X, dev_y = extract_X_and_y(dev)
@@ -421,8 +375,7 @@ def main():
     #test_crf(train_X, train_y_no_stems, dev_X, dev_y)
 
     # Evaluate system
-    evaluate_system(dev_X, dev_y, crf, stem_dict)
-    # evaluate_system(test_X, test_y, crf, stem_dict)
+    evaluate_system(test_X, test_y, crf, stem_dict)
 
         
 # Doing this so that I can export functions to pipeline.py

@@ -133,7 +133,7 @@ def format_X_and_y(X, y, isTrain):
 
     return X, y
 
-# Returns the accuracy value
+# Returns the accuracy value (for each morpheme)
 def get_accuracy(y, predicted_y):
     assert(len(y) == len(predicted_y))
     total = 0
@@ -326,7 +326,7 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
         pred_dev_y.append(pred_glossed_sentence)
     
     total_stem_count = known_stem_count + unknown_stem_count
-    print(f"Of {total_stem_count} total stems, {unknown_stem_count} or {round(unknown_stem_count/total_stem_count * 100, 2)}% were not in the stem dictionary.")
+    print(f"{unknown_stem_count}/{total_stem_count} total stems, or {round(unknown_stem_count/total_stem_count * 100, 2)}%, were not in the stem dictionary.")
     return pred_dev_y
 
 # No return value
@@ -344,14 +344,16 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
     y_grams_sentence = []
     # Go sentence by sentence
     for sentence_without_stems, sentence_with_stems, gold_sentence in zip(interim_pred_y, pred_y, y):
-        # Morpheme by morpheme
-        for gloss_without_stems, gloss_with_stems, gold_gloss in zip(sentence_without_stems, sentence_with_stems, gold_sentence):
-            if gloss_without_stems == 'STEM': # It's a stem
-                pred_y_stems_sentence.append(gloss_with_stems)
-                y_stems_sentence.append(gold_gloss)
-            else: # It's a gram
-                pred_y_grams_sentence.append(gloss_without_stems)
-                y_grams_sentence.append(gold_gloss)
+        # Word by word
+        for word_without_stems, word_with_stems, gold_word in zip(sentence_without_stems, sentence_with_stems, gold_sentence):
+            # Morpheme by morpheme
+            for gloss_without_stems, gloss_with_stems, gold_gloss in zip(word_without_stems, word_with_stems, gold_word):
+                if gloss_without_stems == 'STEM': # It's a stem
+                    pred_y_stems_sentence.append(gloss_with_stems)
+                    y_stems_sentence.append(gold_gloss)
+                else: # It's a gram
+                    pred_y_grams_sentence.append(gloss_without_stems)
+                    y_grams_sentence.append(gold_gloss)
     
         # End of sentence reached; add it to our lists and reset
         pred_y_stems.append(pred_y_stems_sentence)
@@ -384,21 +386,25 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
 
     # Run the CRF model for bound morphemes
     interim_pred_y, interim_accuracy = run_crf(crf, X, y)
-    print(f"\nAccuracy after using CRF model to gloss bound morphemes: {round(interim_accuracy * 100, 2)}%.")
 
     # Take that prediction, and apply the stem dictionary to it
     pred_y = gloss_stems(X, interim_pred_y, stem_dict)
+
+    # Evaluate the overall result
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
-    print(f"Accuracy after also applying dictionary to gloss stems: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.")
-    # Results - check out mislabelled morphemes, and print by-stem and by-gram accuracy
+    print(f"Morpheme-level accuracy: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.")
+
+    # Results - check out mislabelled morphemes, and print by-stem and by-gram accuracy 
+    interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
+    get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
     # print_mislabelled(X, y, pred_y)
-    # get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
 
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses
 #   - list_with_boundaries: a list of sentences, which are strings containing glosses or words with boundaries
 #     This can be a segmented or glossed line, because all that we're using are its boundaries.
+#     (You'll want to use the seg line for the pipeline's predictions, because that's what knows how we've split each word into morphemes...)
 def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
     assert(len(gloss) == len(list_with_boundaries))
 

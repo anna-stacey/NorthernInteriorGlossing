@@ -54,7 +54,7 @@ def general_preprocess(sentence):
     sentence = sentence.replace("\n", "")
 
     # Remove bracketed affixes (at least for now)
-    sentence = re.sub(r'\[[^\]]*\]', "", sentence)   
+    sentence = re.sub(r'\[[^\]]*\]', "", sentence)
 
     return sentence 
 
@@ -135,6 +135,7 @@ def format_X_and_y(X, y, isTrain):
 
 # Returns the accuracy value
 def get_accuracy(y, predicted_y):
+    assert(len(y) == len(predicted_y))
     total = 0
     wrong = 0
     for gold_label_line, predicted_label_line in zip(y, predicted_y):
@@ -143,6 +144,33 @@ def get_accuracy(y, predicted_y):
             if gold_label != predicted_label:
                 wrong += 1
     
+    assert(total > 0)
+    accuracy = (total - wrong) / total
+    return accuracy
+
+# Returns the accuracy value - this version includes going word-by-word
+def get_detailed_accuracy(y, predicted_y):
+    assert(len(y) == len(predicted_y))
+    total = 0
+    wrong = 0
+    wrong_per_sentence = 0
+    for gold_label_line, predicted_label_line in zip(y, predicted_y):
+        if ['...'] in gold_label_line:
+            pass
+        else:
+            wrong_per_sentence = 0
+            # There must be the same number of words in the gold and the predicted lines
+            # (The number of words is not impacted by the segmentation task)
+            assert(len(gold_label_line) == len(predicted_label_line))
+            for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
+                # The number of morphemes can vary in the gold word vs the predicted word
+                # So this zip may end up skipping some morphemes if one word contains more
+                for gold_label, predicted_label in zip(gold_word, predicted_word):
+                    total += 1
+                    if gold_label != predicted_label:
+                        wrong += 1
+                        wrong_per_sentence +=1
+
     assert(total > 0)
     accuracy = (total - wrong) / total
     return accuracy
@@ -352,19 +380,49 @@ def train_system(train_X, train_y):
 
 # No return value
 # Uses crf for bound morphemes, then dictionary for stems
-def evaluate_system(X, y, crf, stem_dict):
+def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
 
-    # Run the CRF model on the dev set
+    # Run the CRF model for bound morphemes
     interim_pred_y, interim_accuracy = run_crf(crf, X, y)
-    print(f"\nAccuracy after using CRF model to gloss bound morhpemes: {round(interim_accuracy * 100, 2)}%.")
+    print(f"\nAccuracy after using CRF model to gloss bound morphemes: {round(interim_accuracy * 100, 2)}%.")
 
     # Take that prediction, and apply the stem dictionary to it
     pred_y = gloss_stems(X, interim_pred_y, stem_dict)
-    print(f"Accuracy after also applying dictionary to gloss stems: {round(get_accuracy(y, pred_y) * 100, 2)}%.")
-
+    y = add_word_boundaries_to_gloss(y, y_with_boundaries)
+    pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
+    print(f"Accuracy after also applying dictionary to gloss stems: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.")
     # Results - check out mislabelled morphemes, and print by-stem and by-gram accuracy
     # print_mislabelled(X, y, pred_y)
-    get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
+    # get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
+
+# Inputs:
+#   - gloss: a list of sentences, which are lists of glosses
+#   - list_with_boundaries: a list of sentences, which are strings containing glosses or words with boundaries
+#     This can be a segmented or glossed line, because all that we're using are its boundaries.
+def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
+    assert(len(gloss) == len(list_with_boundaries))
+
+    updated_gloss = []
+    updated_gloss_line = []
+    for gloss_line, gloss_line_with_boundaries in zip(gloss, list_with_boundaries):
+        gloss_line_with_boundaries = general_preprocess(gloss_line_with_boundaries)
+        # So now both lines are lists of items
+        gloss_line_with_boundaries = gloss_line_with_boundaries.split()
+        morpheme_index = 0
+        # Go word by word
+        for i, word in enumerate(gloss_line_with_boundaries):
+            morpheme_count = word.count("=") + word.count("-") + 1
+            word_glossed = []
+            # Go morpheme by morpheme
+            for j in range(morpheme_count):
+                assert((morpheme_index) < len(gloss_line))
+                word_glossed.append(gloss_line[morpheme_index])
+                morpheme_index += 1
+            updated_gloss_line.append(word_glossed)
+        updated_gloss.append(updated_gloss_line)
+        updated_gloss_line = []
+
+    return updated_gloss
 
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
@@ -379,6 +437,10 @@ def main(train_file, dev_file, test_file):
     dev_X, dev_y = extract_X_and_y(dev)
     test_X, test_y  = extract_X_and_y(test)
 
+    # Save versions with boundaries, so we can do word-level evaluation
+    test_X_with_boundaries = test_X
+    test_y_with_boundaries = test_y
+
     # Format X as features, and y as labels
     train_X, train_y = format_X_and_y(train_X, train_y, True)
     dev_X, dev_y  = format_X_and_y(dev_X, dev_y, False)
@@ -391,7 +453,7 @@ def main(train_file, dev_file, test_file):
     #test_crf(train_X, train_y_no_stems, dev_X, dev_y)
 
     # Evaluate system
-    evaluate_system(test_X, test_y, crf, stem_dict)
+    evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
 
         
 # Doing this so that I can export functions to pipeline.py

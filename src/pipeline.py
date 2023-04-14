@@ -36,7 +36,10 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     # Ok! Now we have our input prepped. Now let's get our gold standard glosses
     train, throwaway, test = read_datasets(gloss_train_file, gloss_dev_file, gloss_test_file)
     throwaway, test_y = extract_X_and_y(test)
-    # print(len(test_X), len(test_y))
+
+    # Keep versions with boundaries for word-by-word evaluation
+    test_X_with_boundaries = test_X
+    test_y_with_boundaries = test_y
 
     # Create the model
     train_X, train_y = extract_X_and_y(train)
@@ -46,6 +49,6 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     # Now we can format the input and output for glossing
     test_X, test_y = format_X_and_y(test_X, test_y, False)
     # print(len(test_X), len(test_y))
-    evaluate_system(test_X, test_y, crf, stem_dict)
+    evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
 
 main()

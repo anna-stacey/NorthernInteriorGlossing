@@ -258,21 +258,47 @@ def test_crf(train_X, train_y, dev_X, dev_y):
     else:
         print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm and with a minimum feature frequency of {best_min_freq + 1}.")
 
+# Handles getting X in the right format
+def print_mislabelled_helper(X, X_with_boundaries, y, pred_y):
+    X_morpheme_list = []
+    morphemes_by_sentence = []
+    for sentence in X:
+        for morpheme_features in sentence:
+            morphemes_by_sentence.append(morpheme_features["morpheme"])
+        X_morpheme_list.append(morphemes_by_sentence)
+        morphemes_by_sentence = []
+    X_morpheme_list = add_word_boundaries_to_gloss(X_morpheme_list, X_with_boundaries)
+    print_mislabelled(X_morpheme_list, y, pred_y)
+
+
 # No return value, just prints mislabelled morphemes
 # Just a reminder - 
-# X = a list of lists of: all the features for each morpheme in a sentence
-# y = a list of lists of: the gloss for each morpheme in a sentence
+# X = a list of sentences, which are lists of words, which are lists of morphemes (just transcribed)
+# y = a list of sentences, which are lists of words, which are lists of glosses (for each morpheme)
 def print_mislabelled(X, y, pred_y):
-    for input, gold_label, predicted_label in zip(X, y, pred_y):
-        # To prevent an out of range error
-        if len(gold_label) != len(predicted_label):
-            print("Hmm.. morpheme count mismatch!")
-        else:
-            for i in (range(len(gold_label))): # Compare morpheme by morpheme
-                if gold_label[i] != predicted_label[i]:
-                    morpheme = input[i]["morpheme"]
-                    print(f"For {morpheme}: predicted {predicted_label[i]}, actually {gold_label[i]}\n")
+    assert(len(X) == len(y))
+    skip_count = 0
 
+    # Sentence by sentence
+    for input_line, gold_label_line, predicted_label_line in zip(X, y, pred_y):
+        # Number of words should be consistent
+        # If there's issues, this funciton is just meant to be informative, so we don't need to quit.
+        # Let's just skip that line and flag it.
+        if ((len(input_line) == len(gold_label_line)) and (len(input_line) == len(predicted_label_line))):
+            # Word by word
+            for input_word, gold_label_word, predicted_label_word in zip(input_line, gold_label_line, predicted_label_line):
+                # Number of morphemes per word can vary (bc of segmentation) - but we still need to prevent an out of range error
+                if len(gold_label_word) != len(predicted_label_word):
+                    print("Hmm.. can't compare morphemes because the number of morphemes in this word isn't consistent between the gold and predicted lines!\n")
+                else:
+                    assert(len(input_word) == len(gold_label_word))
+                    for input_morpheme, gold_label_morpheme, predicted_label_morpheme in zip(input_word, gold_label_word, predicted_label_word):
+                            if gold_label_morpheme != predicted_label_morpheme:
+                                print(f"For {input_morpheme}: predicted {predicted_label_morpheme}, actually {gold_label_morpheme}\n")
+        else:
+            skip_count += 1
+        
+    print(f"Mislabel check skipped {skip_count} line(s) due to misalignment.")
 
 # Create dictionary, and replace their glosses with "STEM" for input to the CRF
 # Returns the stem-less version and the stem dictionary created
@@ -365,7 +391,6 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         y_stems_sentence = []
         y_grams_sentence = []
 
-
     print(f"Accuracy for stems: {round(get_accuracy(y_stems, pred_y_stems) * 100, 2)}%.")
     print(f"Accuracy for grams: {round(get_accuracy(y_grams, pred_y_grams) * 100, 2)}%.")
 
@@ -395,10 +420,10 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
     print(f"Morpheme-level accuracy: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.")
 
-    # Results - check out mislabelled morphemes, and print by-stem and by-gram accuracy 
+    # Results - print by-stem and by-gram accuracy, and check out mislabelled morphemes
     interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
     get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
-    # print_mislabelled(X, y, pred_y)
+    print_mislabelled_helper(X, X_with_boundaries, y, pred_y)
 
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses

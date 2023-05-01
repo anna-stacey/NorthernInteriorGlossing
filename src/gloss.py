@@ -175,6 +175,37 @@ def get_detailed_accuracy(y, predicted_y):
     accuracy = (total - wrong) / total
     return accuracy
 
+# Just returns the value
+def get_word_level_accuracy(y, predicted_y):
+    assert(len(y) == len(predicted_y))
+    total = 0
+    wrong = 0
+    wrong_per_sentence = 0
+    for gold_label_line, predicted_label_line in zip(y, predicted_y):
+        if ['...'] in gold_label_line:
+            pass
+        else:
+            wrong_per_sentence = 0
+            # There must be the same number of words in the gold and the predicted lines
+            # (The number of words is not impacted by the segmentation task)
+            assert(len(gold_label_line) == len(predicted_label_line))
+            for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
+                total += 1
+                is_correct = True
+                # The number of morphemes can vary in the gold word vs the predicted word
+                # So this zip may end up skipping some morphemes if one word contains more
+                for gold_label, predicted_label in zip(gold_word, predicted_word):
+                    if gold_label != predicted_label:
+                        is_correct = False
+
+                # Was the whole word correct?
+                if not is_correct:
+                    wrong += 1
+
+    assert(total > 0)
+    accuracy = (total - wrong) / total
+    return accuracy
+
 # Returns the predictions and the accuracy value
 def run_crf(model, X, y):
     pred_y = model.predict(X)
@@ -419,11 +450,12 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
     print(f"Morpheme-level accuracy: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.")
+    print(f"Word-level accuracy: {round(get_word_level_accuracy(y, pred_y) * 100, 2)}%.")
 
     # Results - print by-stem and by-gram accuracy, and check out mislabelled morphemes
     interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
     get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
-    print_mislabelled_helper(X, X_with_boundaries, y, pred_y)
+    #print_mislabelled_helper(X, X_with_boundaries, y, pred_y)
 
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses

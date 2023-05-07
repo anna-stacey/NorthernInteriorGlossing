@@ -3,7 +3,7 @@
 TRAIN_SET=train.txt
 DEV_SET=dev.txt
 TEST_SET=test.txt
-PIPELINE_SET=test.txt
+PIPELINE_SET=dev.txt
 
 # Prepare the data for fairseq
 python3 src/preprocess_seg.py --train_file=$TRAIN_SET --dev_file=$DEV_SET --test_file=$TEST_SET --pipeline_file=$PIPELINE_SET

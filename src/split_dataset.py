@@ -8,7 +8,8 @@ def read_file(file_path, lines_per_example):
         if not lines[-1].endswith("\n"):
             # The new line ensures the final example can processed in the same way as all the previous examples
             lines[-1] = lines[-1] + "\n"
-            lines.append("\n")
+        # Add this regardless, bc readlines() doesn't seem to read in the newline at EOF
+        lines.append("\n")
 
     sentences = []
     current_sentence = []

@@ -6,7 +6,6 @@ def create_datasets():
     stories = [None] * 18
     current_story = []
     folder_path = "/Data/statimcets/"
-    lines_per_example = 4
 
     # We want to read in the sentences while maintaning the story structure,
     # so that we can divide the data up by story
@@ -15,7 +14,7 @@ def create_datasets():
             if file_name.startswith("story") and file_name.endswith(".txt"):
 
                 # Read in all the sentences
-                current_story.extend(read_file(getcwd() + folder_path + file_name, lines_per_example)[:])
+                current_story.extend(read_file(getcwd() + folder_path + file_name)[:])
                 
                 # Get the story number so we know which story this is
                 # (It doesn't read the stories in order so we need to order them manually)

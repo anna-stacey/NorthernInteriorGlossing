@@ -1,7 +1,7 @@
 # *** Common functions for creating train/dev/tests datasets ***
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
-def read_file(file_path, lines_per_example):
+def read_file(file_path):
     with open(file_path) as f:
         lines = f.readlines()
         # To handle inconsistencies in file formatting - add a new line if the file doesn't already end in one 
@@ -16,7 +16,7 @@ def read_file(file_path, lines_per_example):
     for i, line in enumerate(lines):
          # After each example is a blank line marking the end of the current sentence
          # Whenever we get there, it's time to add the present example to our list
-        if (i + 1) % (lines_per_example + 1) == 0:
+        if line =="\n":
             sentences.append(current_sentence)
             current_sentence = []
         else:

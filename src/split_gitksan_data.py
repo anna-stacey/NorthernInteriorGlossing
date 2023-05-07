@@ -35,12 +35,11 @@ def create_datasets():
 
 # Read in each file from this speaker, and return all the example sentences stored in one big list
 def read_all_files_for_speaker(folder_path):
-    lines_per_example = 5
     sentences = []
     for root, dirs, files in walk(getcwd() + folder_path):
         for file in files:
             if file.endswith(".txt"):
-                sentences.extend(read_file(getcwd() + folder_path + file, lines_per_example)[:])
+                sentences.extend(read_file(getcwd() + folder_path + file)[:])
           
     return sentences
 

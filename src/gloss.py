@@ -135,7 +135,7 @@ def format_X_and_y(X, y, isTrain):
 
 # Returns the accuracy value (for each morpheme)
 def get_accuracy(y, predicted_y):
-    assert(len(y) == len(predicted_y))
+    assert len(y) == len(predicted_y), f"Mismatch between length of gold glosses ({len(y)}) and length of predicted glosses ({len(predicted_y)})."
     total = 0
     wrong = 0
     for gold_label_line, predicted_label_line in zip(y, predicted_y):

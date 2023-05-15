@@ -1,23 +1,31 @@
-# We want to make 8 files
+# Creates 9 files
 # Input/output for train/dev/test = 2 x 3 = 6
-# Then input/output for the pipeline (formatted slightly differently) = 2
+# Then input/output for the pipeline (formatted slightly differently) = 2 + 1 summary file to reconstruct
 
 import click
 import re
 from gloss import read_datasets, read_file
+from os import getcwd, mkdir, path
+
+OUTPUT_FOLDER = "/generated_data/"
 
 # Given a list of words, creates a file where each word is on a new line, with spaces in between the chars
 def create_file_of_words(list, file_name):
-    file = open(file_name, "w")
-    for word in list:
-        if len(word) > 0:
-            for i, char in enumerate(word):
-                file.write(char)
-                if i < len(word) - 1: # non-final char
-                    file.write(" ")
-                else: # final char - this should end the line
-                    file.write("\n")
-    file.close()
+    # Create the generated_data subdirectory, if it doesn't already exist
+    dir_path = getcwd() + OUTPUT_FOLDER
+    if not path.exists(dir_path):
+        mkdir(dir_path)
+
+    with open(dir_path + file_name, "w") as file:
+        for word in list:
+            if len(word) > 0:
+                for i, char in enumerate(word):
+                    file.write(char)
+                    if i < len(word) - 1: # non-final char
+                        file.write(" ")
+                    else: # final char - this should end the line
+                        file.write("\n")
+        file.close()
 
 # Char removal that applies to both unsegmented and segmented lines
 def general_preprocess(sentence, isSegmented):
@@ -61,16 +69,21 @@ def sentence_list_to_word_list(sentence_list):
     
 # Convert from a list of sentences, to all the words in just one list
 def sentence_list_to_word_list_with_summary(sentence_list):
-    file = open("pipeline_data_summary.txt", "w")
-    overall_list = []
-    for sentence in sentence_list:
-        word_count = 0
-        for word in sentence:
-            word_count += 1
-            overall_list.append(word)
-        file.write(str(word_count))
-        file.write("\n")
-    file.close()
+    # Create the generated_data subdirectory, if it doesn't already exist
+    dir_path = getcwd() + OUTPUT_FOLDER
+    if not path.exists(dir_path):
+        mkdir(dir_path)
+
+    with open(dir_path + "pipeline_data_summary.txt", "w") as file:
+        overall_list = []
+        for sentence in sentence_list:
+            word_count = 0
+            for word in sentence:
+                word_count += 1
+                overall_list.append(word)
+            file.write(str(word_count))
+            file.write("\n")
+        file.close()
     
     return overall_list
 

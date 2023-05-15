@@ -1,4 +1,5 @@
 # *** Common functions for creating train/dev/tests datasets ***
+from os import getcwd, mkdir, path
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -25,13 +26,20 @@ def read_file(file_path):
     return(sentences)
 
 def create_file_of_sentences(list, file_name):
-    file = open(file_name, "w")
-    for i, example in enumerate(list):
-        if len(example) > 0:
-            for j, line in enumerate(example):
-                file.write(line)
-                # Add blank line after each example (but not if it's the end of the dataset, bc that results in a double newline at EOF)
-                if (j >= len(example) - 1) and (i < len(list) - 1):
-                    file.write("\n")
-    file.close()
+    output_folder = "/generated_data/"
+
+    # Create the generated_data subdirectory, if it doesn't already exist
+    dir_path = getcwd() + output_folder
+    if not path.exists(dir_path):
+        mkdir(dir_path)
+
+    with open(dir_path + file_name, "w") as file:
+        for i, example in enumerate(list):
+            if len(example) > 0:
+                for j, line in enumerate(example):
+                    file.write(line)
+                    # Add blank line after each example (but not if it's the end of the dataset, bc that results in a double newline at EOF)
+                    if (j >= len(example) - 1) and (i < len(list) - 1):
+                        file.write("\n")
+        file.close()
     

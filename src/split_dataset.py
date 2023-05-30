@@ -21,6 +21,9 @@ def read_file(file_path):
             sentences.append(current_sentence)
             current_sentence = []
         else:
+            # Check for trailing whitespace, which should be removed
+            line = line.strip()
+            line += "\n"
             current_sentence.append(line)
 
     return(sentences)

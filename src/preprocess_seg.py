@@ -98,15 +98,17 @@ def words_to_char_lists(word_list):
     
 # Remove any sentences where misalignments are occurring
 def sentence_check(sentence_list_a, sentence_list_b):
+    new_list_a = []
+    new_list_b= []
     original_length = len(sentence_list_a)
     for sentence_a, sentence_b in zip(sentence_list_a, sentence_list_b):
-        if len(sentence_a) != len(sentence_b):
-            sentence_list_a.remove(sentence_a)
-            sentence_list_b.remove(sentence_b)
+        if len(sentence_a) == len(sentence_b):
+            new_list_a.append(sentence_a)
+            new_list_b.append(sentence_b)
 
-    updated_length = len(sentence_list_a)
+    updated_length = len(new_list_a)
     print(f"From {original_length} sentences, {updated_length} remain after mismatch checks.")
-    return sentence_list_a, sentence_list_b
+    return new_list_a, new_list_b
 
 
 # Returns X and y formatted for fairseq
@@ -119,7 +121,7 @@ def format_data(X, y, forPipeline):
     # because they will ultimately be evaluated post-gloss, sentence-by-sentence
     if not forPipeline:
         # Now is the perfect stage to pause and check X and y are matching up
-        sentence_check(X_preprocessed, y_preprocessed)
+        X_preprocessed, y_preprocessed = sentence_check(X_preprocessed, y_preprocessed)
 
     # We don't need sentence boundaries
     if forPipeline: # So we can later run the glossing model as well!
@@ -157,7 +159,7 @@ def main(train_file, dev_file, test_file, pipeline_file):
 
     # Convert these to the appropriate format for fairseq
     train_X_formatted, train_y_formatted = format_data(train_X, train_y, False)
-    assert(len(train_X_formatted) == len(train_y_formatted))
+    assert len(train_X_formatted) == len(train_y_formatted), f"\nX length: {len(train_X_formatted)} words.\ny length: {len(train_y_formatted)} words."
     create_file_of_words(train_X_formatted, "train.input")
     create_file_of_words(train_y_formatted, "train.output")
 

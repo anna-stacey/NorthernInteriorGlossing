@@ -10,9 +10,9 @@ def read_datasets(train_file, dev_file, test_file):
     return train, dev, test
 
 # Returns the X and y lines from the dataset
-def extract_X_and_y(dataset):
-    X = [sentence[1] for sentence in dataset]
-    y = [sentence[3] for sentence in dataset]
+def extract_X_and_y(dataset, segmentation_line_number, gloss_line_number):
+    X = [sentence[int(segmentation_line_number) - 1] for sentence in dataset]
+    y = [sentence[int(gloss_line_number) - 1] for sentence in dataset]
 
     return X, y
 
@@ -96,7 +96,7 @@ def sentence_to_glosses(gloss_line):
     return gloss_line
     
 
-# A  check to see if any lines have discrepancies in the number of morphemes (transcription line vs gloss line)
+# A check to see if any lines have discrepancies in the number of morphemes (segmented line vs gloss line)
 # At least for now, just remove these lines :(
 # Maybe in future, could replace problematic words with a NULL word, to not lose the data
 # Returns X and y with misaligned sentences removed
@@ -104,15 +104,15 @@ def misalignment_check(X, y):
     X_without_errors = []
     y_without_errors = []
     error_count = 0
-    for transcription_line, gloss_line in zip(X, y):
-        if len(transcription_line) != len(gloss_line):
+    for segmented_line, gloss_line in zip(X, y):
+        if len(segmented_line) != len(gloss_line):
             error_count += 1
             # print("ERROR: length mismatch in the following line:\n", gloss_line)
-            # print(f"Transcription line has {len(transcription_line)} elements, whereas gloss line has {len(gloss_line)} elements.\n")
+            # print(f"Segmented line has {len(segmented_line)} elements, whereas gloss line has {len(gloss_line)} elements.\n")
         else: # No errors!
-            X_without_errors.append(transcription_line)
+            X_without_errors.append(segmented_line)
             y_without_errors.append(gloss_line)
-    print(f"Removed {error_count} mis-aligned sentences, with {len(X) - error_count} sentences remaining.")
+    print(f"Removed {error_count} mis-aligned sentences, with {len(X) - error_count} sentences remaining.\n")
     return X_without_errors, y_without_errors
 
 # Gets each X and y into the right format for the model, and returns them
@@ -129,6 +129,7 @@ def format_X_and_y(X, y, isTrain):
 
     # Let's remove any lines with errors :(
     if(isTrain):
+        print("For training data:")
         X, y = misalignment_check(X, y)
 
     return X, y
@@ -385,7 +386,7 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
         pred_dev_y.append(pred_glossed_sentence)
     
     total_stem_count = known_stem_count + unknown_stem_count
-    print(f"{unknown_stem_count}/{total_stem_count} total stems, or {round(unknown_stem_count/total_stem_count * 100, 2)}%, were not in the stem dictionary.")
+    print(f"In the test set, {unknown_stem_count}/{total_stem_count} total stems, or {round(unknown_stem_count/total_stem_count * 100, 2)}%, were not in the stem dictionary.")
     return pred_dev_y
 
 # No return value
@@ -494,14 +495,16 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
 @click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
-def main(train_file, dev_file, test_file):
+@click.option("--segmentation_line_number", help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
+@click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
+def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number):
     # Read the files and break them down into the three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
     # Grab the appropriate lines from each sentence
-    train_X, train_y = extract_X_and_y(train)
-    dev_X, dev_y = extract_X_and_y(dev)
-    test_X, test_y  = extract_X_and_y(test)
+    train_X, train_y = extract_X_and_y(train, segmentation_line_number, gloss_line_number)
+    dev_X, dev_y = extract_X_and_y(dev, segmentation_line_number, gloss_line_number)
+    test_X, test_y  = extract_X_and_y(test, segmentation_line_number, gloss_line_number)
 
     # Save versions with boundaries, so we can do word-level evaluation
     test_X_with_boundaries = test_X

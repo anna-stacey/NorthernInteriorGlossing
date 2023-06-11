@@ -24,6 +24,10 @@ def reassemble_sentences(word_list, word_count_by_sentence):
 @click.option("--segmentation_line_number", help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
 @click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
 def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, gloss_test_file, segmentation_line_number, gloss_line_number):
+    # Convert right away to prevent off-by-one errors
+    gloss_line_number = int(gloss_line_number) - 1
+    segmentation_line_number = int(segmentation_line_number) - 1
+
     # Read in our word counts, for re-assembling sentences
     word_count_by_sentence = read_file(data_summary_file)
     # Read in the fairseq output (segmented words)

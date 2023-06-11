@@ -2,6 +2,11 @@ import click
 import re
 import sklearn_crfsuite
 from split_dataset import read_file
+from os import getcwd, mkdir, path
+
+OUTPUT_FOLDER = "/generated_data/"
+GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
+PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
 
 def read_datasets(train_file, dev_file, test_file):
     train = read_file(train_file)
@@ -11,8 +16,8 @@ def read_datasets(train_file, dev_file, test_file):
 
 # Returns the X and y lines from the dataset
 def extract_X_and_y(dataset, segmentation_line_number, gloss_line_number):
-    X = [sentence[int(segmentation_line_number) - 1] for sentence in dataset]
-    y = [sentence[int(gloss_line_number) - 1] for sentence in dataset]
+    X = [sentence[segmentation_line_number] for sentence in dataset]
+    y = [sentence[gloss_line_number] for sentence in dataset]
 
     return X, y
 
@@ -461,6 +466,8 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
     #print_mislabelled_helper(X, X_with_boundaries, y, pred_y)
 
+    return pred_y
+
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses
 #   - list_with_boundaries: a list of sentences, which are strings containing glosses or words with boundaries
@@ -491,6 +498,61 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
 
     return updated_gloss
 
+# Take the whole list of sentences (with transcription, seg, etc.) and replace the gloss line with our predicted glosses
+def make_output_file(sentence_list, gloss_pred_list, gloss_line_number):
+    new_sentence_list = []
+    for sentence, pred_gloss_line in zip(sentence_list, gloss_pred_list):
+        new_sentence = []
+        new_sentence.extend(sentence[0:gloss_line_number])
+        new_sentence.append(reassemble_gloss_line(pred_gloss_line))
+        new_sentence.extend(sentence[gloss_line_number + 1:len(sentence)])
+
+        new_sentence_list.append(new_sentence)
+
+    # Now that it's formatted correctly, we can write the output file
+    write_output_file(new_sentence_list, PRED_OUTPUT_FILE_NAME, gloss_line_number)
+
+# Given the gloss line as a list of words, each containing lists of morpheme glosses, convert this to just a single string representing the sentence
+def reassemble_gloss_line(line):
+    sentence_as_list_of_words = []
+    for word in line:
+        new_word = "-".join(word)
+        sentence_as_list_of_words.append(new_word)
+
+    sentence_as_string = " ".join(sentence_as_list_of_words)
+    sentence_as_string += "\n"
+
+    return sentence_as_string
+
+# Takes a list of sentences, where each sentence contains the transcription line, segmentation line, etc.
+# No return value, just creates and write to an output file
+def write_output_file(sentence_list, file_name, gloss_line_number):
+    ORTHOG_LINE_MARKER = "\\t "
+    GLOSS_LINE_MARKER = "\\g "
+    TRANSLATION_LINE_MARKER = "\\l "
+
+    # Create the output subdirectory, if it doesn't already exist
+    dir_path = getcwd() + OUTPUT_FOLDER
+    if not path.exists(dir_path):
+        mkdir(dir_path)
+
+    with open(dir_path + "/" + file_name, "w") as file:
+        for i, sentence in enumerate(sentence_list):
+
+            transcription_line = sentence[0] # Assuming the transcription line is the first line
+            gloss_line = sentence[gloss_line_number]
+            translation_line = sentence[gloss_line_number + 1]  # Assuming the translation line follows the gloss line
+
+            # Make all gloss morpheme boundaries just a hyphen, so that the sigmorphon eval process recognizes them
+            gloss_line = re.sub(r'=', "-", gloss_line)
+
+            file.write(ORTHOG_LINE_MARKER + transcription_line)
+            file.write(GLOSS_LINE_MARKER + gloss_line)
+            file.write(TRANSLATION_LINE_MARKER + translation_line)
+            if i < len(sentence_list) - 1: # Only want one newline at EOF
+                file.write("\n") # Blank line in between each sentence
+        file.close()
+
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
@@ -498,6 +560,10 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
 @click.option("--segmentation_line_number", help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
 @click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
 def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number):
+    # Convert right away to prevent off-by-one errors
+    gloss_line_number = int(gloss_line_number) - 1
+    segmentation_line_number = int(segmentation_line_number) - 1
+
     # Read the files and break them down into the three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
@@ -522,9 +588,14 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     #test_crf(train_X, train_y_no_stems, dev_X, dev_y)
 
     # Evaluate system
-    evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+    # Run our own evaluation
+    pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+    # Run the sigmorphon evaluation
+    # Assemble output file of predicitons, for use with the sigmorphon evaluation system
+    make_output_file(test, pred_y, gloss_line_number)
+    # And create a file of the gold version, formatted the same way to permit comparison
+    write_output_file(dev, GOLD_OUTPUT_FILE_NAME, gloss_line_number)
 
-        
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':
   main()

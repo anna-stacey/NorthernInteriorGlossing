@@ -518,7 +518,7 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
     return updated_gloss
 
 # Take the whole list of sentences (with transcription, seg, etc.) and replace the gloss line with our predicted glosses
-def make_output_file(sentence_list, gloss_pred_list, gloss_line_number):
+def make_output_file(sentence_list, gloss_pred_list, segmentation_line_number, gloss_line_number):
     new_sentence_list = []
     for sentence, pred_gloss_line in zip(sentence_list, gloss_pred_list):
         new_sentence = []
@@ -529,7 +529,7 @@ def make_output_file(sentence_list, gloss_pred_list, gloss_line_number):
         new_sentence_list.append(new_sentence)
 
     # Now that it's formatted correctly, we can write the output file
-    write_output_file(new_sentence_list, PRED_OUTPUT_FILE_NAME, gloss_line_number)
+    write_output_file(new_sentence_list, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number)
 
 # Given the gloss line as a list of words, each containing lists of morpheme glosses, convert this to just a single string representing the sentence
 def reassemble_gloss_line(line):
@@ -545,8 +545,9 @@ def reassemble_gloss_line(line):
 
 # Takes a list of sentences, where each sentence contains the transcription line, segmentation line, etc.
 # No return value, just creates and write to an output file
-def write_output_file(sentence_list, file_name, gloss_line_number):
+def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_line_number):
     ORTHOG_LINE_MARKER = "\\t "
+    SEG_LINE_MARKER = "\\m "
     GLOSS_LINE_MARKER = "\\g "
     TRANSLATION_LINE_MARKER = "\\l "
 
@@ -559,13 +560,16 @@ def write_output_file(sentence_list, file_name, gloss_line_number):
         for i, sentence in enumerate(sentence_list):
 
             transcription_line = sentence[0] # Assuming the transcription line is the first line
+            seg_line = sentence[segmentation_line_number]
             gloss_line = sentence[gloss_line_number]
             translation_line = sentence[gloss_line_number + 1]  # Assuming the translation line follows the gloss line
 
-            # Make all gloss morpheme boundaries just a hyphen, so that the sigmorphon eval process recognizes them
+            # Make all morpheme boundaries just a hyphen, so that the sigmorphon eval process recognizes them
+            seg_line = re.sub(r'=', "-", seg_line)
             gloss_line = re.sub(r'=', "-", gloss_line)
 
             file.write(ORTHOG_LINE_MARKER + transcription_line)
+            file.write(SEG_LINE_MARKER + seg_line)
             file.write(GLOSS_LINE_MARKER + gloss_line)
             file.write(TRANSLATION_LINE_MARKER + translation_line)
             if i < len(sentence_list) - 1: # Only want one newline at EOF
@@ -580,8 +584,8 @@ def write_output_file(sentence_list, file_name, gloss_line_number):
 @click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
 def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number):
     # Convert right away to prevent off-by-one errors
-    gloss_line_number = int(gloss_line_number) - 1
     segmentation_line_number = int(segmentation_line_number) - 1
+    gloss_line_number = int(gloss_line_number) - 1
 
     # Read the files and break them down into the three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
@@ -611,9 +615,9 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
     # Run the sigmorphon evaluation
     # Assemble output file of predicitons, for use with the sigmorphon evaluation system
-    make_output_file(test, pred_y, gloss_line_number)
+    make_output_file(test, pred_y, segmentation_line_number, gloss_line_number)
     # And create a file of the gold version, formatted the same way to permit comparison
-    write_output_file(dev, GOLD_OUTPUT_FILE_NAME, gloss_line_number)
+    write_output_file(dev, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number)
 
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':

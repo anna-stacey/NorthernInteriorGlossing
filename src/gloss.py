@@ -7,6 +7,7 @@ from os import getcwd, mkdir, path
 OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
+INFIX_BOUNDARY = "~"
 
 def read_datasets(train_file, dev_file, test_file):
     train = read_file(train_file)
@@ -75,12 +76,29 @@ def sentence_to_words(sentence):
         morpheme_list = []
         # Split up morphemes
         morpheme_list = re.split(r'[-=]', word)
+        # Infix marking requires special handling
+        for i, morpheme in enumerate(morpheme_list):
+            if INFIX_BOUNDARY in morpheme:
+                #assert morpheme.count("~") % 2 == 0, f" count is {morpheme.count('~')} for {morpheme} in {word} in {sentence}" # Should be on either side of the morpheme
+                breakdown_by_infix = morpheme.partition(INFIX_BOUNDARY) # [firsthalfofmorpheme, ~, infix~secondhalfofmorpheme]
+                first_half = breakdown_by_infix[0]
+                breakdown_by_infix = breakdown_by_infix[2].partition(INFIX_BOUNDARY) # infix, ~, secondhalf
+                infix = breakdown_by_infix[0]
+                second_half = breakdown_by_infix[2]
+
+                # Now, replace firsthalf~infix~secondhalf with [firsthalf+secondhalf, infix]
+                # This matches how they're glossed! e.g. somestem-CRED
+                morpheme_list.pop(i)
+                morpheme_list.insert(i, first_half + second_half)
+                morpheme_list.insert(i + 1, infix)
         word_list.append(morpheme_list)
+
     return word_list
 
 
 # Returns a list of features for each morpheme for each word in the given sentence
 def sentence_to_features(sentence):
+    # Get a list of words, which are in turn lists of morphemes
     preprocessed_sentence = sentence_to_words(sentence)
     featureVectorList = []
     for word in preprocessed_sentence:
@@ -485,7 +503,8 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
         morpheme_index = 0
         # Go word by word
         for i, word in enumerate(gloss_line_with_boundaries):
-            morpheme_count = word.count("=") + word.count("-") + 1
+            assert(word.count("~") % 2 == 0) # Since infix markers go on either side, they should come in pairs
+            morpheme_count = word.count("=") + word.count("-") + int(word.count("~") / 2) + 1
             word_glossed = []
             # Go morpheme by morpheme
             for j in range(morpheme_count):

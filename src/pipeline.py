@@ -1,4 +1,5 @@
 import click
+import re
 from test_seg import read_file, format_fairseq_output
 from gloss import read_datasets, extract_X_and_y, format_X_and_y, train_system, evaluate_system
 
@@ -14,6 +15,12 @@ def reassemble_sentences(word_list, word_count_by_sentence):
         sentence_list.append(current_sentence)
 
     return sentence_list
+
+def remove_infix_boundary_errors(word_list):
+    for i, word in enumerate(word_list):
+        if word.count("~") % 2 != 0:
+            word_list[i] = re.sub("~", "-", word)
+    return word_list
 
 @click.command()
 @click.option("--seg_output_file", help = "The name of the output file from the segmentation.")
@@ -36,6 +43,8 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     seg_output = format_fairseq_output(seg_output)
     # Remove spaces from words
     seg_output = [word.replace(" ", "") for word in seg_output]
+    # For now... remove single infix markers (incorrect!)
+    seg_output = remove_infix_boundary_errors(seg_output)
     # Put the sentences back together
     test_X = reassemble_sentences(seg_output, word_count_by_sentence)
 

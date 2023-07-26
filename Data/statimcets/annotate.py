@@ -5,6 +5,10 @@ def read_file(file_path):
     with open(file_path) as f:
         lines = f.readlines()
 
+    # If the file ends in a single blank line, it may miss it
+    if lines[-1] != "\n":
+        lines.append("\n")
+
     sentences = []
     current_sentence = []
     for i, line in enumerate(lines):
@@ -18,10 +22,12 @@ def read_file(file_path):
 # Given a list of examples, print each line with a blank line in between examples
 def create_file(list, file_name):
     file = open(file_name, "w")
-    for example in list:
+    for i, example in enumerate(list):
         for line in example:
             file.write(line)
-        file.write("\n")
+        # To prevent a double blank line after the final example (at EOF)
+        if i != len(list) - 1:
+            file.write("\n")
     file.close()
 
 # We want to make only minimal changes to the source line
@@ -542,7 +548,8 @@ def main():
     print(f"{example_count - ortho_seg_misalignment_count - seg_gloss_misalignment_count}/{example_count} examples are good to go.")
     assert (example_count - ortho_seg_misalignment_count - seg_gloss_misalignment_count) == len(data)
 
-main()
+if __name__ == '__main__':
+  main()
 
 # MANUAL CHANGES MADE:
 # - removed comment from gloss line

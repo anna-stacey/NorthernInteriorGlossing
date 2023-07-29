@@ -1,5 +1,5 @@
 Qwa7yán'ak ti nskwátsitsa.
-Qwa~7~y-án'ak ti n-skwátsits-a. 
+Qwa<7>y-án'ak ti n-skwátsits-a. 
 blue-INCH-stomach DET FSGP-name-EXIS 
 My name is Qwa7yán'ak.
 
@@ -19,7 +19,7 @@ NEG at.that.time DET IPFV sick-place at-this.VIS at-DET Lillooet-EXIS
 At that time there was no hospital in Lillooet.
 
 Lkw7u sqém'qem'a lhri7pán, na wa7 tsúnem wa7 nqwáxwqten.
-l-kw7u sqém'qem'-a lh-ri~7~p-án, na wa7 tsún-em wa7 nqwáxwqten. 
+l-kw7u sqém'qem'-a lh-ri<7>p-án, na wa7 tsún-em wa7 nqwáxwqten. 
 at-that.INVIS Upper.Bridge.River.Valley-EXIS COMP-grow-INCH-FSGC ABS.DET IPFV say+DIR-FPLE IPFV Marshall.Creek 
 I grew up at sQém'qem' (Upper Bridge River Valley), at a place we used to call Nqwáxwqten (Eagle's Nest).
 
@@ -109,7 +109,7 @@ COP EXCL then again from+there.VIS NMLZ-move-INCH-FPLP from-this.VIS
 So we set out.
 
 T'álellhkalh láta7 Lyttona, t'eqemtsína wa7 tsúnem.
-t'ál-el-lhkalh láta7 Lytton-a, t'eqemtsín-a wa7 tsún-em. 
+t'ál~el-lhkalh láta7 Lytton-a, t'eqemtsín-a wa7 tsún-em. 
 stop-FRED-FPLS at+there.VIS Lytton-EXIS Lytton-EXIS IPFV say+DIR-FPLE 
 We stopped at Lytton, which we call T'eqemtsín.
 
@@ -154,7 +154,7 @@ gee CIRC-afraid-FSGS-CIRC at.that.time
 Gee, I got scared then.
 
 Aoz t'u7 kwenswá áts'xen ku ts'íla áti7 scw7it.s i tewtwéww'eta.
-áoz t'u7 kwenswá áts'x-en ku ts'íla áti7 s-cw7it-s i tew-twéww'et-a. 
+áoz t'u7 kwenswá áts'x-en ku ts'íla áti7 s-cw7it-s i tew~twéww'et-a. 
 NEG EXCL DET+FSGP+NMLZ+IPFV get.seen-DIR DET like at+there.VIS NMLZ-many-TP PL.DET TRED-boy-EXIS 
 I never saw so many boys.
 
@@ -169,7 +169,7 @@ arrive DET FSGP-older.brother-EXIS Pete COP EXCL NMLZ+IPFV+TP speak-DIR-FSGO-TE 
 My brother Pete came, and he told that they were around too...
 
  t'íq.wit áti7 éta tsunám'caltena xílem es7énts, kwenswá zewátet.s i tákema.
-t'íq-wit áti7 e-ta tsunám'-cal-ten-a xíl-em e-s7énts, kwenswá zewát-et-s i tákem-a. 
+t'íq-wit áti7 e-ta tsunám'-cal-ten-a xíl-em e-s7énts, kwenswá zewát~et-s i tákem-a. 
 arrive-TPl at+there.VIS to-DET teach-ACT-INS-EXIS do-MID to-FSGI DET+FSGP+NMLZ+IPFV be.known-FRED-CAUS PL.DET all-EXIS 
 ...that they had come to the school just like me, and that I should learn about everything.
 
@@ -184,27 +184,27 @@ COP then after.all again around+there.VIS IPFV relation-FPLP
 And so then we got to be friends.
 
 Tqilh k'a án'was t'ánam'ten láti7 kwas wa7 ta wa7 n7aw'tetscítsas láti7 i sqwal'úta elh nzewátet.skan kwa sám7ats.
-tqílh k'a án'was t'ánam'ten láti7 kwas wa7 ta wa7 n-7aw't-ets-cí-ts-as láti7 i sqwal'út-a elh n-zewát-et-s-kan kwa sám7a-ts. 
+tqílh k'a án'was t'ánam'ten láti7 kwas wa7 ta wa7 n-7aw't-ets-cí-ts-as láti7 i sqwal'út-a elh n-zewát~et-s-kan kwa sám7a-ts. 
 almost EPIS two moon at+there.VIS DET+NMLZ+IPFV+TP be DET IPFV LOC-behind-mouth-IND-FSGO-TE at+there.VIS PL.DET speak-EXIS and.then LOC-be.known-FRED-CAUS-FSGS DET+IPFV white.person-mouth 
 They must have had an interpreter for almost two months before I learned how to speak English.
 
 'Alas t'u7 ts'eq'entsálitas láti7 kw nszewátet.s kwa sám7ats.
-álas t'u7 ts'eq'-en-tsál-itas láti7 kw n-s-zewát-et-s kwa sám7a-ts. 
+álas t'u7 ts'eq'-en-tsál-itas láti7 kw n-s-zewát~et-s kwa sám7a-ts. 
 really EXCL strike-DIR-FSGO-TPle at+there.VIS DET FSGP-NMLZ-be.known-FRED-CAUS DET+IPFV white.person-mouth 
 They really came down hard on me to learn how to speak English.
 
 Nilh paqu7mínan láti7 kwes kelh zuqwstumcalítas láti7 lh7áozas kw nszewátet.s, 
-nilh paqu7-mín-an láti7 kwés kelh zuqw-s-tumcal-ítas láti7 lh-7áoz-as kw n-s-zewát-et-s 
+nilh paqu7-mín-an láti7 kwés kelh zuqw-s-tumcal-ítas láti7 lh-7áoz-as kw n-s-zewát~et-s 
 COP afraid-RLT-FSGE at+there.VIS DET+NMLZ+IPFV+TP FUT die-CAUS-FSGO-TPle at+there.VIS COMP-NEG-TC DET FSGP-NMLZ-be.known-FRED-CAUS 
 That's what I was scared of, if I didn't learn to speak English they'd probably kill me...
 
  t'u7 kaxílhkana hém' t'u7, nzewátet.skan láti7 ku sám7ats.
-t'u7 ka-xilh-kan-a hém' t'u7, n-zewát-et-s-kan láti7 ku sám7a-ts. 
+t'u7 ka-xilh-kan-a hém' t'u7, n-zewát~et-s-kan láti7 ku sám7a-ts. 
 but CIRC-get.done-FSGS-CIRC ANTI EXCL LOC-be.known-FRED-CAUS-FSGS at+there.VIS DET white.person-mouth 
 ...but I managed to do it, I learned how to speak English.
 
 Zewátetskan i tákema wa7 tsunam'entsálitas.
-zewát-et-s-kan i tákem-a wa7 tsunam'-en-tsál-itas. 
+zewát~et-s-kan i tákem-a wa7 tsunam'-en-tsál-itas. 
 be.known-FRED-CAUS-FSGS PL.DET all-EXIS IPFV teach-DIR-FSGO-TPle 
 I learned everything they taught me.
 
@@ -214,7 +214,7 @@ four moon at+there.VIS DET FSGP-NMLZ-be
 I was there four months.
 
 Plan t'elh láti7 sexsixin'tsálem ta wa7 tsúnitas wa7 grade two.
-plán t'elh láti7 sex-six-in'-tsálem ta wa7 tsún-itas wa7 grade two. 
+plán t'elh láti7 sex~six-in'-tsálem ta wa7 tsún-itas wa7 grade two. 
 already at.that.time at+there.VIS TRED-move-DIR-FSG.PASS DET IPFV say+DIR-TPle IPFV grade two 
 By that point, they had already moved me to grade two.
 
@@ -254,7 +254,7 @@ COP at+there.VIS FSGP-NMLZ-go.along go.downhill to+there.INVIS DET town-EXIS Mis
 So I went down to the town of Mission, Mission City they called it.
 
 Pútkan t'u7 katéxwa lta c.wálha cuz' kwánan áku7 ta pankúpha, láti7 múta7 lhkwanenstumcalítas.
-pút-kan t'u7 ka-téxw-a l-ta c.wálh-a cuz' kwán-an áku7 ta pankúph-a, láti7 múta7 lh-kwan-en-s-tumcal-ítas. 
+pút-kan t'u7 ka-téxw-a l-ta c.wálh-a cuz' kwán-an áku7 ta pankúph-a, láti7 múta7 lh-kwan~en-s-tumcal-ítas. 
 exactly-FSGS EXCL CIRC-straight-CIRC at-DET road-EXIS going.to take+DIR-FSGE to+there.INVIS DET Vancouver-EXIS at+there.VIS again COMP-take-FRED-CAUS-FSGO-TPle 
 I had just got down to the road I was going to take to Vancouver when I got caught.
 
@@ -284,7 +284,7 @@ five EPIS DET NMLZ-ten-TP at+there.VIS DET-NMLZ-get.whipped-DIR-FSG.PASS-EXIS
 They must've strapped me fifty times there.
 
 Qlílmin'lhkan aylh láti7 i naplíta, múta7 i wa7 s7ats'xstáli i tewtwéww'eta wa7 wa7 láku7.
-qlíl-min'-lhkan aylh láti7 i naplít-a, múta7 i wa7 s-7ats'x-s-táli i tew-twéww'et-a wa7 wa7 láku7. 
+qlíl-min'-lhkan aylh láti7 i naplít-a, múta7 i wa7 s-7ats'x-s-táli i tew~twéww'et-a wa7 wa7 láku7. 
 angry-RLT-FSGS then at+there.VIS PL.DET priest-EXIS and PL.DET IPFV STAT-get.seen-CAUS-NTS PL.DET TRED-boy-EXIS IPFV be at+there.INVIS 
 I got mad at the priests and all the ones that looked after the boys there.
 
@@ -304,7 +304,7 @@ COP NMLZ-say+DIR-FSG.PASS already-SSGS IPFV big-too go-SSGS go.home
 Then I was told, ``You're already too big, go home.''
 
 Kánem sa? kan tsúnwit, Aoys t'u7 kw nstsem'ps lts7a, kw ns̲zewátet.s i tákema.
-kán-em sa? kan tsún-wit, áoy-s t'u7 kw n-s-tsem'p-s l-ts7a, kw n-s̲-zewát-et-s i tákem-a. 
+kán-em sa? kan tsún-wit, áoy-s t'u7 kw n-s-tsem'p-s l-ts7a, kw n-s̲-zewát~et-s i tákem-a. 
 do.what-MID NMLZ+IPFV+TP FSGS say+DIR-TPl NEG-TP EXCL DET FSGP-NMLZ-get.finished-CAUS at-this.VIS DET FSGP-NMLZ-be.known-FRED-CAUS PL.DET all-EXIS 
 ``Why?'' I told them, ``I haven't finished learning everything here.''
 

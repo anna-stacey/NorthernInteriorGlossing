@@ -1,5 +1,5 @@
 Tsi, icín'as iwán k'a wa7 t'áq'em'kst szánucw, wá7lhkalh tsicw káku7 ta sut'átqw7a áku7 kekáwa.
-tsi, i-cín'-as i-wán k'a wa7 t'áq'em'kst szánucw, wá7-lhkalh tsicw káku7 ta sut'-átqw7-a áku7 ke-káw-a. 
+tsi, i-cín'-as i-wán k'a wa7 t'áq'em'kst szánucw, wá7-lhkalh tsicw káku7 ta sut'-átqw7-a áku7 ke~káw-a. 
 gee when.PAST-long.time-TC when.PAST-IPFV+FSGC EPIS IPFV six year IPFV-FPLS get.there around+there.INVIS DET drain-water-EXIS to+there.INVIS IRED-far.away-EXIS 
 Gee, a long time ago when I was around six years old, we went to a river far away.
 
@@ -49,7 +49,7 @@ COP-A after.all EPIS that.VIS IPFV say+DIR-TE IPFV lift-bottom-MID
 So that's what root-digging turned out to be.
 
 'Alas iz' áma ku ákwal'micw iz' i wa7 ri7p i t'ak'wáml'acwa lki sq'áq'p7a.
-álas iz' áma ku 7ákwal'micw iz' i wa7 rí~7~p i t'ak'wáml'acw-a l-ki sq'áq'p7-a. 
+álas iz' áma ku 7ákwal'micw iz' i wa7 rí<7>p i t'ak'wáml'acw-a l-ki sq'áq'p7-a. 
 really those.VIS good DET cedar.root those.VIS PL.DET IPFV grow-INCH PL.DET root-EXIS at-PL.DET sand-EXIS 
 Those were really good cedar roots, those roots that grew in the sand.
 
@@ -104,7 +104,7 @@ NEG EXCL DET NMLZ-CIRC-get.eaten-CAUS-FSGE-CIRC
 I couldn't eat it.
 
 Ncwescwest7úl t'u7 láti7.
-n-cwes-cwest-7úl t'u7 láti7. 
+n-cwes~cwest-7úl t'u7 láti7. 
 LOC-TRED-strong-real EXCL at+there.VIS 
 The taste was too strong.
 

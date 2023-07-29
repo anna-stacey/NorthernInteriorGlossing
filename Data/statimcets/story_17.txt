@@ -1,5 +1,5 @@
 Iy, s7ents sQwa7yán'ak.
-iy, s7ents s-Qwa~7~y-án'ak. 
+iy, s7ents s-Qwa<7>y-án'ak. 
 yes FSGI NMLZ-blue-INCH-stomach 
 Qwa7yán'ak is my name.
 
@@ -14,7 +14,7 @@ get.there-CAUS-FSG.PASS to-that.INVIS LOC-teach-ACT-INS-EXIS Mission-EXIS
 They brought me to the residential school in Mission.
 
 'An'was k'a láti7 sxetspásq'et kw nswa7 elh nzewátet.skan i k'wína sám7ats.
-án'was k'a láti7 sxetspásq'et kw n-s-wa7 elh n-zewát-et-s-kan i k'wín-a sám7a-ts. 
+án'was k'a láti7 sxetspásq'et kw n-s-wa7 elh n-zewát~et-s-kan i k'wín-a sám7a-ts. 
 two EPIS at+there.VIS week DET FSGP-NMLZ-be and.then LOC-be.known-FRED-CAUS-FSGS PL.DET how.much-EXIS white.person-mouth 
 It must've been two weeks before I learned a few words in English.
 
@@ -39,7 +39,7 @@ go.along-FSGS then again go.home when.PAST finish-CAUS-FSG.PASS-TC DET FSGP-NMLZ
 I came home again after I was dismissed from the residential schools.
 
 Nilh t'u7 scécen's káti7 kwenswá alkst kentákem.
-nílh t'u7 s-cé~c~en'-s káti7 kwenswá alkst ken-tákem. 
+nílh t'u7 s-cé{c}en'-s káti7 kwenswá alkst ken-tákem. 
 COP EXCL NMLZ-long.time-CRED-TP around+there.VIS DET+FSGP+NMLZ+IPFV work around-all 
 I went to work for awhile all over the place.
 
@@ -49,12 +49,12 @@ go.along-FSGS then go.home
 Then I came home.
 
 Nilh t'u7 nswa qwal'út.s káti7 i nsnek'wnúk'w7a kenkw7á kénta táowna.
-nílh t'u7 nswa qwal'út-s káti7 i n-snek'w-núk'w7-a ken-kw7á ken-ta táown-a. 
+nílh t'u7 nswa qwal'út-s káti7 i n-snek'w~núk'w7-a ken-kw7á ken-ta táown-a. 
 COP EXCL FSGP+NMLZ+IPFV speak-CAUS around+there.VIS PL.DET FSGP-TRED-friend-EXIS around-this.INVIS around-DET town-EXIS 
 I was talking to my friends and relatives in town.
 
 Ao7zálh t'u7 láti7 ts'íla ku wa7 qan'im'tsan'tsalítas.
-ao~7~z'-álh t'u7 láti7 ts'íla ku wa7 qan'im'-ts-an'-tsal-ítas. 
+ao<7>z'-álh t'u7 láti7 ts'íla ku wa7 qan'im'-ts-an'-tsal-ítas. 
 NEG-INCH-utmost EXCL at+there.VIS like DET IPFV hear-mouth-DIR-FSGO-TPle 
 But it was like there was nobody at all there that understood me.
 
@@ -94,7 +94,7 @@ say-FSGS then already-FSGS then IPFV CIRC-speak-CIRC
 ``Now,'' I say, ``I can speak St'át'imcets.''
 
 Wá7lhkan zam' qwal'út.s láti7 nsnek'wnúk'w7a na spála7sa.
-wá7-lhkan zam' qwal'út-s láti7 n-snek'w-núk'w7-a na s-pála7-s-a. 
+wá7-lhkan zam' qwal'út-s láti7 n-snek'w~núk'w7-a na s-pála7-s-a. 
 IPFV-FSGS after.all speak-CAUS at+there.VIS FSGP-TRED-friend-EXIS ABS.DET NMLZ-one-TP-EXIS 
 I was talking to some of my friends one time.
 
@@ -144,7 +144,7 @@ already after.all begin CIRC-return-CIRC DET LOC-speak-INS-FPLP-EXIS at-this.VIS
 ``Our language is beginning to come back here now.''
 
 T'ak ka t'u7 tsunam'enítas i sk'wemk'úk'wmi7ta kw stexw kateqstwítasa ta nqwal'uttenlhkálha kw swa7 múta7 tsunam'enítas kwelh tsúw7i stsmal't láti7 kw skap'án't.sa, kap'an't.stúma tákem, kw scw7aoys cwaz'an'tumúlem kwat úcwalmicw.
-t'ák ka t'u7 tsunam'-en-ítas i sk'wem-k'úk'wmi7t-a kw s-stexw ka-teq-s-twítas-a ta n-qwal'ut-ten-lhkálh-a kw s-wa7 múta7 tsunam'-en-ítas kwelh tsúw7-i stsmal't láti7 kw s-ka-p'án't-s-a, ka-p'an't-s-túm-a tákem, kw s-cw7aoy-s cwaz'-an'-tumúlem kwat úcwalmicw. 
+t'ák ka t'u7 tsunam'-en-ítas i sk'wem~k'úk'wmi7t-a kw s-stexw ka-teq-s-twítas-a ta n-qwal'ut-ten-lhkálh-a kw s-wa7 múta7 tsunam'-en-ítas kwelh tsúw7-i stsmal't láti7 kw s-ka-p'án't-s-a, ka-p'an't-s-túm-a tákem, kw s-cw7aoy-s cwaz'-an'-tumúlem kwat úcwalmicw. 
 continue IRR EXCL teach-DIR-TPle PL.DET TRED-child-EXIS DET NMLZ-really CIRC-touch-CAUS-TPle-CIRC DET LOC-speak-INS-FPLP-EXIS DET NMLZ-IPFV again teach-DIR-TPle PL.INVIS.DET own-TPlp children at+there.VIS DET NMLZ-CIRC-return-TP-CIRC CIRC-return-CAUS-TSG.PASS-CIRC all DET NMLZ-NEG-TP disappear-DIR-FPL.PASS DET+NMLZ+IPFV+FPLC indigenous.person 
 ``They should keep on teaching the children so that they can really grasp the language, so that they in turn can teach their own children...'' ``so that it can come back, and everything can be restored, and then they will not be able to eliminate us as indigenous people.''
 
@@ -159,12 +159,12 @@ COP EXCL NMLZ+IPFV+TP IPFV strong-Aut DET+NMLZ+IPFV+TP want.to-disappear-DIR-FPL
 ``So they are trying their best to eliminate us as indigenous people.''
 
 'Ama ti7 ta wa7 száytens lts7a i nsnek'wnúk'w7a, wa7 kenstsunam'enítas i stsmál'tkalha lts7a kwas wa7 qwezenítas ta nqwal'uttenlhkálha múta7 nt'akmenlhkálha, 
-áma ti7 ta wa7 száyten-s l-ts7a i n-snek'w-núk'w7-a, wa7 kens-tsunam'-en-ítas i stsmál't-kalh-a l-ts7a kwas wa7 qwez-en-ítas ta n-qwal'ut-ten-lhkálh-a múta7 nt'akmen-lhkálh-a 
+áma ti7 ta wa7 száyten-s l-ts7a i n-snek'w~núk'w7-a, wa7 kens-tsunam'-en-ítas i stsmál't-kalh-a l-ts7a kwas wa7 qwez-en-ítas ta n-qwal'ut-ten-lhkálh-a múta7 nt'akmen-lhkálh-a 
 good that.VIS DET IPFV doings-TP at-this.VIS PL.DET FSGP-TRED-friend-EXIS IPFV try-teach-DIR-TPle PL.DET children-FPLP-EXIS at-this.VIS DET+NMLZ+IPFV+TP IPFV get.used-DIR-TPle DET LOC-speak-INS-FPLP-EXIS and traditional.way.of.life-FPLP-EXIS 
 It is good what they are doing teaching the language and our customs to the young ones
 
  kwas zewatet.stwítas t'u álas t'u7 wa7 kaqwal'útwita.
-kwas zewat-et-s-twítas t'u álas t'u7 wa7 ka-qwal'út-wit-a. 
+kwas zewat~et-s-twítas t'u álas t'u7 wa7 ka-qwal'út-wit-a. 
 DET+NMLZ+IPFV+TP be.known-FRED-CAUS-TPle until really EXCL IPFV CIRC-speak-TPl-CIRC 
 ...until they really know how to talk.
 
@@ -204,7 +204,7 @@ FSGS say+DIR NEG
 I told him, ``No.''
 
 Wa7 tsut, Wenácw.  Lan wa7 ts'a7cmínitas i nskúz7a ta nqwal'uttenlhkálha.
-wa7 tsut, wenácw. lan wa7 ts'a~7~c-mín-itas i n-skúz7-a ta n-qwal'ut-ten-lhkálh-a. 
+wa7 tsut, wenácw. lan wa7 ts'a<7>c-mín-itas i n-skúz7-a ta n-qwal'ut-ten-lhkálh-a. 
 IPFV say true already IPFV ashamed-INCH-RLT-TPle PL.DET FSGP-offspring-EXIS DET LOC-speak-INS-FPLP-EXIS 
 He said, ``Sure. My children are ashamed to use the language.''
 
@@ -229,6 +229,6 @@ COP FUT EXCL then NMLZ-true-TP disappear-DIR-TPle DET+NMLZ+IPFV+FPLC indigenous.
 Then they'll extinguish us for sure, as indigenous people.
 
 Nilh k'a ti7, tákem i nsnek'wnúk'w7a.
-nilh k'á ti7, tákem i n-snek'w-núk'w7-a. 
+nilh k'á ti7, tákem i n-snek'w~núk'w7-a. 
 COP EPIS that.VIS all PL.DET FSGP-TRED-friend-EXIS 
 That's about it, all my relations.

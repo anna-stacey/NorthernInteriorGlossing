@@ -39,7 +39,7 @@ arrive-TPl go.outside-almost at+there.VIS
 When they came, it was almost spring.
 
 T'íqeq kwantsalítas láti7, nilh st'iqstum'cálitas lkw7a sát'a.
-t'íq-eq kwan-tsal-ítas láti7, nilh s-t'iq-s-tum'cal-ítas l-kw7a sát'-a. 
+t'íq~eq kwan-tsal-ítas láti7, nilh s-t'iq-s-tum'cal-ítas l-kw7a sát'-a. 
 arrive-FRED take+DIR-FSGO-TPle at+there.VIS COP NMLZ-arrive-CAUS-FSGO-TPle at-this.INVIS Lillooet-EXIS 
 They came and got me, then they took me to Lillooet.
 
@@ -59,7 +59,7 @@ NEG EXCL DET+FSGP+NMLZ+IPFV be.known-DIR DET+NMLZ+IPFV+TP be around+there.VIS PL
 I never knew of any lights like they have until I got down here.
 
 Nilh nswa qwámqwmet.s káti7 i wa7 t'ak kagwelgwelgwéla láti7, tákem i sts'ák'wsa i xzúma táowen, nq'sán'kmin láti7 ta wa7... Kan sáwen ta nsqátsez7a lhus ínwat láti7 ta wa7 kagwelgwelgwéla.
-nilh nswa qwámqwmet-s káti7 i wa7 t'ák ka-gwel-gwel-gwél-a láti7, tákem i sts'ák'w-s-a i xzúm-a táowen n-q's-án'k-min láti7 ta wá7 kan sáw-en ta n-sqátsez7-a lhus ínwat láti7 ta wa7 ka-gwel-gwel-gwél-a. 
+nilh nswa qwámqwmet-s káti7 i wa7 t'ák ka-gwel~gwel~gwél-a láti7, tákem i sts'ák'w-s-a i xzúm-a táowen n-q's-án'k-min láti7 ta wá7 kan sáw-en ta n-sqátsez7-a lhus ínwat láti7 ta wa7 ka-gwel~gwel~gwél-a. 
 COP FSGP+NMLZ+IPFV fun-CAUS around+there.VIS PL.DET IPFV continually CIRC-TRED-TRED-burn-CIRC at+there.VIS all PL.DET light-TP-EXIS PL.DET big-EXIS town LOC-laugh-stomach-RLT at+there.VIS DET IPFV FSGS ask-DIR DET FSGP-father-EXIS COMP+IPFV+TC say.what at+there.VIS DET IPFV CIRC-TRED-TRED-burn-CIRC 
 I enjoyed watching those lights blinking, all the lights in the big towns I was laughing about them, and I asked my father what that one flashing was saying.
 
@@ -94,12 +94,12 @@ from+there.VIS then again COMP-leave-FPLC morning at+there.VIS DET one-EXIS agai
 We left again in the morning, another day on the road.
 
 Tsícwecwkalh aylh áku7 ta xzúma ntsunám'calten láti7.
-tsícw-ecw-kalh aylh áku7 ta xzúm-a n-tsunám'-cal-ten láti7. 
+tsícw~ecw-kalh aylh áku7 ta xzúm-a n-tsunám'-cal-ten láti7. 
 get.there-FRED-FPLS then to+there.INVIS DET big-EXIS LOC-teach-ACT-INS at+there.VIS 
 We reached the residential school there.
 
 Cw7it t'u7 káti7 i sk'wemk'úk'wmi7ta áts'xenan, nilh t'u7 nspáqu7.
-cw7ít t'u7 káti7 i sk'wem-k'úk'wmi7t-a áts'x-en-an, nílh t'u7 n-s-páqu7. 
+cw7ít t'u7 káti7 i sk'wem~k'úk'wmi7t-a áts'x-en-an, nílh t'u7 n-s-páqu7. 
 many EXCL around+there.VIS PL.DET TRED-child-EXIS get.seen-DIR-FSGE COP EXCL FSGP-NMLZ-afraid 
 We saw lots of kids around, so I got scared.
 
@@ -114,12 +114,12 @@ say+DIR-FSGO-TE go-SSGS accompany-RLT to+there.VIS NMLZ-Peter
 Then he told me, ``Go with Peter.'
 
 Nílhas ti7 wa7 nuk'wa7mínacw káti7 t'u zewátet.skacw kwa kánem kents7á.
-nílh-as ti7 wa7 nuk'wa7-mín-acw káti7 t'u zewát-et-s-kacw kwa kán-em ken-ts7á. 
+nílh-as ti7 wa7 nuk'wa7-mín-acw káti7 t'u zewát~et-s-kacw kwa kán-em ken-ts7á. 
 COP-TC that.VIS IPFV help-RLT-SSGE around+there.VIS until be.known-FRED-CAUS-SSGS DET+IPFV do.what-MID around-this.VIS 
 ``Stick with him until you learn what to do around here.''
 
 Nilh t'u7 snilhts sPeter ta wa7 skekákel'san káti7.
-nílh t'u7 s-nilh-ts s-Peter ta wa7 s-ke-ká~k~el'-s-an káti7. 
+nílh t'u7 s-nilh-ts s-Peter ta wa7 s-ke~ká{k}el'-s-an káti7. 
 COP EXCL NMLZ-COP-TP NMLZ-Peter DET IPFV STAT-IRED-follow-CRED-CAUS-FSGE around+there.VIS 
 And so it was Peter that I followed around.
 
@@ -154,7 +154,7 @@ COP those.VIS IPFV help-DIR-FSGO-TE at+there.VIS
 They were the ones that helped me there.
 
 Ao7z'álh t'u7 kwenswá zewáten ku sám7ats pináni7, nilh ses aw'tetscitsalítas.
-ao~7~z'-álh t'u7 kwenswá zewát-en ku sám7a-ts pináni7, nilh ses aw't-ets-ci-tsal-ítas. 
+ao<7>z'-álh t'u7 kwenswá zewát-en ku sám7a-ts pináni7, nilh ses aw't-ets-ci-tsal-ítas. 
 NEG-INCH-utmost EXCL DET+FSGP+NMLZ+IPFV be.known-DIR DET white.person-mouth at.that.time COP NMLZ+IPFV+TP behind-mouth-IND-FSGO-TPle 
 I didn't know English at that time, so they translated for me.
 
@@ -194,12 +194,12 @@ move-FPLS from+there.INVIS Upper.Bridge.River.Valley-EXIS to+there.VIS Shalalth-
 We moved from sQém'qem' to Shalalth when our mother died.
 
 Nilh skwantumúlem aylh wi snímulh sk'wemk'úk'wmi7ta ta welfare.
-nilh s-kwan-tumúlem aylh wi snímulh sk'wem-k'úk'wmi7t-a ta welfare. 
+nilh s-kwan-tumúlem aylh wi snímulh sk'wem~k'úk'wmi7t-a ta welfare. 
 COP NMLZ-take+DIR-FPL.PASS then PL FPLI TRED-child-EXIS DET welfare 
 Then the welfare took us children.
 
 Sixin'túmulem káti7 kénki wa7 úqwa7, snek'wnúk'wa7lhkalh t'u7 séna7 t'u7.
-six-in'-túmulem káti7 ken-ki wa7 úqwa7, snek'w-nuk'wa7-lhkálh t'u7 séna7 t'u7. 
+six-in'-túmulem káti7 ken-ki wa7 úqwa7, snek'w~nuk'wa7-lhkálh t'u7 séna7 t'u7. 
 move-DIR-FPL.PASS around+there.VIS around-PL.DET IPFV drink TRED-relative-FPLP EXCL though EXCL 
 They moved us in with some of our relatives, but they were drinkers.
 

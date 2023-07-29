@@ -4,12 +4,12 @@ COP this.VIS DET owl-EXIS IPFV get.there around+there town-RLT-TE to+there PL.DE
 There was this owl that went to visit the people at Sk'emqín (`Head of the Lake').
 
 Papt t'u7 wa7 tsicw káku7 tecwtcwécwsem' ta skalúl7a.
-pápt t'u7 wa7 tsicw káku7 tecw-tcwé~cw~s-em' ta skalúl7-a. 
+pápt t'u7 wa7 tsicw káku7 tecw~tcwé{cw}s-em' ta skalúl7-a. 
 always EXCL IPFV get.there around+there TRED-look-CRED-MID DET owl-EXIS 
 The owl was always going there and looking around.x
 
 Wa7 t'u7 aylh, nilh ska7a7masása láti7 ta sm'ém'lhatsa láku7.
-wá7 t'u7 aylh, nilh s-ka-7a~7~ma-s-ás-a láti7 ta sm'é~m'~lhats-a láku7. 
+wá7 t'u7 aylh, nilh s-ka-7a{7}ma-s-ás-a láti7 ta sm'é{m'}lhats-a láku7. 
 IPFV EXCL then COP NMLZ-CIRC-good-CRED-CAUS-TE-CIRC at+there.INVIS DET woman-CRED-EXIS at+there.INVIS 
 So then he fell in love with a girl over there.
 
@@ -24,7 +24,7 @@ be at+there.VIS ask.question at+there.VIS DET owl-EXIS
 The owl was there, so he asked:
 
 Kan kw skakwanensána ta sm'ém'lhatsa lts7a? skenkán ku sxát'su?
-kan kw s-ka-kwan-en-s-án-a ta sm'é~m'~lhats-a lts7a? s-kenkán ku s-xát'-su? 
+kan kw s-ka-kwan~en-s-án-a ta sm'é{m'}lhats-a lts7a? s-kenkán ku s-xát'-su? 
 whether DET NMLZ-CIRC-take-FRED-CAUS-FSGE-CIRC DET woman-CRED-EXIS at+here.VIS STAT-how.much DET NMLZ-want-SSGP 
 ``Can I take your daughter? How much do you want?''
 
@@ -59,7 +59,7 @@ go-SSGS EXCL again pick-MID DET like EXCL again at+there.VIS
 ``Go pick that much more again.''
 
 Natcw kelh nilh nsnas q'weláw'em, tsut ti skalúl7a, slans k'ámalh hem' séna7 wa7 waytmínas ta sm'ém'lhatsa.
-nátcw kelh nilh n-s-nas q'weláw'-em, tsut ti skalúl7-a, s-lan-s k'ámalh hem' séna7 wa7 wayt-mín-as ta sm'é~m'~lhats-a. 
+nátcw kelh nilh n-s-nas q'weláw'-em, tsut ti skalúl7-a, s-lan-s k'ámalh hem' séna7 wa7 wayt-mín-as ta sm'é{m'}lhats-a. 
 tomorrow FUT COP FSGP-NMLZ-go pick-MID say DET owl-EXIS NMLZ-already-TP however ANTI though IPFV unease-RLT-TE DET woman-CRED-EXIS 
 ``Tomorrow I will go picking,'' said the owl, because by then he was so lovesick for the girl.
 
@@ -69,22 +69,22 @@ evening at+there.VIS COP EXCL NMLZ-walk-TP EXCL at+there.VIS DET woman-EXIS and 
 It was evening, so the woman took a walk with the man who was her husband.
 
 Wa7 láti7, nilh t'u7 sas tsicw zeq'zaq'il'mínas láti7 ta skalúl7a ta sm'ém'lhatsa.
-wa7 láti7, nílh t'u7 sas tsicw zeq'-zaq'il'-mín-as láti7 ta skalúl7-a ta sm'é~m'~lhats-a. 
+wa7 láti7, nílh t'u7 sas tsicw zeq'~zaq'il'-mín-as láti7 ta skalúl7-a ta sm'é{m'}lhats-a. 
 be at+there.VIS COP EXCL NMLZ+IPFV+TP get.there TRED-peek-RLT-TE at+there.VIS DET owl-EXIS DET woman-CRED-EXIS 
 The owl was there, so he went to peek in on the young woman.
 
 Nilh stsúnas láti7, Kan kw snáskalh mám'teq kenkw7á?
-nilh s-tsún-as láti7, kan kw s-nás-kalh má~m'~teq ken-kw7á? 
+nilh s-tsún-as láti7, kan kw s-nás-kalh má{m'}teq ken-kw7á? 
 COP NMLZ-say+DIR-TE at+there.VIS whether DET NMLZ-go-FPLS walk-CRED around-this.INVIS 
 He asked her, ``Can we go for a walk?''
 
 Nilh t'u7 st'áki mám'teq.
-nílh t'u7 s-t'ák-i má~m'~teq. 
+nílh t'u7 s-t'ák-i má{m'}teq. 
 COP EXCL NMLZ-go.along-TPlp walk-CRED 
 So they went for a walk.
 
 Cécen' láti7 elh úxwal'sas aylh múta7 ta sm'ém'lhatsa.
-cé~c~en' láti7 elh úxwal'-s-as aylh múta7 ta sm'é~m'~lhats-a. 
+cé{c}en' láti7 elh úxwal'-s-as aylh múta7 ta sm'é{m'}lhats-a. 
 long.time-CRED at+there.VIS and.then go.home-CAUS-TE then again DET woman-CRED-EXIS 
 A little while later, he took the young woman home again.
 
@@ -129,17 +129,17 @@ go to-that.VIS evening at+there.VIS COP EXCL again NMLZ-arrive-TP
 That evening, he came back again.
 
 Kwánas ta sm'ém'lhatsa nilh t'u7 sqwatsátsi múta7 mám'teq.
-kwán-as ta sm'é~m'~lhats-a nílh t'u7 s-qwatsáts-i múta7 má~m'~teq. 
+kwán-as ta sm'é{m'}lhats-a nílh t'u7 s-qwatsáts-i múta7 má{m'}teq. 
 take+DIR-TE DET woman-CRED-EXIS COP EXCL NMLZ-set.out-TPlp again walk-CRED 
 He took the young woman on a little walk again.
 
 Cécen' láti7, úxwal'wit aylh múta7.
-cé~c~en' láti7, úxwal'-wit aylh múta7. 
+cé{c}en' láti7, úxwal'-wit aylh múta7. 
 long.time-CRED at+there.VIS go.home-TPl then again 
 A while later they went home again.
 
 'Uxwal'sas ta sm'ém'lhatsa.
-úxwal'-s-as ta sm'é~m'~lhats-a. 
+úxwal'-s-as ta sm'é{m'}lhats-a. 
 go.home-CAUS-TE DET woman-CRED-EXIS 
 He brought the young woman home.
 
@@ -174,7 +174,7 @@ many DET IPFV NMLZ-want-TP at+there.INVIS DET woman-EXIS
 ``That woman wants so much.''
 
 Wá7lhkan kens7áz'en láti7 ta skúza7sa, cw7aoz kwas celhcálhtsas láti7 ta án'wasa squls ts'la7 stsáqwem.
-wá7-lhkan kens-7áz'-en láti7 ta skúza7-s-a cw7aoz kwas celh-cálh-ts-as láti7 ta 7án'was-a s-qul-s ts'la7 stsáqwem. 
+wá7-lhkan kens-7áz'-en láti7 ta skúza7-s-a cw7aoz kwas celh~cálh-ts-as láti7 ta 7án'was-a s-qul-s ts'la7 stsáqwem. 
 IPFV-FSGS want.to-buy-DIR at+there.VIS DET offspring-TP-EXIS NEG DET+NMLZ+IPFV+TP TRED-willing+CAUS-FSGO-TE at+there.VIS DET two-EXIS NMLZ-full-TP basket saskatoon.berry 
 ``I want to buy her daughter ``She won't let me have her for two baskets full of tsáqwem.''
 
@@ -204,7 +204,7 @@ from+there.INVIS COMP-come-TPl-TC pick-MID until go.along-TPl to+there.VIS DET h
 From there they went berry picking, and then they went back to the owl's house.
 
 T'áq'm'ekst k'a aylh ts'la7 i qwelqúlsasa ta skalúl7a.
-t'áq'm'ekst k'a aylh ts'la7 i qwel-qúl-s-as-a ta skalúl7-a. 
+t'áq'm'ekst k'a aylh ts'la7 i qwel~qúl-s-as-a ta skalúl7-a. 
 six EPIS then basket PL.DET TRED-full-CAUS-TE-EXIS DET owl-EXIS 
 The owl must have filled six baskets by then.
 
@@ -224,7 +224,7 @@ oh say DET woman-EXIS already EPIS that.VIS
 ``Oh,'' she said, ``That looks like enough.''
 
 'Um'entskacw t'it ku á7en'was ts'qáxa7.
-úm'-en-ts-kacw t'it ku 7á~7~en'was ts'qáxa7. 
+úm'-en-ts-kacw t'it ku 7á{7}en'was ts'qáxa7. 
 give-DIR-FSGO-SSGS also DET two-CRED horse 
 ``Also, give me a couple of horses.''
 
@@ -289,7 +289,7 @@ COP NMLZ-go.home-CAUS-TE to-that.VIS other.side-TP-EXIS DET Lillooet-EXIS
 Then he took her back home, across from Sat'.
 
 Nilh aylh zam' múta7 sts'ílas ku sk'á7sas láku7 ta sm'ém'lhatsa.
-nilh aylh zam' múta7 s-ts'íla-s ku s-k'á7-s-as láku7 ta sm'é~m'~lhats-a. 
+nilh aylh zam' múta7 s-ts'íla-s ku s-k'á7-s-as láku7 ta sm'é{m'}lhats-a. 
 COP then after.all again NMLZ-like-TP DET STAT-get.put.in.jail-CAUS-TE to+there DET woman-CRED-EXIS 
 Then after all that, he kind of kept the young woman in jail. 
 
@@ -299,12 +299,12 @@ NEG EXCL DET+NMLZ+IPFV+TP go.out-CAUS-TE DET do.what-MID
 He didn't let her out for any reason.
 
 Wa7 láti7, zí7zeg' láti7 kwes tsexwtséxwpleqs láti7, nísqsam' láti7 nilh t'u7 s7ap'aka7mínas láti7 ta máqinsa ta a7emhúsa láti7 sm'ém'lhats.
-wa7 láti7, zí7zeg' láti7 kwes tsexw-tséxw-p-leqs láti7 nís-qs-am' láti7 nílh t'u7 s-7ap'-aka7-mín-as láti7 ta máqin-s-a ta 7a~7~emh-ús-a láti7 sm'é~m'~lhats. 
+wa7 láti7, zí7zeg' láti7 kwes tsexw~tséxw-p-leqs láti7 nís-qs-am' láti7 nílh t'u7 s-7ap'-aka7-mín-as láti7 ta máqin-s-a ta 7a{7}emh-ús-a láti7 sm'é{m'}lhats. 
 be at+there.VIS each at+there.VIS DET+NMLZ+IPFV+TP TRED-drip-INCH-nose at+there.VIS blow-nose-MID at+there.VIS COP EXCL NMLZ-wipe-hand-RLT-TE at+there.VIS DET hair-TP-EXIS DET good-CRED-face-EXIS at+there.VIS woman-CRED 
 There he was, and every time his nose ran he blew his nose and wiped his hands in the beautiful young woman's hair.
 
 Wa7 láti7 tqilh k'a án'was et7ú xetspásq'et nilh ses t'iq séna7 ats'xenítas láti7 ta skícza7sa múta7 ta kwtámtssa ta sm'ém'lhatsa.
-wa7 láti7 tqílh k'a án'was e-t7ú xetspásq'et nilh ses t'iq séna7 ats'x-en-ítas láti7 ta skícza7-s-a múta7 ta kwtámts-s-a ta sm'é~m'~lhats-a. 
+wa7 láti7 tqílh k'a án'was e-t7ú xetspásq'et nilh ses t'iq séna7 ats'x-en-ítas láti7 ta skícza7-s-a múta7 ta kwtámts-s-a ta sm'é{m'}lhats-a. 
 be at+there.VIS almost EPIS two to-that.VIS week COP NMLZ+IPFV+TP arrive though get.seen-DIR-TPle at+there.VIS DET mother-TP-EXIS and DET husband-TP-EXIS DET woman-CRED-EXIS 
 After about two weeks, the young woman's mother and father tried to come see her.
 
@@ -319,7 +319,7 @@ COP NMLZ+IPFV+TP say+DIR-TE at+there.VIS DET husband-TP-EXIS DET woman-EXIS do.w
 So the woman said to her husband, ``I wonder why the owl doesn't want to show us our child?''
 
 Na, aoz t'u7 kwas úlhcwsas láti7 ta skalúl7a i slalíl'temsa láti7 ta sm'ém'lhatsa.
-na, áoz t'u7 kwas úlhcw-s-as láti7 ta skalúl7-a i slalíl'tem-s-a láti7 ta sm'é~m'~lhats-a. 
+na, áoz t'u7 kwas úlhcw-s-as láti7 ta skalúl7-a i slalíl'tem-s-a láti7 ta sm'é{m'}lhats-a. 
 well NEG EXCL DET+NMLZ+IPFV+TP enter-CAUS-TE at+there.VIS DET owl-EXIS PL.DET parent-TP-EXIS at+there.VIS DET woman-CRED-EXIS 
 The owl wouldn't let the young woman's parents in.
 
@@ -329,7 +329,7 @@ go.home-TPl after.all again at+there.VIS PL.DET parent-TP-EXIS at+there.VIS COP 
 So her parents went home again, and then they said:
 
 Nas kelh áku7 k'ak'em'l'ecmínem láti7, áts'xenem.
-nás kelh áku7 k'a~k'e~m'-l'ec-mín-em láti7, áts'x-en-em. 
+nás kelh áku7 k'a{k'e}m'-l'ec-mín-em láti7, áts'x-en-em. 
 go FUT to+there.INVIS sneak-CRED-Aut-RLT-FPLE at+there.VIS get.seen-DIR-FPLE 
 ``We'll go sneak up and see her.''
 
@@ -344,17 +344,17 @@ COP NMLZ-LOC-cross.over then from-this.VIS Lillooet-EXIS to+there.VIS other.side
 They crossed over from Sat' to the other side.
 
 Ni::lh sk'ák'em'l'eci áku7 ti tsítcwsa ta skalúl7a.
-ni::lh s-k'á~k'e~m'-l'ec-i áku7 ti tsítcw-s-a ta skalúl7-a. 
+ni::lh s-k'á{k'e}m'-l'ec-i áku7 ti tsítcw-s-a ta skalúl7-a. 
 COP NMLZ-sneak-CRED-Aut-TPlp to+there.INVIS DET house-TP-EXIS DET owl-EXIS 
 They snuck up on the owl's house.
 
 Záq'ilwit áku7 ta ístkensa ti skalúl7a, nilh t'u7 sas ats'xenítas láti7 ta ts'ílasa ta sm'ém'lhatsa.
-záq'il-wit áku7 ta 7ístken-s-a ti skalúl7-a, nílh t'u7 sas ats'x-en-ítas láti7 ta ts'íla-s-a ta sm'é~m'~lhats-a. 
+záq'il-wit áku7 ta 7ístken-s-a ti skalúl7-a, nílh t'u7 sas ats'x-en-ítas láti7 ta ts'íla-s-a ta sm'é{m'}lhats-a. 
 peek-TPl to+there.INVIS DET winter.house-TP-EXIS DET owl-EXIS COP EXCL NMLZ+IPFV+TP get.seen-DIR-TPle at+there.VIS DET like-TP-EXIS DET woman-CRED-EXIS 
 They peeked inside the owl's ístken (pit house), and they saw what looked like the young woman.
 
 Aoz t'u7 tqilh kwes zewatenítas lhswátas ti7, nilh tsa t'u7 t'ak nísqsam' láti7 ta skalúl7a, nilh ses ap'aka7mínas láti7 ta máqinsa ta sm'ém'lhatsa.
-áoz t'u7 tqilh kwes zewat-en-ítas lh-swát-as ti7, nilh tsá t'u7 t'ak nís-qs-am' láti7 ta skalúl7-a, nilh ses ap'-aka7-mín-as láti7 ta máqin-s-a ta sm'é~m'~lhats-a. 
+áoz t'u7 tqilh kwes zewat-en-ítas lh-swát-as ti7, nilh tsá t'u7 t'ak nís-qs-am' láti7 ta skalúl7-a, nilh ses ap'-aka7-mín-as láti7 ta máqin-s-a ta sm'é{m'}lhats-a. 
 NEG EXCL almost DET+NMLZ+IPFV+TP be.known-DIR-TPle COMP-who-TC that.VIS COP DET+NMLZ+IPFV+EXIS EXCL continue blow-nose-MID at+there.VIS DET owl-EXIS COP NMLZ+IPFV+TP wipe-hand-RLT-TE at+there.VIS DET hair-TP-EXIS DET woman-CRED-EXIS 
 They almost didn't know who it was, because the owl kept blowing his nose, and wiping his hands on the young woman's hair.
 
@@ -369,7 +369,7 @@ oh say QUOT then DET father-TP-EXIS come FUT take+DIR-FPLE at-this.VIS COMP-NEG-
 ``Oh,'' said her father then, ``We'll come back to get her when the owl isn't here.''
 
 Cuy, tsut ku7 ta skícza7sa ta sm'ém'lhatsa.
-cuy, tsút ku7 ta skícza7-s-a ta sm'é~m'~lhats-a. 
+cuy, tsút ku7 ta skícza7-s-a ta sm'é{m'}lhats-a. 
 go.on say QUOT DET mother-TP-EXIS DET woman-CRED-EXIS 
 ``Okay,'' said the young woman's mother.
 
@@ -394,12 +394,12 @@ COP NMLZ-get.there-TP take+DIR-TPle DET offspring-TPlp-EXIS
 So they went to get their daughter.
 
 Uxwal'stwítas, nilh t'u7 ses ts'aw'qwán'itas láti7 ti sm'ém'lhatsa.
-uxwal'-s-twítas, nílh t'u7 ses ts'aw'-qw-án'-itas láti7 ti sm'é~m'~lhats-a. 
+uxwal'-s-twítas, nílh t'u7 ses ts'aw'-qw-án'-itas láti7 ti sm'é{m'}lhats-a. 
 go.home-CAUS-TPle COP EXCL NMLZ+IPFV+TP get.washed-head-DIR-TPle at+there.VIS DET woman-CRED-EXIS 
 They took the young woman home to wash her hair.
 
 O, álas t'u7 aylh amhál'qwem' láti7 ta sm'ém'lhatsa.
-o, álas t'u7 aylh amh-ál'qwem' láti7 ta sm'é~m'~lhats-a. 
+o, álas t'u7 aylh amh-ál'qwem' láti7 ta sm'é{m'}lhats-a. 
 oh very EXCL then good-appearance at+there.VIS DET woman-CRED-EXIS 
 Oh, then the young woman was really pretty.
 
@@ -409,7 +409,7 @@ arrive go.home DET owl-EXIS get.seen-DIR-TE at+there.VIS DET NMLZ-NEG-TP DET+NML
 The owl arrived home, he saw his wife wasn't there, so he went looking for her.
 
 T'iq áti7 ta sk'emqína, sáwenas láti7 i slalíl'temsa ta sm'ém'lhatsa láti7.
-t'iq áti7 ta sk'em-qín-a, sáw-en-as láti7 i slalíl'tem-s-a ta sm'é~m'~lhats-a láti7. 
+t'iq áti7 ta sk'em-qín-a, sáw-en-as láti7 i slalíl'tem-s-a ta sm'é{m'}lhats-a láti7. 
 arrive to+there.VIS DET edge-top-EXIS ask-DIR-TE at+there.VIS PL.DET parent-TP-EXIS DET woman-CRED-EXIS at+there.VIS 
 He arrived at Sk'emqín and asked the girl's parents.
 
@@ -429,7 +429,7 @@ oh NEG EXCL then DET+NMLZ+IPFV+TP CIRC-take.off-eye-RLT-TE-CIRC at+there.VIS DET
 Oh, the owl couldn't take his eyes off her.
 
 Sáwenas láti7 i slalíl'temsa ta sm'ém'lhatsa:
-sáw-en-as láti7 i slalíl'tem-s-a ta sm'é~m'~lhats-a: 
+sáw-en-as láti7 i slalíl'tem-s-a ta sm'é{m'}lhats-a: 
 ask-DIR-TE at+there.VIS PL.DET parent-TP-EXIS DET woman-CRED-EXIS 
 He asked the young woman's parents:
 
@@ -444,7 +444,7 @@ oh say QUOT COP EMPH at+there.VIS DET-NMLZ-get.done-CAUS-SSGE-EXIS get.washed-he
 ``Oh,'' he was told, ``because of what you did to her'' ``we washed her hair, and we used something different: bear grease was what we used.''
 
 Sáwlhen aylh skalúl7a: kan kw sxílhtum'cacw t'it áti7, kw stewtiwaskálh kelh láti7 amhál'qwem'?
-sáwlhen aylh skalúl7-a: kan kw s-xílh-tum'c-acw t'it áti7, kw s-tew-tiwas-kálh kelh láti7 amh-ál'qwem'? 
+sáwlhen aylh skalúl7-a: kan kw s-xílh-tum'c-acw t'it áti7, kw s-tew~tiwas-kálh kelh láti7 amh-ál'qwem'? 
 ask.question then owl-EXIS whether DET NMLZ-get.done+CAUS-FSGO-SSGE also to+there.VIS DET NMLZ-TRED-both-FPLS FUT at+there.VIS good-appearance 
 The owl asked, ``Can you do that to me too, so we'll both look good?''
 
@@ -464,7 +464,7 @@ COP EXCL NMLZ-go.along-TPlp to+there.INVIS on-DET other-EXIS day at+there.INVIS
 They went there on another day.
 
 T'ak q'wel'áw'emwit láti7 i slalíl'temsa ta sm'ém'lhatsa láti7 i qwal'ílha.
-t'ak q'wel'áw'-em-wit láti7 i slalíl'tem-s-a ta sm'é~m'~lhats-a láti7 i qwal'ílh-a 
+t'ak q'wel'áw'-em-wit láti7 i slalíl'tem-s-a ta sm'é{m'}lhats-a láti7 i qwal'ílh-a 
 go.along pick-MID-TPl at+there.VIS PL.DET parent-TP-EXIS DET woman-CRED-EXIS at+there.VIS PL.DET pitch-EXIS 
 The young woman's parents went gathering pine pitch.
 
@@ -504,7 +504,7 @@ COP EXCL REM NMLZ-get.abandoned-DIR-TPle
 So they left him.
 
 N'án'atcw aylh láti7, nilh t'u7 ses kenstcúsem ta skalúl7a, aoz kwas kapegwpigwalúsa láti7.
-n'án'atcw aylh láti7, nílh t'u7 ses kens-tcús-em ta skalúl7-a, aoz kwas ka-pegw-pigw-alús-a láti7. 
+n'án'atcw aylh láti7, nílh t'u7 ses kens-tcús-em ta skalúl7-a, aoz kwas ka-pegw~pigw-alús-a láti7. 
 morning then at+there.VIS COP EXCL NMLZ+IPFV+TP want.to-look-MID DET owl-EXIS NEG DET+NMLZ+IPFV+TP CIRC-TRED-open-eye-CIRC at+there.VIS 
 Then in the morning, when the owl tried to look around, he couldn't open his eyes.
 
@@ -514,7 +514,7 @@ COP NMLZ+IPFV+TP try.and.fail at+there.VIS take.off-DIR-TE PL.DET pitch-EXIS off
 He tried to take the pitch off his eyes.
 
 Aoz kwas kaxílha, nilh t'u7 stsegtsgálusems láti7.
-aoz kwas ka-xílh-a, nílh t'u7 s-tseg-tsg-álus-em-s láti7. 
+aoz kwas ka-xílh-a, nílh t'u7 s-tseg~tsg-álus-em-s láti7. 
 NEG DET+NMLZ+IPFV+TP CIRC-get.done-CIRC COP EXCL NMLZ-TRED-get.torn-eye-MID-TP at+there.VIS 
 He couldn't do it, so he ripped open his eyes.
 
@@ -524,7 +524,7 @@ CIRC-look-MID-CIRC
 Then he could see.
 
 Nilh sus wa7 láti7 ets'7áts'xenas láti7 ta kwt'ústsa lta nk'wan'ústena láti7.
-nilh sus wa7 láti7 ets'-7áts'x-en-as láti7 ta kwt'ús-ts-a l-ta n-k'wan'-ús-ten-a láti7. 
+nilh sus wa7 láti7 ets'~7áts'x-en-as láti7 ta kwt'ús-ts-a l-ta n-k'wan'-ús-ten-a láti7. 
 COP NMLZ+IPFV+TP be at+there.VIS TRED-get.seen-DIR-TE at+there.VIS DET face-TP-EXCL in-DET LOC-see-face-INS-EXIS at+there.VIS 
 So there he was, looking at his face in the mirror.
 

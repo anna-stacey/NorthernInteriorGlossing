@@ -34,7 +34,7 @@ go hunt
 Go hunting.
 
 'Aozas kw s7úxwal'su t'u kwámemlhkacw.
-áoz-as kw s-7úxwal'-su t'u kwám-em-lhkacw. 
+áoz-as kw s-7úxwal'-su t'u kwám~em-lhkacw. 
 NEG-TC DET NMLZ-go.home-SSGP until get-FRED-SSGS 
 Don't come back until you catch one.''
 
@@ -44,22 +44,22 @@ COP FSGP-NMLZ-get.there hunt DET IPFV after.all DET IPFV say+DIR-FPLE IPFV poiso
 So I went hunting up to what we call Poison Beetle.
 
 Scéca7s t'u7 áku7 ta q'ip'𝚕̲íi𝚕̲'i7qwa lhun k'ál'emmin i ts'í7a lta c.wéw'lha.
-s-cé~c~a7-s t'u7 áku7 ta q'ip'𝚕̲íi𝚕̲'i7qw-a lhun k'ál'em-min i ts'í7-a l-ta c.we~w'~lh-a. 
+s-cé{c}a7-s t'u7 áku7 ta q'ip'𝚕̲íi𝚕̲'i7qw-a lhun k'ál'em-min i ts'í7-a l-ta c.we{w'}lh-a. 
 NMLZ-high-CRED-TP EXCL to+there.INVIS DET poison.beetle-EXIS COMP+IPFV+FSGC wait-RLT PL.DET deer-EXIS at-DET road-CRED-EXIS 
 Just above Poison Beetle is where I waited for the deer on the trail.
 
 T'k'íwleckan ta srápa, nilh t'u7 sláti7s lhun á7elk'wem'.
-t'k'íw-lec-kan ta sráp-a, nílh t'u7 s-láti7-s lhun á~7~elk'w-em'. 
+t'k'íw-lec-kan ta sráp-a, nílh t'u7 s-láti7-s lhun á{7}elk'w-em'. 
 climb-Aut-FSGS DET tree-EXIS COP EXCL NMLZ-at+there.VIS-TP COMP+IPFV+FSGC watch.out.for-CRED-MID 
 I climbed a tree and that's where I was watching out for them.
 
 Ka7lhás sq'it láku7 kw ns7á7el'k'wem'.
-ka7lhás sq'it láku7 kw n-s-7á~7~el'k'w-em'. 
+ka7lhás sq'it láku7 kw n-s-7á{7}el'k'w-em'. 
 three day at+there.INVIS DET FSGP-NMLZ-watch.out.for-CRED-MID 
 I waited three days there.
 
 Kwámemlhkan ta xzúm'qwa sxwelácken.
-kwám-em-lhkan ta xzúm'-qw-a sxwelácken. 
+kwám~em-lhkan ta xzúm'-qw-a sxwelácken. 
 get-FRED-FSGS DET big-head-EXIS buck 
 I caught a big buck. 
 
@@ -89,7 +89,7 @@ enter-FSGS
 I went in.
 
 Kan tsun ta nsqátsez7a: kwámemlhkan ta pépl7a.
-kan tsun ta n-sqátsez7-a, kwám-em-lhkan ta pé~p~l7-a. 
+kan tsun ta n-sqátsez7-a, kwám~em-lhkan ta pé{p}l7-a. 
 FSGS say+DIR DET FSGP-father-EXIS get-FRED-FSGS DET one-CRED-EXIS 
 I told my father, ``I got one.''
 
@@ -114,7 +114,7 @@ oh FSGS say+DIR NEG EXCL DET NMLZ-be.known-DIR-FSGE
 ``Oh,'' I told him, ``I didn't know how!''
 
 Kan tsun 'Aku::7 scéca7sa ta q'ip'𝚕̲íi𝚕̲'i7qwa lhkwánensan.
-kan tsun, áku::7 s-cé~c~a7-s-a ta q'ip'𝚕̲íi𝚕̲'i7qw-a lh-kwán-en-s-an. 
+kan tsun, áku::7 s-cé{c}a7-s-a ta q'ip'𝚕̲íi𝚕̲'i7qw-a lh-kwán~en-s-an. 
 FSGS say+DIR to+there.INVIS NMLZ-high-CRED-TP-EXIS DET poison.beetle-EXIS COMP-take-FRED-CAUS-FSGE 
 I told him, ``Way up above Poison Beetle, that's where I got it.''
 
@@ -199,7 +199,7 @@ go.home-FPLS
 Then we went back home.
 
 'Ama t'u7 zam', nilh skwamemlhkálha ta ts'í7a, ta k'wína sq'it.
-áma t'u7 zam', nilh s-kwam-em-lhkálh-a ta ts'í7-a, ta k'wín-a sq'it. 
+áma t'u7 zam', nilh s-kwam~em-lhkálh-a ta ts'í7-a, ta k'wín-a sq'it. 
 good EXCL after.all COP NMLZ-get-FRED-FPLP-EXIS DET deer-EXIS DET how.many-EXIS day 
 Anyway, the deer we got was good for a few days.
 
@@ -209,7 +209,7 @@ already after.all again good-become DET-mother-FPLP-EXIS IPFV sick COP NMLZ-get.
 Our mother, who had been sick, got better again, so then we went hunting again.
 
 Qúsenlhkan láti7 ta pépl7a.
-qús-en-lhkan láti7 ta pé~p~l7-a. 
+qús-en-lhkan láti7 ta pé{p}l7-a. 
 shoot-DIR-FSGS at+there.VIS DET one-CRED-EXIS 
 I shot one.
 
@@ -224,7 +224,7 @@ go.downhill-CAUS-FSGS to+there.VIS DET road-EXIS
 I brought it down to the road.
 
 T'iq múta7 ta nsqátsez7a scúk'wsas láti7 ta núkwa, nilh t'u7 s7á7en'wasts láti7 i skwamemlhkálha.
-t'iq múta7 ta n-sqátsez7-a s-cúk'w-s-as láti7 ta núkw-a, nílh t'u7 s-7á~7~en'was-ts láti7 i s-kwam-em-lhkálh-a. 
+t'iq múta7 ta n-sqátsez7-a s-cúk'w-s-as láti7 ta núkw-a, nílh t'u7 s-7á{7}en'was-ts láti7 i s-kwam~em-lhkálh-a. 
 arrive and DET FSGP-father-EXIS STAT-get.hauled-CAUS-TE at+there.VIS DET other-EXIS COP EXCL NMLZ-two-CRED-TP at+there.VIS PL.DET NMLZ-get-FRED-FPLP-EXIS 
 My father was dragging one too, so then we had two. 
 
@@ -239,7 +239,7 @@ COP finish NMLZ-hunt-FPLP DET one-EXIS again moon at+there.VIS DET+NMLZ+IPFV+FPL
 We didn't hunt for one month again, since we had food.
 
 Nilh swas tsúntsas, Páptkacw t'u7 wa7 tsíqalhq'weltan kéla7, lhucw kwámem ku ts'i7.
-nilh swas tsún-ts-as, pápt-kacw t'u7 wa7 tsíq-alhq'welt-an kéla7, lhucw kwám-em ku ts'í7. 
+nilh swas tsún-ts-as, pápt-kacw t'u7 wa7 tsíq-alhq'welt-an kéla7, lhucw kwám~em ku ts'í7. 
 COP NMLZ+IPFV+TP say+DIR-FSGO-TE always-SSGS EXCL IPFV stab-throat-DIR first COMP+IPFV+SSGC get-FRED DET deer 
 He told me, ``You should always bleed the deer first, whenever you get it.''
 
@@ -254,6 +254,6 @@ oh go.on FSGS say+DIR like EPIS to+there.VIS
 ``Oh, okay,'' I told him, ``So that's how it is.''
 
 Nilh ti7 láti7 nszáyten i kel7án kwámem ta ts'í7a.
-nílh ti7 láti7 n-száyten i kel7-án kwám-em ta ts'í7-a. 
+nílh ti7 láti7 n-száyten i kel7-án kwám~em ta ts'í7-a. 
 COP that.VIS at+there.VIS FSGP-doings when.PAST first-FSGC get-FRED DET deer-EXIS 
 That's what happened to me when I first caught a deer.

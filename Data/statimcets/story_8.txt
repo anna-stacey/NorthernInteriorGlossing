@@ -1,5 +1,5 @@
 Iy, énts7a sQwa7yán'ak, nxwístenemc.
-iy, énts7a s-Qwa~7~y-án'ak, n-xwísten-emc. 
+iy, énts7a s-Qwa<7>y-án'ak, n-xwísten-emc. 
 yes FSGI NMLZ-blue-INCH-stomach LOC-Bridge.River-person 
 Yes, I'm Qwa7yan'ak, from Bridge River.
 
@@ -9,7 +9,7 @@ COP this.VIS when.PAST-long.time-TC when.PAST first-TC going.to go.along PL.DET 
 This is about when the people first began to go to the Residential Schools.
 
 Lkw7u Missiona lhtsícwas ta nsqátsez7a múta7 i qetsqéqtseksa.
-l-kw7u Mission-a lh-tsícw-as ta n-sqátsez7-a múta7 i qets-qé~q~tsek-s-a. 
+l-kw7u Mission-a lh-tsícw-as ta n-sqátsez7-a múta7 i qets~qé{q}tsek-s-a. 
 at-that.INVIS Mission-EXIS COMP-get.there-TC DET FSGP-father-EXIS and PL.DET TRED-older.brother-CRED-TP-EXIS 
 My father and his older brothers went to school in Mission.
 
@@ -49,7 +49,7 @@ IPFV-FPLS LOC-die-foot
 We were starving.
 
 Zewátet.stum ku wa7 naq'w, zewátet.stum ku paoyt, tákem k'á t'u7.
-zewát-et-s-tum ku wa7 náq'w, zewát-et-s-tum ku páoyt, takem k'á t'u7. 
+zewát~et-s-tum ku wa7 náq'w, zewát~et-s-tum ku páoyt, takem k'á t'u7. 
 be.known-FRED-CAUS-FPLE DET IPFV steal be.known-FRED-CAUS-FPLE DET fight all EPIS EXCL 
 We learned how to steal, we learned how to fight, all that stuff.
 
@@ -64,17 +64,17 @@ IPFV get.buried-ACT at+there.VIS DET brother-EXIS PL.DET carrots-EXIS COMP+IPFV+
 One of the brothers (priests) planted carrots in the spring.
 
 T'u7 nilh iz' wa7 tsicw náq'wenstum láti7 lhplánas wa7 ts7as ri7p.
-t'u7 nílh iz' wa7 tsicw náq'w-ens-tum láti7 lh-plán-as wa7 ts7as ri~7~p. 
+t'u7 nílh iz' wa7 tsicw náq'w-ens-tum láti7 lh-plán-as wa7 ts7as ri<7>p. 
 but COP those IPFV get.there steal-DIR-TSG.PASS at+there.VIS COMP-already-TC IPFV begin grow-INCH 
 But they got stolen as soon as they started to get ripe.
 
 Nilh iz' wa7 skánams i smelhmém'lhatsa káku7 lhus q'wel, k'ámalha zam' wa7 nzúqwcen ta nsqátsez7a láti7, nilh szewatet.stwítas kwa k'ák'eml'ec áku7 ta sqwéqwem'a nilh swas naq'wenstwítas láti7 i ts'cúcws7a, nilh sus ts'aqwan'ítas.
-nílh iz' wa7 s-kán-am-s i smelh-mé~m'~lhats-a káku7 lhus q'wel k'ámalh-a zam' wa7 n-zúqw-cen ta n-sqátsez7-a láti7 nilh s-zewat-et-s-twítas kwa k'á~k'~em-l'ec áku7 ta sqwé~qw~em'-a nilh swas naq'w-ens-twítas láti7 i ts'~cú~cw-s7-a, nilh sus ts'aqw-an'-ítas. 
+nílh iz' wa7 s-kán-am-s i smelh~mé{m'}lhats-a káku7 lhus q'wel k'ámalh-a zam' wa7 n-zúqw-cen ta n-sqátsez7-a láti7 nilh s-zewat~et-s-twítas kwa k'á{k'}em-l'ec áku7 ta sqwé{qw}em'-a nilh swas naq'w-ens-twítas láti7 i ts'{cú}cw-s7-a, nilh sus ts'aqw-an'-ítas. 
 COP those IPFV NMLZ-can-MID-TP PL.DET TRED-woman-CRED-EXIS around+there.INVIS COMP+IPFV+TC get.ripe however-A after.all IPFV LOC-die-foot DET FSGP-father-EXIS at+there.VIS COP NMLZ-be.known-FRED-CAUS-TPle DET+IPFV sneak-CRED-Aut to+there.INVIS DET mountain-CRED-EXIS COP NMLZ+IPFV+TP steal-DIR-TPle at+there.VIS PL.DET pointed-CRED-fruit-EXIS COP NMLZ+IPFV+TP get.eaten-DIR-TPle 
 The girls canned them when they were ripe but my father was starving so they learned how to sneak up the hill and steal the pears there, and then they ate them.
 
 Tsicw, cw7it7úl k'a zám' kw snaq'ws láti7 ta nsqátsez7a na spála7sa nilh sqwa7ez'álhmecs.
-tsicw, cw7it-7úl k'a zam' kw s-naq'w-s láti7 ta n-sqátsez7-a na s-pála7-s-a, nilh s-qwa~7~ez'-álhmec-s. 
+tsicw, cw7it-7úl k'a zam' kw s-naq'w-s láti7 ta n-sqátsez7-a na s-pála7-s-a, nilh s-qwa<7>ez'-álhmec-s. 
 get.there many-too EPIS after.all DET NMLZ-steal-TP at+there.VIS DET FSGP-father-EXIS ABS.DET NMLZ-one-TP-EXIS COP NMLZ-blue-INCH-belly-TP 
 It happened one time that my father stole too much, so he got an upset stomach (literally: ‘his belly got blue').
 
@@ -84,22 +84,22 @@ COP DET-NMLZ-long.time-TP-EXIS at+there.INVIS DET NMLZ-be-TP NEG DET NMLZ-go.hom
 And because he'd been away so long without going home, he almost forgot our language.
 
 Cuz' k'a zam' séna7 tsut wa7 qwa7ez'álhmec, nilh skatsút.sa qwa7yán'ak ku7.
-cúz' k'a zam' séna7 tsut wa7 qwa~7~ez'-álhmec, nilh s-ka-tsút-s-a qwa~7~y-án'ak ku7. 
+cúz' k'a zam' séna7 tsut wa7 qwa<7>ez'-álhmec, nilh s-ka-tsút-s-a qwa<7>y-án'ak ku7. 
 going.to EPIS after.all though say IPFV blue-INCH-belly COP NMLZ-CIRC-say-TP-CIRC blue-INCH-stomach QUOT 
 So he was apparently going to say he was qwa7ez'álhmec, but he accidentally said qwa7yán'ak instead.
 
 S7icwlh hem' ti7 séna7 lhlákw7a qwa7ez'álhmec.
-s7ícwlh hem' ti7 séna7 lhlákw7a qwa~7~ez'-álhmec. 
+s7ícwlh hem' ti7 séna7 lhlákw7a qwa<7>ez'-álhmec. 
 different ANTI that though from+there.INVIS blue-INCH-belly 
 However, that means something different from qwa7ez'álhmec.
 
 Qwa7ez'álhmec wa7 tsúnitas upset stomach, qwa7yán'ak, nilh iz' wa7 blue stomach.
-qwa~7~ez'-álhmec wa7 tsún-itas upset stomach, qwa~7~y-án'ak, nílh iz' wa7 blue stomach. 
+qwa<7>ez'-álhmec wa7 tsún-itas upset stomach, qwa<7>y-án'ak, nílh iz' wa7 blue stomach. 
 blue-INCH-belly IPFV say+DIR-TPle upset stomach blue-INCH-stomach COP those IPFV blue stomach 
 Qwa7ez'álhmec means ``upset stomach'', but qwa7yán'ak means ``blue stomach''.
 
 Nilh hem' ti7 zam' aylh kaxéksasa ta nsqátsez7a, wa7 tsúnas láti7 t.snúk'wa7sa wa7 qwa7yán'ak, nilh t'u7 aylh lhus nq'san'kmínitas láti7, nilh t'u7 s7aylhts t'u7 ti7 aylh t'u7 skwátsitss, Qwa7yán'ak.
-nílh hem' ti7 zam' aylh ka-xék-s-as-a ta n-sqátsez7-a, wa7 tsún-as láti7 t-snúk'wa7-s-a wa7 qwa~7~y-án'ak, nílh t'u7 aylh lhus n-q's-an'k-mín-itas láti7 nílh t'u7 s-7aylh-ts t'ú7 ti7, áylh t'u7 skwátsits-s, Qwa~7~y-án'ak. 
+nílh hem' ti7 zam' aylh ka-xék-s-as-a ta n-sqátsez7-a, wa7 tsún-as láti7 t-snúk'wa7-s-a wa7 qwa<7>y-án'ak, nílh t'u7 aylh lhus n-q's-an'k-mín-itas láti7 nílh t'u7 s-7aylh-ts t'ú7 ti7, áylh t'u7 skwátsits-s, Qwa<7>y-án'ak. 
 COP ANTI that after.all then CIRC-reckon-CAUS-TE-CIRC DET FSGP-father-EXIS IPFV say+DIR-TE at+there.VIS DET-friend-TP-EXIS IPFV blue-INCH-stomach COP EXCL then COMP+IPFV+TC LOC-laugh-stomach-RLT-TPle at+there.VIS COP EXCL NMLZ-then-TP EXCL that then EXCL name-TP blue-INCH-stomach 
 My father figured that out when he told his friend he was qwa7yán'ak, and they laughed at him and then his name became Qwa7yán'ak after that.
 
@@ -119,7 +119,7 @@ get.lost REM after.all at+there.VIS COP EXCL then again NMLZ-say+DIR-FSG.PASS DE
 Then he got lost, so my elder sister told me:
 
 Snuhás malh ku zam' múta7 ku nukw sQwa7yán'ak.
-snu-hás malh ku zám' múta7 ku núkw s-Qwa~7~y-án'ak. 
+snu-hás malh ku zám' múta7 ku núkw s-Qwa<7>y-án'ak. 
 you-TC ADHORT DET after.all again DET next NMLZ-blue-INCH-stomach 
 ``Well, you'd better be the next Qwa7yán'ak.''
 
@@ -149,7 +149,7 @@ LOC-die-foot
 They starved.
 
 Nzewátet.stum ku naq'w.
-n-zewát-et-s-tum ku náq'w. 
+n-zewát~et-s-tum ku náq'w. 
 LOC-be.known-FRED-CAUS-FPLE DET steal 
 We learned how to steal.
 

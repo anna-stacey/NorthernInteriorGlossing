@@ -9,7 +9,7 @@ COP NMLZ-get.invited-DIR-FSGO-TE DET FSGP-older.brother-EXIS at-this.INVIS COMP+
 Then my older brother called me over to where he was living, behind Noel Baker's store.
 
 Kesenántsas kw nsnasts káku7 ki sqwémqwema.
-kesen-án-ts-as kw n-s-nas-ts káku7 ki sqwém-qwem-a. 
+kesen-án-ts-as kw n-s-nas-ts káku7 ki sqwém~qwem-a. 
 send.on.errand-DIR-FSGO-TE DET FSGP-NMLZ-go-CAUS around+there.INVIS PL.DET TRED-mountain-EXIS 
 He sent for me so that I would take him up to the mountains.
 
@@ -24,12 +24,12 @@ COP EXCL NMLZ-go.along-CAUS-TPlo+FSGE around+there.INVIS
 Then I took them up there.
 
 Pála7 sgap kw swá7i láti7 ta tsal'él'lha láku7 ta ninety-fivea.
-pála7 sgap kw s-wá7-i láti7 ta tsal'~él'~lh-a láku7 ta ninety-five-a. 
+pála7 sgap kw s-wá7-i láti7 ta tsal'{él'}lh-a láku7 ta ninety-five-a. 
 one evening DET NMLZ-be-TPlp at+there.VIS DET lake-CRED-EXIS at+there.INVIS DET ninety-five-EXIS 
 One evening they stayed there at a pond at ninety-five mile.
 
 Tsícwkan ats'xentánihan, aoz t'u7 kw skwámemwit láti7, nilh t'u7 ssíxi zam' áku7 ta wa7 tsúnem Lost Man Camp.
-tsícw-kan ats'x-en-tánihan, áoz t'u7 kw s-kwám-em-wit láti7, nílh t'u7 s-síx-i zam' áku7 ta wa7 tsún-em Lost Man Camp. 
+tsícw-kan ats'x-en-tánihan, áoz t'u7 kw s-kwám~em-wit láti7, nílh t'u7 s-síx-i zam' áku7 ta wa7 tsún-em Lost Man Camp. 
 get.there-FSGS get.seen-DIR-TPlo+FSGE NEG EXCL DET NMLZ-get-FRED-TPl at+there.VIS COP EXCL NMLZ-move-TPlp after.all to+there.INVIS DET IPFV say+DIR-FPLE lost man camp 
 I went to visit them, they didn't get anything there, so they moved to what we call ``Lost Man Camp''.
 
@@ -89,7 +89,7 @@ COP NMLZ-get.there-FPLP STAT-touch-string around-all around-PL.DET road-EXIS IPF
 Then we drove all over there, around the roads we knew.
 
 Zí7zeg' st'álellhkalh kwat we7áw láti7, Richard! Nká7lhkacw tu7?  Richard! Nká7lhkacw tu7?
-zí7zeg' s-t'ál-el-lhkalh kwat we7áw láti7, Richard! nká7-lhkacw tu7? Richard! nká7-lhkacw tu7? 
+zí7zeg' s-t'ál~el-lhkalh kwat we7áw láti7, Richard! nká7-lhkacw tu7? Richard! nká7-lhkacw tu7? 
 every NMLZ-stop-FRED-FPLP DET+NMLZ+IPFV+FPLC shout at+there.VIS Richard where-SSGS REM Richard where-SSGS REM 
 Every time we stopped we shouted, ``Richard! Where did you go? Richard! Where did you go?''
 
@@ -134,7 +134,7 @@ two DET NMLZ-ten-TP PL.DET get.there-EXIS around+there.INVIS IPFV do-MID
 There were twenty people who came around, doing that.
 
 N7án'was i plísmena, pépla7 t.sqáx7a.
-n-7án'was i plísmen-a, pé~p~la7 t-sqáx7-a. 
+n-7án'was i plísmen-a, pé{p}la7 t-sqáx7-a. 
 LOC-two PL.DET policemen-EXIS one-CRED DET-dog-EXIS 
 There were two policeman, and one dog.
 
@@ -149,7 +149,7 @@ COP EXCL NMLZ-say-TPlp do.what-MID-TC EPIS REM
 Then they said, ``Something must have happened to him.''
 
 Nilh sxlítenem aylh múta7 láti7 tákem i s7ecw7ucwalmicwkálha, lhláta7 tsal'álha, lhelkw7á t'ít'q'eta, ets7á nxwístena.
-nilh s-xlít-en-em aylh múta7 láti7 tákem i s7ecw-7ucwalmicw-kálh-a, lhláta7 tsal'álh-a, lhel-kw7á t'ít'q'et-a, e-ts7á nxwísten-a. 
+nilh s-xlít-en-em aylh múta7 láti7 tákem i s7ecw~7ucwalmicw-kálh-a, lhláta7 tsal'álh-a, lhel-kw7á t'ít'q'et-a, e-ts7á nxwísten-a. 
 COP NMLZ-get.invited-DIR-FPLE then and at+there.VIS all PL.DET TRED-indigenous.person-FPLP-EXIS from+there.VIS Shalalth-EXIS from-this.INVIS white.earth-EXIS to-this.VIS Bridge.River-EXIS 
 We also called all of our people from Shalalth, over to T'ít'q'et, all the way to Bridge River here.
 
@@ -159,7 +159,7 @@ whether-TC EPIS at+there.VIS DET NMLZ-almost-TP one.hundred PL.DET get.there-EXI
 There might have been nearly 100 people who came around there to look for him.
 
 Telhílckalh láti7, zí7zeg' sq'em'ps sq'waxt.s láti7 skekaw'min'twál'lhkalh matq.
-tlh-ílc-kalh láti7, zí7zeg' s-q'em'p-s sq'waxt-s láti7 s-ke-kaw'-min'-twál'-lhkalh matq. 
+tlh-ílc-kalh láti7, zí7zeg' s-q'em'p-s sq'waxt-s láti7 s-ke~kaw'-min'-twál'-lhkalh matq. 
 get.stretched-Aut-FPLS at+there.VIS every NMLZ-ten-TP foot-TP at+there.VIS NMLZ-IRED-far-RLT-RECP-FPLP walk 
 We were stretched out in a line, we were all ten feet apart from each other when we walked.
 
@@ -179,7 +179,7 @@ shout continue shout
 We were shouting, shouting continually.
 
 Ao7z'álh t'u7.
-ao~7~z'-álh t'u7. 
+ao<7>z'-álh t'u7. 
 NEG-INCH-utmost EXCL 
 But there was nothing.
 
@@ -189,7 +189,7 @@ LOC-go.towards-FPLS then and to-that.VIS one.side-EXIS DET behind-EXIS day
 On the final day we headed over to the other side.
 
 Tákem t'u7 swat wa7 t'ak, we7áw lhus t'álelwit.
-tákem t'u7 swat wa7 t'ak, we7áw lhus t'ál-el-wit. 
+tákem t'u7 swat wa7 t'ak, we7áw lhus t'ál~el-wit. 
 all EXCL who IPFV go.along shout COMP+IPFV+TC stop-FRED-TPl 
 Everyone kept shouting when they stopped.
 
@@ -199,7 +199,7 @@ go.along walk-TPl shout
 They kept walking along and shouting.
 
 Ao7z'álh t'u7.
-ao~7~z'-álh t'u7. 
+ao<7>z'-álh t'u7. 
 NEG-INCH-utmost EXCL 
 But there was nothing.
 
@@ -209,12 +209,12 @@ get.there COP FSGP-NMLZ-get.there LOC-get.in look.for-MID
 It arrived, and I got in it to search.
 
 T'a::k káti7 p'en'ap'án'ta ta ncwelelpéka láti7.
-t'a::k káti7 p'en'-a-p'án't-a ta n-cwel-elp-ék-a láti7. 
+t'a::k káti7 p'en'~a-p'án't-a ta n-cwel~elp-ék-a láti7. 
 go.along around+there.VIS TRED-CONJ-return-CONJ DET LOC-revolve-FRED-back-EXIS at+there.VIS 
 Then the helicopter went back and forth around the area.
 
 Akú::7 zam' elh tsicw áku7 ki tsilikútena, nilh na tsal'álha áku7, talh7ál'ksa i sqwéma lhus tsícwecw, t'u múta7 p'an't ta cwelelpéka áku7 ta wa7 tsúnem t'ek'wt'ét'k'w, nilh zam' ta Mud Lakesa.
-akú::7 zam' elh tsicw áku7 ki tsilikúten-a, nilh na tsal'álh-a áku7, talh7-ál'k-s-a i sqwém-a lhus tsícw-ecw t'u múta7 p'an't ta cwel-el-p-ék-a áku7 ta wa7 tsún-em t'ek'w-t'é~t'~k'w, nilh zam' ta Mud Lakes-a. 
+akú::7 zam' elh tsicw áku7 ki tsilikúten-a, nilh na tsal'álh-a áku7, talh7-ál'k-s-a i sqwém-a lhus tsícw~ecw t'u múta7 p'an't ta cwel~el-p-ék-a áku7 ta wa7 tsún-em t'ek'w~t'é{t'}k'w, nilh zam' ta Mud Lakes-a. 
 to+there.INVIS though and.then get.there to+there.INVIS PL.DET Chilcotin-EXIS COP ABS.DET lake-EXIS to+there.INVIS other.side-surface-TP-EXIS PL.DET mountain-EXIS COMP+IPFV+TC get.there-FRED until again return DET revolve-FRED-INCH-back-EXIS to+there.INVIS DET IPFV say+DIR-TSG.PASS TRED-lake-CRED COP after.all DET Mud Lakes-EXIS 
 The helicopter went over to Chilcotin country, and got as far as a lake on the other side of the mountains until it returned back to what they call ``many little lakes'', that's the, ``Mud Lakes.''
 
@@ -224,12 +224,12 @@ get.there around+there.INVIS to-this.VIS DET Bridge.River-water-EXIS
 Then it went over here and searched around the Bridge River.
 
 Nilh k'a ti7 ts'íl.has áti7 skekáw's lhus tsicw káku7 cwíl'em ta ncwelelpéka.
-nílh k'a ti7 ts'íl.h-as áti7 s-ke-káw'-s lhus tsicw káku7 cwíl'-em ta n-cwel-el-p-ék-a. 
+nílh k'a ti7 ts'íl.h-as áti7 s-ke~káw'-s lhus tsicw káku7 cwíl'-em ta n-cwel~el-p-ék-a. 
 COP EPIS that.VIS like-TC to+there.VIS NMLZ-IRED-far.away-TP COMP+IPFV+TC get.there around+there.INVIS look.for-MID DET LOC-revolve-FRED-INCH-back-EXIS 
 That's how far the helicopter went on its search.
 
 Ao7z'álh t'u7.
-ao~7~z'-álh t'u7. 
+ao<7>z'-álh t'u7. 
 NEG-INCH-utmost EXCL 
 But there was nothing.
 
@@ -259,7 +259,7 @@ COP EXCL REM after.all NMLZ-finish-TP PL.DET policeman-EXIS
 So then the policemen quit.
 
 Nilh stsukws t'u7 i s7ecw7ucwalmicwkálha wa7 wa7 láku7.
-nilh s-tsúkw-s t'u7 i s7ecw-7ucwalmicw-kálh-a wa7 wa7 láku7. 
+nilh s-tsúkw-s t'u7 i s7ecw~7ucwalmicw-kálh-a wa7 wa7 láku7. 
 COP NMLZ-finish-TP EXCL PL.DET TRED-indigenous.person-FPLP-EXIS IPFV be at+there.INVIS 
 Then it was just our people that were left there.
 
@@ -269,7 +269,7 @@ around-all EXCL COMP-look.for-MID-FPLC
 We looked all over the place.
 
 Nkwánas hem' zam' láti7 sNapoleon Krueger, ao7z'álh t'u7 kw skaxílhtsa.
-n-kwán-as hem' zam' láti7 s-Napoleon Krueger, ao~7~z'-álh t'u7 kw s-ka-xílh-ts-a. 
+n-kwán-as hem' zam' láti7 s-Napoleon Krueger, ao<7>z'-álh t'u7 kw s-ka-xílh-ts-a. 
 LOC-take+DIR-TE ANTI after.all at+there.VIS NMLZ-Napoleon Krueger NEG-INCH-utmost EXCL DET NMLZ-CIRC-get.done-CAUS-CIRC 
 Even Napoleon Krueger took it on, but he wasn't able to do anything.
 
@@ -279,7 +279,7 @@ from-that.INVIS COMP-arrive-TC DET woman-EXIS Squamish-EXIS
 Then a woman came over from Squamish.
 
 Cwíl'em láti7, ao7z'álh t'u7.
-cwíl'-em láti7, ao~7~z'-álh t'u7. 
+cwíl'-em láti7, ao<7>z'-álh t'u7. 
 look.for-MID at+there.VIS NEG-INCH-utmost EXCL 
 She looked for him, but there was nothing.
 
@@ -314,7 +314,7 @@ COP NMLZ-say+DIR-FPLE let's.go go.home
 Then we said, ``Let's go home.'' 
 
 Tqilh t'u7 aylh múta7 aoz kw skaxát'stum'a i káohlhkalha lhéltsa stséqtseq, splans wa7 t'ep ta máq7a.
-tqílh t'u7 aylh múta7 aoz kw s-ka-xát'-s-tum'-a i káoh-lhkalh-a lhel-tsá s-tséq-tseq, s-plan-s wa7 t'ep ta máq7-a. 
+tqílh t'u7 aylh múta7 aoz kw s-ka-xát'-s-tum'-a i káoh-lhkalh-a lhel-tsá s-tséq~tseq, s-plan-s wa7 t'ep ta máq7-a. 
 almost EXCL then again NEG DET NMLZ-CIRC-climb.hill-CAUS-FPLE-CIRC PL.DET car-FPLP-EXIS from-DET+NMLZ+IPFV STAT-TRED-get.put.down.with.opening.up NMLZ-already-TP IPFV deep DET snow-EXIS 
 We couldn't get our cars up from where they were parked, because the snow was already deep.
 
@@ -329,7 +329,7 @@ almost then and NEG DET NMLZ-CIRC-steer-face+CAUS-FPLE-CIRC at-DET road-EXIS NML
 We almost weren't able to steer the car on the road as we were coming downhill.
 
 T'u7 kwí7ew' láti7, nilh t'u7 stqilhts t'u7 t'elh t'ak et7ú siwewána7 lta c.wálha.
-t'u7 kwí~7~ew' láti7, nílh t'u7 s-tqílh-ts t'u7 t'lh t'ak e-t7ú siw-ew-ána7 l-ta c.wálh-a. 
+t'u7 kwí<7>ew' láti7, nílh t'u7 s-tqílh-ts t'u7 t'lh t'ak e-t7ú siw~ew-ána7 l-ta c.wálh-a. 
 EXCL slippery-INCH at+there.VIS COP EXCL NMLZ-almost-TP EXCL and.then go.along to-that.VIS move.to.side-FRED-completely at-DET road-EXIS 
 The car started slipping there, we almost went off the side of the road.
 
@@ -339,7 +339,7 @@ LOC-side-bottom then from+there.INVIS from-DET lost.man-EXIS after.all to+there.
 We got to the bottom from Lost Man, to the bottom of the hill there, then we waited for the others who were coming down.
 
 T'íq.wit tákem, nilh t'u7 snkelkalstwál'lhkalh láku7.
-t'íq-wit tákem, nílh t'u7 s-n-kel-kal-s-twál'-lhkalh láku7. 
+t'íq-wit tákem, nílh t'u7 s-n-kel~kal-s-twál'-lhkalh láku7. 
 arrive-TPl all COP EXCL NMLZ-LOC-TRED-follow-CAUS-RECP-FPLP at+there.INVIS 
 We all got there, and we followed each other back.
 

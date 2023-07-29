@@ -7,7 +7,14 @@ from os import getcwd, mkdir, path
 OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
-INFIX_BOUNDARY = "~"
+LEFT_INFIX_BOUNDARY = "<"
+RIGHT_INFIX_BOUNDARY = ">"
+LEFT_REDUP_INFIX_BOUNDARY = "{"
+RIGHT_REDUP_INFIX_BOUNDARY = "}"
+REGULAR_BOUNDARY = "-"
+CLITIC_BOUNDARY = "="
+REDUPLICATION_BOUNDARY = "~"
+NON_INFIXING_BOUNDARIES = [REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY, CLITIC_BOUNDARY]
 
 def read_datasets(train_file, dev_file, test_file):
     train = read_file(train_file)
@@ -75,23 +82,38 @@ def sentence_to_words(sentence):
     for word in sentence.split(" "):
         morpheme_list = []
         # Split up morphemes
-        morpheme_list = re.split(r'[-=]', word)
+        morpheme_list = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + r"]", word)
         # Infix marking requires special handling
         for i, morpheme in enumerate(morpheme_list):
-            if INFIX_BOUNDARY in morpheme:
-                #assert morpheme.count("~") % 2 == 0, f" count is {morpheme.count('~')} for {morpheme} in {word} in {sentence}" # Should be on either side of the morpheme
-                breakdown_by_infix = morpheme.partition(INFIX_BOUNDARY) # [firsthalfofmorpheme, ~, infix~secondhalfofmorpheme]
-                first_half = breakdown_by_infix[0]
-                breakdown_by_infix = breakdown_by_infix[2].partition(INFIX_BOUNDARY) # infix, ~, secondhalf
-                infix = breakdown_by_infix[0]
-                second_half = breakdown_by_infix[2]
+            # Check for infixing
+            if LEFT_INFIX_BOUNDARY in morpheme or LEFT_REDUP_INFIX_BOUNDARY in morpheme:
+                assert(not (LEFT_INFIX_BOUNDARY in morpheme and LEFT_REDUP_INFIX_BOUNDARY in morpheme)) # If both occur in one word, we may have to add more complicated handling
+                # Regular and redulicating infixing are handled the same way, but use different boundaries
+                if LEFT_INFIX_BOUNDARY in morpheme:
+                    breakdown_by_infix = morpheme.partition(LEFT_INFIX_BOUNDARY) # [firsthalfofmorpheme, <, infix>secondhalfofmorpheme]
+                    first_half = breakdown_by_infix[0]
+                    breakdown_by_infix = breakdown_by_infix[2].partition(RIGHT_INFIX_BOUNDARY) # infix, >, secondhalf
+                    infix = breakdown_by_infix[0]
+                    second_half = breakdown_by_infix[2]
+                elif LEFT_REDUP_INFIX_BOUNDARY in morpheme:
+                    breakdown_by_infix = morpheme.partition(LEFT_REDUP_INFIX_BOUNDARY) # [firsthalfofmorpheme, {, infix}secondhalfofmorpheme]
+                    first_half = breakdown_by_infix[0]
+                    breakdown_by_infix = breakdown_by_infix[2].partition(RIGHT_REDUP_INFIX_BOUNDARY) # infix, }, secondhalf
+                    infix = breakdown_by_infix[0]
+                    second_half = breakdown_by_infix[2]
 
-                # Now, replace firsthalf~infix~secondhalf with [firsthalf+secondhalf, infix]
+                # Now, replace firsthalf<infix>secondhalf with [firsthalf+secondhalf, infix]
                 # This matches how they're glossed! e.g. somestem-CRED
                 morpheme_list.pop(i)
                 morpheme_list.insert(i, first_half + second_half)
                 morpheme_list.insert(i + 1, infix)
-        word_list.append(morpheme_list)
+
+        # Prevent empty morphemes from being added
+        while "" in morpheme_list:
+            morpheme_list.remove("")
+
+        if morpheme_list: # Only if non-empty (again, to avoid empty morphemes)
+            word_list.append(morpheme_list)
 
     return word_list
 
@@ -114,7 +136,11 @@ def sentence_to_glosses(gloss_line):
     gloss_line = general_preprocess(gloss_line)
 
     # Break apart line morpheme-by-morpheme
-    gloss_line = re.split(r'[-=\s]', gloss_line)
+    gloss_line = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + "\s" + r"]", gloss_line)
+
+    # Remove any empty glosses - this can happen if there's double spaces in the line
+    while "" in gloss_line:
+            gloss_line.remove("")
 
     return gloss_line
     
@@ -492,7 +518,7 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
 #     This can be a segmented or glossed line, because all that we're using are its boundaries.
 #     (You'll want to use the seg line for the pipeline's predictions, because that's what knows how we've split each word into morphemes...)
 def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
-    assert(len(gloss) == len(list_with_boundaries))
+    assert(len(gloss) == len(list_with_boundaries)) # Same number of sentences
 
     updated_gloss = []
     updated_gloss_line = []
@@ -503,10 +529,19 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
         morpheme_index = 0
         # Go word by word
         for i, word in enumerate(gloss_line_with_boundaries):
-            assert(word.count("~") % 2 == 0) # Since infix markers go on either side, they should come in pairs
-            morpheme_count = word.count("=") + word.count("-") + int(word.count("~") / 2) + 1
-            word_glossed = []
+            # Confirm our assumptions about infixes being marked symmetrically
+            assert(word.count(LEFT_INFIX_BOUNDARY) == word.count(RIGHT_INFIX_BOUNDARY))
+            assert(word.count(LEFT_REDUP_INFIX_BOUNDARY) == word.count(RIGHT_REDUP_INFIX_BOUNDARY))
+
+            # Determine how many morphemes are in the word by counting up all the boundaries
+            morpheme_count = 0
+            all_boundaries = NON_INFIXING_BOUNDARIES + [LEFT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY]
+            for boundary in all_boundaries:
+                morpheme_count += word.count(boundary)
+            morpheme_count += 1
+
             # Go morpheme by morpheme
+            word_glossed = []
             for j in range(morpheme_count):
                 assert((morpheme_index) < len(gloss_line))
                 word_glossed.append(gloss_line[morpheme_index])

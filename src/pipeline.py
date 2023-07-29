@@ -1,7 +1,7 @@
 import click
 import re
 from test_seg import read_file, format_fairseq_output
-from gloss import read_datasets, extract_X_and_y, format_X_and_y, train_system, evaluate_system
+from gloss import read_datasets, extract_X_and_y, format_X_and_y, train_system, evaluate_system, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
 
 # Convert from a list of words, to a list of sentences
 def reassemble_sentences(word_list, word_count_by_sentence):
@@ -18,8 +18,12 @@ def reassemble_sentences(word_list, word_count_by_sentence):
 
 def remove_infix_boundary_errors(word_list):
     for i, word in enumerate(word_list):
-        if word.count("~") % 2 != 0:
-            word_list[i] = re.sub("~", "-", word)
+        if word.count(LEFT_INFIX_BOUNDARY) != word.count(RIGHT_INFIX_BOUNDARY):
+            word_list[i] = re.sub(LEFT_INFIX_BOUNDARY, REGULAR_BOUNDARY, word_list[i])
+            word_list[i] = re.sub(RIGHT_INFIX_BOUNDARY, REGULAR_BOUNDARY, word_list[i])
+        if word.count(LEFT_REDUP_INFIX_BOUNDARY) != word.count(RIGHT_REDUP_INFIX_BOUNDARY):
+            word_list[i] = re.sub(LEFT_REDUP_INFIX_BOUNDARY, REDUPLICATION_BOUNDARY, word_list[i])
+            word_list[i] = re.sub(RIGHT_REDUP_INFIX_BOUNDARY, REDUPLICATION_BOUNDARY, word_list[i])
     return word_list
 
 @click.command()

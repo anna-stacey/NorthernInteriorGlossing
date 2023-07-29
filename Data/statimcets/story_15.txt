@@ -24,7 +24,7 @@ IPFV-FSGS say+DIR DET FSGP-aunt-EXIS going.to-FSGS go get.chopped-firewood DET f
 I told my aunt, ``I'm going to go and chop some firewood.''
 
 Náskan wíwel'qem' ku sp'ams.
-nás-kan wí~we~l'q-em' ku sp'áms. 
+nás-kan wí{we}l'q-em' ku sp'áms. 
 go-FSGS split.wood-CRED-MID DET firewood 
 I went to chop wood.
 
@@ -34,7 +34,7 @@ NMLZ-say-TP go.on be.careful-SSGS IPFV say+DIR-FSGO-TE
 She said, ``Okay, you watch yourself!'' she told me.
 
 Nilh ns7úts'qa7, nilh nswa wíwel'qem' láti7.
-nilh n-s-7úts'qa7, nilh nswa wí~we~l'q-em' láti7. 
+nilh n-s-7úts'qa7, nilh nswa wí{we}l'q-em' láti7. 
 COP FSGP-NMLZ-go.outside COP FSGP+NMLZ+IPFV split.wood-CRED-MID at+there.VIS 
 So I went out and I started splitting wood.
 
@@ -99,7 +99,7 @@ COP NMLZ-go.along-FPLP to+there.INVIS
 So we went over there.
 
 Sxel' múta7 áku7 ta c.wéw'lha ta suxwastkálha.
-s-xel' múta7 áku7 ta c.w~éw'~lh-a ta suxwast-kálh-a. 
+s-xel' múta7 áku7 ta c.w{éw'}lh-a ta suxwast-kálh-a. 
 STAT-steep again to+there.INVIS DET road-CRED-EXIS DET go.downhill-FPLP-EXIS 
 The trail was steep where we went down.
 
@@ -124,12 +124,12 @@ LOC-put.into-DIR-FSGO-TPle at+there.VIS
 They put me on it.
 
 Nilh sHarold Oleman pináni7 wa7 stqalk'stáli káti7 i kwíkwsa kékaoh qwezenítas lki sectiona.
-nilh s-Harold Oleman pináni7 wa7 s-tq-alk'-s-táli káti7 i kwíkws-a ké~k~aoh qwez-en-ítas l-ki section-a. 
+nilh s-Harold Oleman pináni7 wa7 s-tq-alk'-s-táli káti7 i kwíkws-a ké{k}aoh qwez-en-ítas l-ki section-a. 
 COP NMLZ-Harold Oleman at.that.time IPFV STAT-touch-string-CAUS-NTS around+there.VIS PL.DET small-EXIS car-CRED get.used-DIR-TPle at-PL.DET section-EXIS 
 It was Harold Oleman at that time who used to drive the speeders that they used on the sections.
 
 T'u7 s... aoz kwas xat'min'ítas kwas qwezenítas láti7 ta kékaoha wa7 qwezenítas lki wa7 qwenúxw.
-t'u7 s aoz kwas xat'-min'-ítas kwas qwez-en-ítas láti7 ta ké~k~aoh-a wa7 qwez-en-ítas l-ki wa7 qwenúxw. 
+t'u7 s aoz kwas xat'-min'-ítas kwas qwez-en-ítas láti7 ta ké{k}aoh-a wa7 qwez-en-ítas l-ki wa7 qwenúxw. 
 EXCL NMLZ NEG DET+NMLZ+IPFV+TP want-RLT-TPle DET+NMLZ+IPFV+TP get.used-DIR-TPle at+there.VIS DET car-CRED-EXIS IPFV get.used-DIR-TPle at-PL.DET IPFV sick 
 But they didn't want to use that little train car that they used to haul the sick people in.
 
@@ -164,7 +164,7 @@ almost EPIS then again one hour at+there.VIS DET NMLZ-wait-FPLP
 We must've waited almost an hour there.
 
 Nilh st'aks t'u7 aylh tsa7p ta nskwáksta.
-nilh s-t'ák-s t'u7 aylh tsa~7~p ta n-skwákst-a. 
+nilh s-t'ák-s t'u7 aylh tsa<7>p ta n-skwákst-a. 
 COP NMLZ-continue-TP EXCL then blood.pours.out-INCH DET FSGP-hand-EXIS 
 My hand kept bleeding.
 
@@ -199,7 +199,7 @@ FSGS say+DIR whether DET NMLZ-CIRC-return-IND-FSGO-SSGE-CIRC DET FSGP-finger-EXI
 I asked him, ``Can you put my finger back?''
 
 Nilh swas ets'7áts'xenas láti7.
-nilh swas ets'-7áts'x-en-as láti7. 
+nilh swas ets'~7áts'x-en-as láti7. 
 COP NMLZ+IPFV+TP TRED-get.seen-DIR-TE at+there.VIS 
 He was looking it over.
 
@@ -239,7 +239,7 @@ get.seen-DIR-TE then again at+there.VIS PL.DET FSGP-teeth-EXIS
 Then he saw my teeth.
 
 Tákem t'u7 esqecwqácw i ngítsmena ltsa ntsútsina.
-tákem t'u7 es-qecw-qácw i n-gítsmen-a l-tsa n-tsútsin-a. 
+tákem t'u7 es-qecw~qácw i n-gítsmen-a l-tsa n-tsútsin-a. 
 all EXCL STAT-TRED-broken PL.DET FSGP-teeth-EXIS at-DET+NMLZ+IPFV+TP FSGP-mouth-EXIS 
 All the teeth in my mouth were broken.
 
@@ -354,7 +354,7 @@ COP that.VIS FSGP-doings at+there.VIS when.PAST get.chopped-hand-FSGC
 That was what happened to me when my finger got chopped.
 
 T'ak kelhkelhenítas i tákema lhélta nmezátsa, tqílhkan t'u7 ícwa7 estám'.
-t'ak kelh-kelh-en-ítas i tákem-a lhel-ta n-mezáts-a, tqílh-kan t'u7 ícwa7 es-stám'. 
+t'ak kelh~kelh-en-ítas i tákem-a lhel-ta n-mezáts-a, tqílh-kan t'u7 ícwa7 es-stám'. 
 go.along TRED-take.off-DIR-TPle PL.DET all-EXIS from-DET FSGP-body-EXIS almost-FSGS EXCL without have-what 
 They kept removing parts of my body, I just about didn't have anything left!
 
@@ -364,6 +364,6 @@ CIRC-afraid-FSGS-CIRC
 I got scared.
 
 Nilh ti7 zam' nszáyten, tákem nsnek'wnúk'wa7.
-nílh ti7 zam' n-száyten, tákem n-snek'w-núk'wa7. 
+nílh ti7 zam' n-száyten, tákem n-snek'w~núk'wa7. 
 COP that.VIS after.all FSGP-doings all FSGP-TRED-relative 
 That's what happened to me, all my relations.

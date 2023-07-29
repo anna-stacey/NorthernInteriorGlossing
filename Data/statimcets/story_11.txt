@@ -44,7 +44,7 @@ oh morning get.there-FSGS COP EXCL FSGP-NMLZ-ask.question
 In the morning I went and asked.
 
 Ao7z'álh kw ns̲zewáten lhun cuz' kánem.
-ao~7~z'-álh kw n-s̲-zewát-en lhun cuz' kán-em. 
+ao<7>z'-álh kw n-s̲-zewát-en lhun cuz' kán-em. 
 NEG-INCH-utmost DET FSGP-NMLZ-be.known-DIR COMP+IPFV+FSGC going.to do.what-MID 
 I didn't know a thing about what I was getting into.
 
@@ -54,7 +54,7 @@ at.that.time after.all when.PAST first-FSGC going.to move-DIR around+there.VIS P
 Around then was the first time I ever used a power saw.
 
 Nilh nswa k'etk'etcwán láti7 i srápa.
-nilh nswa k'et-k'etcw-án láti7 i sráp-a. 
+nilh nswa k'et~k'etcw-án láti7 i sráp-a. 
 COP FSGP+NMLZ+IPFV TRED-get.cut.off-DIR at+there.VIS PL.DET tree-EXIS 
 So then I felled trees.
 
@@ -139,7 +139,7 @@ COP EXCL NMLZ-go.along-CAUS-FSG.PASS to+there.INVIS DET big-EXIS LOC-teach-ACT-I
 So they sent me to the college in Kelowna.
 
 Láku7 aylh lhzewátet.san kwa maysentáli i wa7 xan'.
-láku7 aylh lh-zewát-et-s-an kwa mays-en-táli i wa7 xán'. 
+láku7 aylh lh-zewát~et-s-an kwa mays-en-táli i wa7 xán'. 
 at+there.INVIS then COMP-be.known-FRED-CAUS-FSGE DET+IPFV get.fixed-DIR-NTS PL.DET IPFV get.hurt 
 That's where I learned first aid.
 
@@ -149,7 +149,7 @@ get.finished-CAUS-FSGS at+there.INVIS COP EXCL FSGP-NMLZ-go.home
 I finished there and I came home.
 
 Nlhá7a7lhkan lkw7a lta sawmilla, sát'a.
-n-lhá7-a7-lhkan l-kw7a l-ta sawmill-a, sát'-a. 
+n-lhá7~a7-lhkan l-kw7a l-ta sawmill-a, sát'-a. 
 LOC-close-FRED-FSGS at-this.INVIS at-DET sawmill-EXIS Lillooet-EXIS 
 I got on the sawmill in Lillooet.
 
@@ -159,7 +159,7 @@ ten and seven snow at+there.INVIS DET FSGP-NMLZ-work
 I worked there 17 years.
 
 Nilh tsúntsalem, Lánlhkacw wa7 qelhmemen'7úl.  Lan wa7 áma kw stsúkwsu.
-nilh tsún-tsalem, lán-lhkacw wa7 qelhm~em~en'-7úl. lan wa7 áma kw s-tsúkw-su. 
+nilh tsún-tsalem, lán-lhkacw wa7 qelhm{em}en'-7úl. lan wa7 áma kw s-tsúkw-su. 
 COP say+DIR-FSG.PASS already-SSGS IPFV old.person-CRED-too already IPFV good DET NMLZ-finish-SSGP 
 They told me, ``You're getting too old, you better quit.''
 

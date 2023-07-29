@@ -29,7 +29,7 @@ oh IPFV say many around+here.VIS PL.DET IPFV log-MID go-SSGS log-MID
 ``Oh,'' he said, ``There's a lot of logging going on around. Go try logging.''
 
 Nzewátet.s káti7 kw kánem lhus wa7 i wa7 zíkam.
-n-zewát-et-s káti7 kw kán-em lhus wa7 i wa7 zík-am. 
+n-zewát~et-s káti7 kw kán-em lhus wa7 i wa7 zík-am. 
 LOC-be.known-FRED-CAUS around+here.VIS DET do.what-MID COMP+IPFV+TC IPFV PL.DET IPFV log-MID 
 ``Learn how to do what they do when they're logging.''
 
@@ -74,7 +74,7 @@ two EPIS moon at+there.INVIS DET FSGP-NMLZ-work Camoo-EXIS
 I must've worked two months up there at Sexwemáwt.
 
 Kwánenskan i nsqláw'a, nílh t'u7 nssix áku::7 zam' ta wa7 tsúnitas Beaverdale, áku7 stalhá7sa ta Kelownaha.
-kwán-en-s-kan i n-sqláw'-a, nílh t'u7 n-s-six akú::7 zam' ta wa7 tsún-itas Beaverdale, áku7 s-talhá7-s-a ta Kelowna-ha. 
+kwán~en-s-kan i n-sqláw'-a, nílh t'u7 n-s-six akú::7 zam' ta wa7 tsún-itas Beaverdale, áku7 s-talhá7-s-a ta Kelowna-ha. 
 take-FRED-CAUS-FSGS PL.DET FSGP-money-EXIS COP EXCL FSGP-NMLZ-move to+there.INVIS after.all DET IPFV say+DIR-TPle Beaverdale to+there.INVIS NMLZ-other.side-TP-EXIS DET Kelowna-EXIS 
 I got my money and I moved over to the other side of Kelowna, they call it Beaverdale.
 
@@ -144,7 +144,7 @@ from-this.INVIS EXCL outside-EXIS COMP+IPFV+TC move-INCH DET IPFV go.along-CAUS-
 ``Just out here is where that speeder starts that will take you all to where you'll be working.''
 
 Ao7z'álh t'u7 aylh múta7 kwenswá zewáten ku stam' lta nkaoháw'sa.
-ao~7~z'-álh t'u7 aylh múta7 kwenswá zewát-en ku stám' l-ta n-kaoh-áw's-a. 
+ao<7>z'-álh t'u7 aylh múta7 kwenswá zewát-en ku stám' l-ta n-kaoh-áw's-a. 
 NEG-INCH-utmost EXCL then again DET+FSGP+NMLZ+IPFV be.known-DIR DET what at-DET LOC-car-road-EXIS 
 I didn't know anything at all about the railroad.
 
@@ -194,12 +194,12 @@ get.there-CAUS-FPL.PASS at-this.INVIS get.there-almost to+there.INVIS DET hole-r
 They brought us close to the tunnel (lit. hole in the rock) at Fountain. 
 
 Kwisáw's ta traina, nilh t'u7 aylh lhus meymáysenem láti7, wa7 szácenstum láti7 i k'ts'áw'stensa ta nkaoháw'sa.
-kwis-áw's ta train-a, nílh t'u7 aylh lhus mey-máys-en-em láti7, wa7 s-zácen-s-tum láti7 i k'ts'-áw's-ten-s-a ta n-kaoh-áw's-a. 
+kwis-áw's ta train-a, nílh t'u7 aylh lhus mey~máys-en-em láti7, wa7 s-zácen-s-tum láti7 i k'ts'-áw's-ten-s-a ta n-kaoh-áw's-a. 
 fall-road DET train-EXIS COP EXCL then COMP+IPFV+TC TRED-get.fixed-DIR-FPLE at+here.VIS IPFV STAT-pack-CAUS-FPLE at+here.VIS PL.DET put.across-road-INS-TP-EXIS DET LOC-car-road-EXIS 
 The train had derailed, so then when we were fixing the railroad, we packed railroad ties up there.
 
 Wá7lhkan spaqws káti7 i núkwa t'u7, papla7sútwit láti7 i szacenstwítas ta pál7a nk'ts'áw'sten.
-wá7-lhkan s-paqw-s káti7 i núkw-a t'u7, pa~p~la7-sút-wit láti7 i s-zacen-s-twítas ta pál7-a n-k'ts'-áw's-ten. 
+wá7-lhkan s-paqw-s káti7 i núkw-a t'u7, pa{p}la7-sút-wit láti7 i s-zacen-s-twítas ta pál7-a n-k'ts'-áw's-ten. 
 IPFV-FSGS STAT-watch-CAUS around+here.VIS PL.DET other-EXIS EXCL one-CRED-OOC-TPl at+here.VIS when.PAST STAT-pack-CAUS-TPle DET one-EXIS LOC-put.across-road-INS 
 I watched some of the workers and they packed one tie by themselves.
 
@@ -269,7 +269,7 @@ how.many-TC EPIS then at+here.VIS snow DET FSGP-NMLZ-log-MID
 I worked at logging for a few years.
 
 Zewátet.skan tqilh tákem i wa7 qwez lkwa zíkam.
-zewát-et-s-kan tqilh tákem i wa7 qwéz l-kwa zík-am. 
+zewát~et-s-kan tqilh tákem i wa7 qwéz l-kwa zík-am. 
 be.known-FRED-CAUS-FSGS almost all PL.DET IPFV get.used at-DET+IPFV log-MID 
 I learned just about everything about logging.
 
@@ -289,7 +289,7 @@ COP EXCL FSGP-NMLZ-finish
 So I quit.
 
 T'íqkan aylh múta7 úxwal', nilh t'u7 nst'aks láti7... cátan' láti7 i nzewatet.sána lta ntsunám'caltena.
-t'íq-kan aylh múta7 úxwal', nílh t'u7 n-s-t'ak-s láti7 cát-an' láti7 i n-zewát-et-s-an-a l-ta n-tsunám'-cal-ten-a. 
+t'íq-kan aylh múta7 úxwal', nílh t'u7 n-s-t'ak-s láti7 cát-an' láti7 i n-zewát~et-s-an-a l-ta n-tsunám'-cal-ten-a. 
 arrive-FSGS then again go.home COP EXCL FSGP-NMLZ-go.along-CAUS at+here.VIS lift.up-DIR at+here.VIS PL.DET LOC-be.known-FRED-CAUS-FSGE-EXIS at-DET LOC-teach-ACT-INS-EXIS 
 So I came home again, and I took (some courses) to upgrade what I had learned in school.
 
@@ -304,12 +304,12 @@ ten and seven snow DET FSGP-NMLZ-go.along-CAUS that.VIS DET doings
 I was on that for 17 years.
 
 Tsúntsalem aylh, Lánlhkacw wa7 qelhmemen'7úl, cuz' kawán'tsim láti7.
-tsún-tsalem aylh, lán-lhkacw wa7 qelhm~em~en'-7úl, cuz' kaw-án'-ts-im láti7. 
+tsún-tsalem aylh, lán-lhkacw wa7 qelhm{em}en'-7úl, cuz' kaw-án'-ts-im láti7. 
 say+DIR-FSG.PASS then already-SSGS IPFV old.person-CRED-real going.to far-DIR-SSGO-FPLE at+here.VIS 
 They told me, ``You're getting too old, we're going to lay you off.''
 
 Nilh ti7 nszáyten, tsukwstum'cálem. Qelhmemen'7úllhkan.
-nilh ti7 n-száyten, tsukw-s-tum'cálem. qelhm~em~en'-7úl-lhkan. 
+nilh ti7 n-száyten, tsukw-s-tum'cálem. qelhm{em}en'-7úl-lhkan. 
 COP that.VIS FSGP-doings finish-CAUS-FSG.PASS old.person-CRED-real-FSGS 
 So, that's what happened to me, they laid me off. I was too old.
 

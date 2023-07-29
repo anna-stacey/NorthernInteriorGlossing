@@ -1,15 +1,15 @@
 Icín'as iwát t'u7 wa7 láku7 sqém'qem'a lt.tsitcwlhkálha, plan wa7 tsuntumúlem kw scuz' lhéggep ta tmicwlhkálha láti7.
-i-cín'-as i-wát t'u7 wa7 láku7 sqém'qem'-a l-t-tsitcw-lhkálh-a, plan wa7 tsun-tumúlem kw s-cuz' lhég~g~ep ta tmicw-lhkálh-a láti7. 
+i-cín'-as i-wát t'u7 wa7 láku7 sqém'qem'-a l-t-tsitcw-lhkálh-a, plan wa7 tsun-tumúlem kw s-cuz' lhég{g}ep ta tmicw-lhkálh-a láti7. 
 when.PAST-long.ago-TC when.PAST-IPFV+FPLC EXCL be at+there.INVIS Upper.Bridge.River.Valley-EXIS at-DET-house-FPLP-EXIS already IPFV say+DIR-FPL.PASS DET NMLZ-going.to sold.out-CRED DET land-FPLP-EXIS at+there.VIS 
 This was a long time ago when we were still living up at Marshall Creek, in our house, and we had already been told that our land was going to be sold (to BC Electric).
 
 Nilh t'u7 nswa tsut Cúz'lhkan t'u7 wa7 lts7a t'u lhéggep ta tmícwa, t'u cuz' t'ak'an'ítas láti7 ta tmícwa.
-nílh t'u7 nswa tsut cúz'-lhkan t'u7 wa7 l-ts7a t'u lhég~g~ep ta tmícw-a, t'u cuz' t'ak'-an'-ítas láti7 ta tmícw-a. 
+nílh t'u7 nswa tsut cúz'-lhkan t'u7 wa7 l-ts7a t'u lhég{g}ep ta tmícw-a, t'u cuz' t'ak'-an'-ítas láti7 ta tmícw-a. 
 COP EXCL FSGP+NMLZ+IPFV say going.to-FSGS EXCL be at-this.VIS until sold.out-CRED DET land-EXIS until going.to flood-DIR-TPle at+there.VIS DET land-EXIS 
 I said, ``I am going to stay here until the land is sold, until they flood the land.''
 
 Nilh sus meymaysenítas káti7 ta c.wálha, nilh sus t'iq i wa7 repentáli káti7 i postsa i sts'ák'wa.
-nilh sus mey-mays-en-ítas káti7 ta c.wálh-a, nilh sus t'iq i wa7 rep-en-táli káti7 i post-s-a i sts'ák'w-a. 
+nilh sus mey~mays-en-ítas káti7 ta c.wálh-a, nilh sus t'iq i wa7 rep-en-táli káti7 i post-s-a i sts'ák'w-a. 
 COP NMLZ+IPFV+TP TRED-get.fixed-DIR-TPle around+there.VIS DET road-EXIS COP NMLZ+IPFV+TP arrive PL.DET IPFV get.stood.up-DIR-NTS around+there.VIS PL.DET post-TP-EXIS PL.DET light-EXIS 
 They were working on fixing the road because they were going to put up electricity pylons.
 
@@ -34,12 +34,12 @@ COP FSGP-NMLZ-get.there DET Kamloops-EXIS get-FSGS DET saw-INS-EXIS PL.DET axe-E
 So I went to Kamloops and bought a power saw and some axes.
 
 Nilh sxwexw7útsinlhkalh láku7 ku wa7 lta nlháxtena pináni7.
-nilh s-xwe-xw7útsin-lhkalh láku7 ku wá7 l-ta nlháxten-a pináni7. 
+nilh s-xwe~xw7útsin-lhkalh láku7 ku wá7 l-ta nlháxten-a pináni7. 
 COP NMLZ-IRED-four-FPLP at+there.INVIS DET be at-DET Duffey.Lake.Valley-EXIS at.that.time 
 There were four of us up around Duffey Lake at that time.
 
 S7ents, Melvin Napoleon, Buckley Shields, sP'xus, múta7 s7ents, nxwexw7útsinlhkalh ku alkst láku7.
-s7ents, Melvin Napoleon, Buckley Shields, sP'xus, múta7 s7ents, n-xwe-xw7útsin-lhkalh ku 7álkst láku7. 
+s7ents, Melvin Napoleon, Buckley Shields, sP'xus, múta7 s7ents, n-xwe~xw7útsin-lhkalh ku 7álkst láku7. 
 FSGI Melvin Napoleon Buckley Shields sP'xus and FSGI LOC-IRED-four-FPLS DET work at+there.INVIS 
 That was me, Melvin Napoleon, Buckley Shields, P'xus, and me, four of us worked up there.
 
@@ -59,7 +59,7 @@ two EPIS like year at+there.VIS DET NMLZ-work-FPLP
 We must have worked there almost two years.
 
 Kereném láti7 kéla7 elh t'ak múta7 láti7 ta máq7a, lta áw'ta szánucw nilh múta7 sgwelgwelném láti7 i zikin'éma.
-ker-en-ém láti7 kéla7 elh t'ak múta7 láti7 ta máq7-a, l-ta 7áw't-a szánucw nilh múta7 s-gwel-gwel-n-ém láti7 i zik-in'-ém-a. 
+ker-en-ém láti7 kéla7 elh t'ak múta7 láti7 ta máq7-a, l-ta 7áw't-a szánucw nilh múta7 s-gwel~gwel-n-ém láti7 i zik-in'-ém-a. 
 clear.land-DIR-FPLE at+there.VIS first and.then go.along again at+there.VIS DET snow-EXIS at-DET behind-EXIS year COP again NMLZ-TRED-burn-DIR-FPLE at+there.VIS PL.DET log-DIR-FPLE-EXIS 
 We cleared land before the snow came and the year after we burned the stuff that we had chopped down.
 
@@ -124,7 +124,7 @@ COP EXCL FSGP-NMLZ-almost CIRC-get.buried-CIRC at+there.INVIS
 I almost got buried down there.
 
 T'u7 q'áyleckan, t'u7 nilh t'u7 nsteqeqqwám' lki lapláosa láti7 wa7 qwezenítas, cw7aoys kw szet'q's séna7 t'u7.
-t'u7 q'ay-lec-kán t'u7 nílh t'u7 n-s-teq-eq-qw-ám' l-ki lapláos-a láti7 wa7 qwez-en-ítas, cw7aoy-s kw s-zet'q'-s séna7 t'u7. 
+t'u7 q'ay-lec-kán t'u7 nílh t'u7 n-s-teq~eq-qw-ám' l-ki lapláos-a láti7 wa7 qwez-en-ítas, cw7aoy-s kw s-zet'q'-s séna7 t'u7. 
 but jump-Aut-FSGS EXCL COP EXCL FSGP-NMLZ-touch-FRED-top-MID at-PL.DET board-EXIS at+there.VIS IPFV get.used-DIR-TPle NEG-TP DET NMLZ-collapse-TP though EXCL 
 But I jumped and managed to grab onto the top of a board that they were using for cribbings, and it didn't collapse after all.
 

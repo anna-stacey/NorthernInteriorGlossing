@@ -44,7 +44,7 @@ COP FSGP-NMLZ-CIRC-pass.out-CIRC
 ``Then I passed out.''
 
 Nilh láti7 skwenkwanaxánnem, nilh súxwast.stum áku7 ta campa.
-nilh láti7 s-kwen-kwan-axán-n-em, nilh súxwast-s-tum áku7 ta camp-a. 
+nilh láti7 s-kwen~kwan-axán-n-em, nilh súxwast-s-tum áku7 ta camp-a. 
 COP at+there.VIS NMLZ-TRED-take-arm-DIR-FPLE COP go.downhill-CAUS-FPLE to+there.INVIS DET camp-EXIS 
 We took her by the arms and brought her down to the camp.
 

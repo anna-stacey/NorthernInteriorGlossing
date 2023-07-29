@@ -4,7 +4,7 @@ when.PAST first-FSGC CIRC-become.conscious-CIRC when.PAST-IPFV+FSGC small NEG EX
 When I first became conscious when I was small, I didn't know anything about what the white people call ``time''.
 
 Tsukw t'u7 zewátenan lhus ts7as má7eg', lhus kakwél'a, lhus ts7as kat'épa, lhus gap.
-tsúkw t'u7 zewát-en-an lhus ts7as má~7~eg', lhus ka-kwél'-a, lhus ts7as ka-t'ép-a, lhus gap. 
+tsúkw t'u7 zewát-en-an lhus ts7as má<7>eg', lhus ka-kwél'-a, lhus ts7as ka-t'ép-a, lhus gap. 
 finish EXCL be.known-DIR-FSGE COMP+IPFV+TC come light-INCH COMP+IPFV+TC CIRC-sun.comes.out-CIRC COMP+IPFV+TC come CIRC-dark-CIRC COMP+IPFV+TC evening 
 The only thing I knew was when dawn came, when the sun came out, when darkness came, and when it was night.
 
@@ -74,7 +74,7 @@ COP that.VIS first doings-CAUS-FSGO-TE at+there.VIS DET FSGP-father-EXIS
 That's the first thing my father made me do.
 
 Tsunám'entsas scw7aozs kwenswá ki7kel'úlh lhri7pán.
-tsunám'-en-ts-as s-cw7aoz-s kwenswá ki7kel'-úlh lh-ri~7~p-án. 
+tsunám'-en-ts-as s-cw7aoz-s kwenswá ki7kel'-úlh lh-ri<7>p-án. 
 teach-DIR-FSGO-TE NMLZ-NEG-TP DET+FSGP+NMLZ+IPFV unwilling-habitually COMP-grow-INCH-FSGC 
 He taught me not to be lazy when I was growing up.
 
@@ -104,7 +104,7 @@ COP EXCL NMLZ+IPFV+TP dam-DIR-FPLE at+there.VIS DET many-EXIS water COP NMLZ+IPF
 we'd dam up a lot of the water there, then we'd let it all go.
 
 Wá7lhkalh xílem áti7, wáz'am káti7 i á7en'wasa sqáxa7lhkalh, t'v𝚕̲t'áo𝚕̲ t'u7 láti7 tsa wáz'amwit.
-wá7-lhkalh xíl-em áti7, wáz'-am káti7 i 7á~7~en'was-a sqáxa7-lhkalh, t'v𝚕̲-t'áo𝚕̲ t'u7 láti7 tsa wáz'-am-wit. 
+wá7-lhkalh xíl-em áti7, wáz'-am káti7 i 7á{7}en'was-a sqáxa7-lhkalh, t'v𝚕̲~t'áo𝚕̲ t'u7 láti7 tsa wáz'-am-wit. 
 IPFV-FPLS do-MID to+there.VIS bark-MID around+there.VIS PL.DET two-CRED-EXIS dog-FPLP TRED-bite EXCL at+there.VIS DET+NMLZ+IPFV+TP+EXIS bark-MID-TPl 
 We were doing that once, and then our two dogs started snarling and barking.
 
@@ -114,7 +114,7 @@ COP NMLZ+IPFV+FPLC ask-DIR-RECP IPFV EPIS do.what-MID
 So we asked each other, ``What's going on?''
 
 Wá7lhkalh t'u7 xílem áti7, q'áylec lhláku7 lhecwlhúcwa ta stam'asá k'a.
-wá7-lhkalh t'u7 xíl-em áti7, q'áy-lec lhláku7 lhecw-lhúcw-a ta stam'-as-á k'a. 
+wá7-lhkalh t'u7 xíl-em áti7, q'áy-lec lhláku7 lhecw~lhúcw-a ta stam'-as-á k'a. 
 IPFV-FPLS EXCL do-MID to+there.VIS jump-Aut from+there.INVIS TRED-bush-EXIS DET what-TC-EXIS EPIS 
 As we were doing that, something sprang from the bushes.
 
@@ -124,22 +124,22 @@ NEG EXCL DET NMLZ-be.known-DIR-FPLE at.that.time
 We didn't know what it was at that time.
 
 Cwelcúlellhkalh, tqilh t'u7 ts'ítem áku7 ta s̲tíipv𝚕̲a sPeter.
-cwel-cúlel-lhkalh. tqílh t'u7 ts'ítem áku7 ta s̲tíipv𝚕̲-a s-Peter. 
+cwel~cúlel-lhkalh. tqílh t'u7 ts'ítem áku7 ta s̲tíipv𝚕̲-a s-Peter. 
 TRED-run.away-FPLS almost EXCL go.towards to+there.INVIS DET stable-EXIS NMLZ-Peter 
 We ran away. Peter almost went towards the stable.
 
 Kwánen ka pináni7 lhts'ítemas áku7, t'u7 p'elk'úsem láti7, nilh t'u7 sq'ílhillhkalh tákem ulhcw áku7 tsitcwkálha.
-kwán-en ka pináni7 lh-ts'ítem-as áku7, t'u7 p'elk'-ús-em láti7, nílh t'u7 s-q'ílhil-lhkalh tákem ulhcw áku7 tsitcw-kálh-a. 
+kwán~en ka pináni7 lh-ts'ítem-as áku7, t'u7 p'elk'-ús-em láti7, nílh t'u7 s-q'ílhil-lhkalh tákem ulhcw áku7 tsitcw-kálh-a. 
 take-FRED IRR at.that.time COMP-go.towards-TC to+there.INVIS but get.turned.around-face-MID at+there.VIS COP EXCL NMLZ-run-FPLP all enter to+there.INVIS house-FPLP-EXIS 
 He would've been caught if he had gone that way, but he turned around, and we all ran inside our house.
 
 Nilh t'u7 swá7lhkalh tsáw'ew' láti7, tákem tsúnem ta sqatsza7lhkálha:
-nílh t'u7 s-wá7-lhkalh tsáw'-ew' láti7, tákem tsún-em ta sqatsza7-lhkálh-a: 
+nílh t'u7 s-wá7-lhkalh tsáw'~ew' láti7, tákem tsún-em ta sqatsza7-lhkálh-a: 
 COP EXCL NMLZ-IPFV-FPLP make.a.lot.of.noise-FRED at+there.VIS all say+DIR-FPLE DET father-FPLP-EXIS 
 Then we all started talking at once, everyone telling our father:
 
 Q'áylec lhláku7 lhecwlhúcwa ta stam'asá k'a!
-q'áy-lec lhláku7 lhecw-lhúcw-a ta stam'-as-á k'a! 
+q'áy-lec lhláku7 lhecw~lhúcw-a ta stam'-as-á k'a! 
 jump-Aut from+there.INVIS TRED-bush-EXIS DET what-TC-EXIS EPIS 
 ``Something jumped out of the bushes!''
 
@@ -154,7 +154,7 @@ run from+there.INVIS enter COP EXCL NMLZ+IPFV+TP say cougar that.VIS cougar that
 Then he ran back inside and said, ``It's a cougar! It's a cougar!''
 
 Kwánas láti7 ta swelmín'ksa, nilh t'u7 tu7 múta7 s7úts'qa7s, slans aylh wa7 em7ímnem ts'íla ku kaoh lkw7a sq'utqál'tssa ta tsítcwa.
-kwán-as láti7 ta swelmín'k-s-a, nílh t'u7 tu7 múta7 s-7úts'qa7-s, s-lan-s aylh wa7 em-7ímn-em ts'íla ku káoh l-kw7a sq'ut-q-ál'ts-s-a ta tsítcw-a. 
+kwán-as láti7 ta swelmín'k-s-a, nílh t'u7 tu7 múta7 s-7úts'qa7-s, s-lan-s aylh wa7 em~7ímn-em ts'íla ku káoh l-kw7a sq'ut-q-ál'ts-s-a ta tsítcw-a. 
 take+DIR-TE at+there.VIS DET gun-TP-EXIS COP EXCL REM again NMLZ-go.outside-TP NMLZ-already-TP then IPFV TRED-make.animal.noises-MID like DET car at-this.INVIS one.side-behind-house-TP-EXIS DET house-EXIS 
 Then he grabbed his gun and went outside, because the cougar was already purring like a car at the side of the house.
 
@@ -224,7 +224,7 @@ COP NMLZ+IPFV+TP be at+there.INVIS NMLZ-high-TP to+there.INVIS DET rainbow-EXIS 
 This was above Rainbow Creek, where the white people had a sawmill.
 
 T'iq láku7 i snek'wnuk'wa7lhkálha, nilh sGilbert, Johnny Shields, sP'xus.
-t'iq láku7 i snek'w-nuk'wa7-lhkálh-a, nilh s-Gilbert, Johnny Shields, s-P'xus. 
+t'iq láku7 i snek'w~nuk'wa7-lhkálh-a, nilh s-Gilbert, Johnny Shields, s-P'xus. 
 arrive at+there.INVIS PL.DET TRED-friend-FPLP-EXIS COP NMLZ-Gilbert Johnny Shields NMLZ-P'xus 
 Our friends came over, they were Gilbert, Johnny Shields, P'xus.
 
@@ -259,7 +259,7 @@ IPFV say FSGP-father-EXIS COMP-IPFV-TC IRR alive DET cougar-EXIS do.what-TC IRR 
 My father said, ``If the cougar were still alive, what would it have done? It would already have gone far away.''
 
 Wá7lhkalh múta7 mám'teq káti7 na spála7sa cwíl'em ku stsáqwem.
-wá7-lhkalh múta7 má~m'~teq káti7 na s-pála7-s-a cwíl'-em ku stsáqwem. 
+wá7-lhkalh múta7 má{m'}teq káti7 na s-pála7-s-a cwíl'-em ku stsáqwem. 
 IPFV-FPLS and walk-CRED around+there.VIS ABS.DET NMLZ-one-TP-EXIS look.for-MID DET saskatoon.berry 
 Another time, we were walking around looking for saskatoon berries.
 

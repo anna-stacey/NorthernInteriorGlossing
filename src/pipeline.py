@@ -1,7 +1,10 @@
 import click
 import re
 from test_seg import read_file, format_fairseq_output
-from gloss import read_datasets, extract_X_and_y, format_X_and_y, train_system, evaluate_system, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
+from gloss import evaluate_system, extract_X_and_y, format_X_and_y, make_output_file, read_datasets, train_system, write_output_file, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
+
+GOLD_OUTPUT_FILE_NAME = "pipeline_gold.txt"
+PRED_OUTPUT_FILE_NAME = "pipeline_pred.txt"
 
 # Convert from a list of words, to a list of sentences
 def reassemble_sentences(word_list, word_count_by_sentence):
@@ -68,6 +71,13 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     # Now we can format the input and output for glossing
     test_X, test_y = format_X_and_y(test_X, test_y, False)
     # print(len(test_X), len(test_y))
-    evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+    pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+
+    # Create output files for the sigmorphon evaluation
+    isOpenTrack = False
+    # Assemble output file of predictions
+    make_output_file(test, PRED_OUTPUT_FILE_NAME, pred_y, segmentation_line_number, gloss_line_number, isOpenTrack)
+    # And create a file of the gold version, formatted the same way to permit comparison
+    write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
 
 main()

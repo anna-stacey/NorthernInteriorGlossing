@@ -20,8 +20,8 @@ There is a parameter in the shell scripts for specifying which line number conta
 - To run on the dev set: ``sh src/dev_gloss.sh``
 - To run on the test set: ``sh src/run_gloss.sh``
 
-## Evaluate Glossing Using the Sigmorphon Code
-``python3 src/sigmorphon/eval.py --pred generated_data/gloss_pred.txt --gold generated_data/gloss_gold.txt``
+After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
+- ``python3 src/sigmorphon/eval.py --pred generated_data/gloss_pred.txt --gold generated_data/gloss_gold.txt``
 
 ## Run the Entire Pipeline
 The segmentation model must be trained first, so make sure to run the correct one of ``dev_prepare_seg.sh`` or ``prepare_seg.sh`` first.  The input to the segmentation stage is also prepared in that step, so don't forget to make changes there if you want to change the input to the pipeline.  
@@ -29,3 +29,6 @@ Takes a couple of minutes.
 There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!  
 - To run on the dev set: ``sh src/dev_pipeline.sh``
 - To run on the test set: ``sh src/run_pipeline.sh``
+
+After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
+- ``python3 src/sigmorphon/eval.py --pred generated_data/pipeline_pred.txt --gold generated_data/pipeline_gold.txt``

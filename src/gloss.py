@@ -553,7 +553,7 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
     return updated_gloss
 
 # Take the whole list of sentences (with transcription, seg, etc.) and replace the gloss line with our predicted glosses
-def make_output_file(sentence_list, gloss_pred_list, segmentation_line_number, gloss_line_number):
+def make_output_file(sentence_list, file_name, gloss_pred_list, segmentation_line_number, gloss_line_number, isOpenTrack):
     new_sentence_list = []
     for sentence, pred_gloss_line in zip(sentence_list, gloss_pred_list):
         new_sentence = []
@@ -564,7 +564,7 @@ def make_output_file(sentence_list, gloss_pred_list, segmentation_line_number, g
         new_sentence_list.append(new_sentence)
 
     # Now that it's formatted correctly, we can write the output file
-    write_output_file(new_sentence_list, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number)
+    write_output_file(new_sentence_list, file_name, segmentation_line_number, gloss_line_number, isOpenTrack)
 
 # Given the gloss line as a list of words, each containing lists of morpheme glosses, convert this to just a single string representing the sentence
 def reassemble_gloss_line(line):
@@ -580,7 +580,7 @@ def reassemble_gloss_line(line):
 
 # Takes a list of sentences, where each sentence contains the transcription line, segmentation line, etc.
 # No return value, just creates and write to an output file
-def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_line_number):
+def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_line_number, isOpenTrack):
     ORTHOG_LINE_MARKER = "\\t "
     SEG_LINE_MARKER = "\\m "
     GLOSS_LINE_MARKER = "\\g "
@@ -604,7 +604,8 @@ def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_
             gloss_line = re.sub(r'=', "-", gloss_line)
 
             file.write(ORTHOG_LINE_MARKER + transcription_line)
-            file.write(SEG_LINE_MARKER + seg_line)
+            if isOpenTrack: # In the closed track, segmentation is not used
+                file.write(SEG_LINE_MARKER + seg_line)
             file.write(GLOSS_LINE_MARKER + gloss_line)
             file.write(TRANSLATION_LINE_MARKER + translation_line)
             if i < len(sentence_list) - 1: # Only want one newline at EOF
@@ -648,11 +649,12 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Evaluate system
     # Run our own evaluation
     pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
-    # Run the sigmorphon evaluation
-    # Assemble output file of predicitons, for use with the sigmorphon evaluation system
-    make_output_file(test, pred_y, segmentation_line_number, gloss_line_number)
+    # Prepare for the sigmorphon evaluation
+    # Assemble output file of predictions
+    isOpenTrack = True # Because we had the segmentation to work with in this case!
+    make_output_file(test, PRED_OUTPUT_FILE_NAME, pred_y, segmentation_line_number, gloss_line_number, isOpenTrack)
     # And create a file of the gold version, formatted the same way to permit comparison
-    write_output_file(dev, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number)
+    write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
 
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':

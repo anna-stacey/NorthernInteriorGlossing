@@ -61,10 +61,13 @@ def morpheme_to_features(word, i):
 # Preprocessing steps that are done for BOTH the seg and gloss lines (i.e. X and y)
 # Returns the updated sentence
 def general_preprocess(sentence):
-    #  To deal with weird underline char, as in G̲aldo'o, I am just removing it for now
+    #  To deal with underlined char, as in G̲aldo'o, I am just removing it for now
     sentence = re.sub(r'\u0332', "", sentence)
 
     sentence = sentence.replace("\n", "")
+
+    # Sometimes, double dashes (pause) were included
+    sentence = sentence.replace("--", "")
 
     # Remove bracketed affixes (at least for now)
     sentence = re.sub(r'\[[^\]]*\]', "", sentence)

@@ -28,7 +28,7 @@ def read_file(file_path):
 
     return(sentences)
 
-def create_file_of_sentences(list, file_name):
+def create_file_of_sentences(examples, file_name):
     output_folder = "/generated_data/"
 
     # Create the generated_data subdirectory, if it doesn't already exist
@@ -36,13 +36,16 @@ def create_file_of_sentences(list, file_name):
     if not path.exists(dir_path):
         mkdir(dir_path)
 
-    with open(dir_path + file_name, "w") as file:
-        for i, example in enumerate(list):
+    write_sentences(examples, dir_path + file_name)
+
+def write_sentences(examples, file_path):
+    with open(file_path, "w") as file:
+        for i, example in enumerate(examples):
             if len(example) > 0:
                 for j, line in enumerate(example):
                     file.write(line)
                     # Add blank line after each example (but not if it's the end of the dataset, bc that results in a double newline at EOF)
-                    if (j >= len(example) - 1) and (i < len(list) - 1):
+                    if (j >= len(example) - 1) and (i < len(examples) - 1):
                         file.write("\n")
         file.close()
     

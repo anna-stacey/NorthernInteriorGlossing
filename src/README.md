@@ -1,8 +1,6 @@
 # Automatic Segmentation and Glossing
 
-## Create the Train, Dev, and Test Datasets
-- For St̓át̓imcets: ``python3 src/split_statimcets_data.py``
-- For Gitksan (data *not* in repo):``python3 src/split_gitksan_data.py``
+Put the data files (`train.txt`,  `dev.txt`, `test.txt`) into the `data` directory.  Your files should replace the small sample files that are included there.
 
 ## Preprocess and Train the Segmentation Model
 - Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling train_seg.sh).

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-TRAIN_SET=generated_data/train.txt
-DEV_SET=generated_data/dev.txt
-TEST_SET=generated_data/test.txt
-PIPELINE_SET=generated_data/dev.txt
+TRAIN_SET=data/train.txt
+DEV_SET=data/dev.txt
+TEST_SET=data/test.txt
+PIPELINE_SET=data/dev.txt
 
 # Prepare the data for fairseq
 python3 src/preprocess_seg.py --train_file=$TRAIN_SET --dev_file=$DEV_SET --test_file=$TEST_SET --pipeline_file=$PIPELINE_SET

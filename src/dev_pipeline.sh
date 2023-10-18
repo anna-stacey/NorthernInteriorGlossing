@@ -2,9 +2,9 @@
 SEG_INPUT=generated_data/pipeline.input
 SEG_OUTPUT=generated_data/pipeline_fairseq.output
 DATA_SUMMARY=generated_data/pipeline_data_summary.txt
-GLOSS_TRAIN_SET=generated_data/train.txt
-GLOSS_DEV_SET=generated_data/dev.txt
-GLOSS_TEST_SET=generated_data/dev.txt
+GLOSS_TRAIN_SET=data/train.txt
+GLOSS_DEV_SET=data/dev.txt
+GLOSS_TEST_SET=data/dev.txt
 # GOLD_OUTPUT=test_gold.output
 SEG_LINE_NUMBER=2
 GLOSS_LINE_NUMBER=3 # 3 for St̓át̓imcets, 4 for Gitksan

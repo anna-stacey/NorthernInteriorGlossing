@@ -29,7 +29,7 @@ def read_file(file_path):
     return(sentences)
 
 def create_file_of_sentences(examples, file_name):
-    output_folder = "/generated_data/"
+    output_folder = "/data/"
 
     # Create the generated_data subdirectory, if it doesn't already exist
     dir_path = getcwd() + output_folder

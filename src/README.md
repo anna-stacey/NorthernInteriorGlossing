@@ -1,6 +1,6 @@
 # Automatic Segmentation and Glossing
 
-Put the data files (`train.txt`,  `dev.txt`, `test.txt`) into the `data` directory.  Your files should replace the small sample files that are included there.
+Put your data files (`train.txt`,  `dev.txt`, `test.txt`) into the `data` directory.  Your files should replace the small sample files that are included there.
 
 ## Preprocess and Train the Segmentation Model
 - Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling train_seg.sh).

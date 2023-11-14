@@ -1,7 +1,7 @@
 import click
 import re
 import sklearn_crfsuite
-from split_dataset import read_file
+from glossed_data_utilities import read_file
 from os import getcwd, mkdir, path
 
 OUTPUT_FOLDER = "/generated_data/"

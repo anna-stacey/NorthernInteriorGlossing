@@ -1,5 +1,6 @@
 # *** Common functions for creating train/dev/tests datasets ***
 from os import getcwd, mkdir, path
+from re import sub
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -27,6 +28,21 @@ def read_file(file_path):
             current_sentence.append(line)
 
     return(sentences)
+
+# Takes a list of sentences, each of which is a list of transcription line, seg line, etc.
+# Returns the list in the same format, just tidied!
+def tidy_dataset(dataset):
+    updated_dataset = []
+    for sentence in dataset:
+        updated_sentence = []
+        for line in sentence:
+            # Find 2+ spaces, and replace them with only one space
+            line = sub(r"[ ]+[ ]+", " ", line)
+            updated_sentence.append(line)
+        updated_dataset.append(updated_sentence)
+        updated_sentence = []
+
+    return updated_dataset
 
 def create_file_of_sentences(examples, file_name):
     output_folder = "/data/"

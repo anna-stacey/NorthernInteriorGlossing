@@ -1,7 +1,7 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import read_file
+from glossed_data_utilities import read_file, write_sentences
 from os import getcwd, mkdir, path
 
 OUTPUT_FOLDER = "/generated_data/"
@@ -577,7 +577,6 @@ def reassemble_gloss_line(line):
         sentence_as_list_of_words.append(new_word)
 
     sentence_as_string = " ".join(sentence_as_list_of_words)
-    sentence_as_string += "\n"
 
     return sentence_as_string
 
@@ -589,31 +588,34 @@ def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_
     GLOSS_LINE_MARKER = "\\g "
     TRANSLATION_LINE_MARKER = "\\l "
 
+    # Format the sentences as required for sigmorphon evaluation
+    sentence_list_to_print = []
+    for sentence in sentence_list:
+        # Grab each line + attach the corresponding line marker
+        transcription_line = ORTHOG_LINE_MARKER + sentence[0] # Assuming the transcription line is the first line
+        seg_line = SEG_LINE_MARKER + sentence[segmentation_line_number]
+        gloss_line = GLOSS_LINE_MARKER + sentence[gloss_line_number]
+        translation_line = TRANSLATION_LINE_MARKER + sentence[gloss_line_number + 1]  # Assuming the translation line follows the gloss line
+
+        # Make all morpheme boundaries just a hyphen, so that the sigmorphon eval process recognizes them
+        seg_line = re.sub(r'=', "-", seg_line)
+        gloss_line = re.sub(r'=', "-", gloss_line)
+
+        # Put the sentence back together with the new formatting
+        if isOpenTrack: # In the closed track, segmentation is not used
+            new_sentence = [transcription_line, seg_line, gloss_line, translation_line]
+        else:
+            new_sentence = [transcription_line, gloss_line, translation_line]
+
+        sentence_list_to_print.append(new_sentence)
+
     # Create the output subdirectory, if it doesn't already exist
     dir_path = getcwd() + OUTPUT_FOLDER
     if not path.exists(dir_path):
         mkdir(dir_path)
 
-    with open(dir_path + "/" + file_name, "w") as file:
-        for i, sentence in enumerate(sentence_list):
-
-            transcription_line = sentence[0] # Assuming the transcription line is the first line
-            seg_line = sentence[segmentation_line_number]
-            gloss_line = sentence[gloss_line_number]
-            translation_line = sentence[gloss_line_number + 1]  # Assuming the translation line follows the gloss line
-
-            # Make all morpheme boundaries just a hyphen, so that the sigmorphon eval process recognizes them
-            seg_line = re.sub(r'=', "-", seg_line)
-            gloss_line = re.sub(r'=', "-", gloss_line)
-
-            file.write(ORTHOG_LINE_MARKER + transcription_line)
-            if isOpenTrack: # In the closed track, segmentation is not used
-                file.write(SEG_LINE_MARKER + seg_line)
-            file.write(GLOSS_LINE_MARKER + gloss_line)
-            file.write(TRANSLATION_LINE_MARKER + translation_line)
-            if i < len(sentence_list) - 1: # Only want one newline at EOF
-                file.write("\n") # Blank line in between each sentence
-        file.close()
+    # And create the output file!
+    write_sentences(sentence_list_to_print, dir_path + "/" + file_name)
 
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")

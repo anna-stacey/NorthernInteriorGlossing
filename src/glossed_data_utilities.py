@@ -6,11 +6,23 @@ from re import sub
 def read_file(file_path):
     with open(file_path) as f:
         lines = f.readlines()
-        # To handle inconsistencies in file formatting - add a new line if the file doesn't already end in one 
+
+        # In order to ensure the final example gets handled like the rest, we need to make sure that
+        # the last line of content also ends in a "\n" (like every other line), and that there is a
+        # "\n" line after the last bit of content
+        # However, we also need to be sure that there are not additional newlines at EOF,
+        # or we'll get blank "examples"
+
+        # Ensure the last line of content ends with a "\n" for consistency
         if not lines[-1].endswith("\n"):
-            # The new line ensures the final example can processed in the same way as all the previous examples
             lines[-1] = lines[-1] + "\n"
-        # Add this regardless, bc readlines() doesn't seem to read in the newline at EOF
+
+        # Remove any number of blank lines at EOF
+        while lines[-1] == "\n":
+            lines = lines[:len(lines) - 1]
+
+        # Then add in one blank line, so we know the outcome is always exactly one blank line
+        # (it actually seems that readlines() does not read in the final blank line)
         lines.append("\n")
 
     sentences = []
@@ -18,13 +30,12 @@ def read_file(file_path):
     for i, line in enumerate(lines):
          # After each example is a blank line marking the end of the current sentence
          # Whenever we get there, it's time to add the present example to our list
-        if line =="\n":
+        if line == "\n":
             sentences.append(current_sentence)
             current_sentence = []
         else:
             # Check for trailing whitespace, which should be removed
             line = line.strip()
-            line += "\n"
             current_sentence.append(line)
 
     return(sentences)
@@ -54,12 +65,13 @@ def create_file_of_sentences(examples, file_name):
 
     write_sentences(examples, dir_path + file_name)
 
+# Assumes that lines do NOT end in "\n", and will add it as it prints
 def write_sentences(examples, file_path):
     with open(file_path, "w") as file:
         for i, example in enumerate(examples):
             if len(example) > 0:
                 for j, line in enumerate(example):
-                    file.write(line)
+                    file.write(line + "\n")
                     # Add blank line after each example (but not if it's the end of the dataset, bc that results in a double newline at EOF)
                     if (j >= len(example) - 1) and (i < len(examples) - 1):
                         file.write("\n")

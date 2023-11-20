@@ -16,6 +16,7 @@ newline_fails = 0
 
 # Tests relevant for both segmentation or glossing
 seg_multi_boundary_fails = 0
+seg_disconnected_morpheme_fails = 0
 
 # Glossing-specific tests
 gloss_multi_boundary_fails = 0
@@ -23,6 +24,7 @@ seg_gloss_num_words_fails = 0
 seg_gloss_num_morphemes_fails = 0
 seg_gloss_word_num_morphemes_fails = 0 # There can be multiple of these per line
 gloss_boundary_marker_fails = 0
+seg_gloss_boundary_fails = 0
 
 # Takes in a dataset, and sends it off to various screening functions
 # No return value -- just updates all our global fail counts
@@ -54,11 +56,18 @@ def general_screen(line):
 # Tests that are relevant whether your doing segmentation OR glossing
 def seg_and_gloss_screen(seg_line):
     global seg_multi_boundary_fails
+    global seg_disconnected_morpheme_fails
 
     double_boundary_regex = "[" + ALL_BOUNDARIES_REGEX + "][" + ALL_BOUNDARIES_REGEX + "]"
     if re.search(double_boundary_regex, seg_line):
         print(f"\n- Error: the following segmentation line contains consecutive boundaries (i.e., at least two of f{ALL_BOUNDARIES} in immediate succession).\n", seg_line)
         seg_multi_boundary_fails += 1
+
+    disconnected_boundary_regex = "[" + ALL_BOUNDARIES_REGEX + "]" + "\s"
+    if re.search(disconnected_boundary_regex, seg_line):
+        print(f"\n- Error: the following segmentation line contains a morpheme boundary not connected to two morphemes!")
+        print(seg_line)
+        seg_disconnected_morpheme_fails += 1
 
 # Tests that are relevant only for glossing
 def gloss_screen(seg_line, gloss_line):
@@ -67,6 +76,7 @@ def gloss_screen(seg_line, gloss_line):
     global seg_gloss_num_words_fails
     global seg_gloss_num_morphemes_fails
     global seg_gloss_word_num_morphemes_fails
+    global seg_gloss_boundary_fails
 
     # Only looking for a double boundary of the allowed boundary type (we're already checking for ANY instances of the non-permitted boundaries)
     double_boundary_regex = "[\\" + REGULAR_BOUNDARY + "][\\" + REGULAR_BOUNDARY + "]"
@@ -78,9 +88,9 @@ def gloss_screen(seg_line, gloss_line):
     seg_words = seg_line.split(" ")
     gloss_words = gloss_line.split(" ")
 
-    if any(boundary in gloss_line for boundary in NON_GLOSS_LINE_BOUNDARIES):
-        print(f"\n- Error: the following line contains a morpheme boundary in the gloss line other than the regular boundary boundary.\n", gloss_line)
-        gloss_boundary_marker_fails += 1
+    # if any(boundary in gloss_line for boundary in NON_GLOSS_LINE_BOUNDARIES):
+    #     print(f"\n- Error: the following line contains a morpheme boundary in the gloss line other than the regular boundary boundary.\n", gloss_line)
+    #     gloss_boundary_marker_fails += 1
 
     if len(seg_words) != len(gloss_words):
         print(f"\n- Error: the following line contains a mismatch between the number of *words* in the segmented and gloss lines.  The segmented line has {len(seg_words)} words, whereas the gloss line has {len(gloss_words)} words.")
@@ -113,10 +123,22 @@ def gloss_screen(seg_line, gloss_line):
             print("Gloss line:", gloss_line)
             seg_gloss_word_num_morphemes_fails += 1
 
+    # # Confirm that boundaries match between seg and gloss
+    # # (e.g. if a morpheme has a reduplication boundary in the segmentation line, then it does in the gloss line too)
+    # for seg_word, gloss_word in zip(seg_words, gloss_words):
+    #     seg_boundaries = re.findall("[" + ALL_BOUNDARIES_REGEX + "]", seg_word)
+    #     gloss_boundaries = re.findall("[" + ALL_BOUNDARIES_REGEX + "]", gloss_word)
+    #     for seg_boundary, gloss_boundary in zip(seg_boundaries, gloss_boundaries):
+    #         if seg_boundary != gloss_boundary:
+    #             print(f"\n- Error: the following line contains a different boundary between the segmentation and gloss lines.  In the word {seg_word} '{gloss_word}', the segmentation line has a {seg_boundary} where the gloss line has a {gloss_boundary}.")
+    #             print("Segmentation line:", seg_line)
+    #             print("Gloss line:", gloss_line)
+    #             seg_gloss_boundary_fails += 1
+
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, gloss_multi_boundary_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, gloss_multi_boundary_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -128,11 +150,13 @@ def print_screen_summary():
         print(f"    - {multi_space_fails} lines contained multiple spaces in a row.")
         print(f"    - {newline_fails} lines contained a newline character.")
         print(f"    - {seg_multi_boundary_fails} segmentation lines contained multiple boundaries in a row.")
+        print(f"    - {seg_disconnected_morpheme_fails} segmentation lines contained a morpheme boundary that wasn't connected to a morpheme (on one side).")
         print(f"    - {gloss_multi_boundary_fails} gloss lines contained multiple boundaries in a row.")
         print(f"    - {gloss_boundary_marker_fails} lines contained a morpheme boundary in the gloss line other than the regular boundary marker (i.e., one of {NON_GLOSS_LINE_BOUNDARIES}).")
         print(f"    - {seg_gloss_num_words_fails} lines contained a different number of *words* between the segmented and gloss lines.")
         print(f"    - {seg_gloss_num_morphemes_fails} lines contained a different number of *morphemes* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_word_num_morphemes_fails} instances of a different number of *morphemes* in a given *word* between the segmented and gloss lines.")
+        print(f"    - There were {seg_gloss_boundary_fails} instances of a different kind of morpheme boundary between the segmented and gloss lines.")
 
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
@@ -149,13 +173,13 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
     # Screen each dataset!
-    print("\n--- Errors found in train dataset: ---\n")
+    print("\n--- Errors found in train dataset: ---")
     screen_data(train, segmentation_line_number, gloss_line_number)
 
-    print("\n--- Errors found in dev dataset: ---\n")
+    print("\n--- Errors found in dev dataset: ---")
     screen_data(dev, segmentation_line_number, gloss_line_number)
     
-    print("\n--- Errors found in test dataset: ---\n")
+    print("\n--- Errors found in test dataset: ---")
     screen_data(test, segmentation_line_number, gloss_line_number)
 
     # Print the results

@@ -61,14 +61,6 @@ def morpheme_to_features(word, i):
 # Preprocessing steps that are done for BOTH the seg and gloss lines (i.e. X and y)
 # Returns the updated sentence
 def general_preprocess(sentence):
-    #  To deal with underlined char, as in G̲aldo'o, I am just removing it for now
-    sentence = re.sub(r'\u0332', "", sentence)
-
-    sentence = sentence.replace("\n", "")
-
-    # Sometimes, double dashes (pause) were included
-    sentence = sentence.replace("--", "")
-
     # Remove bracketed affixes (at least for now)
     sentence = re.sub(r'\[[^\]]*\]', "", sentence)
 
@@ -137,13 +129,8 @@ def sentence_to_features(sentence):
 # Possible complications with capital letters, apostrophes
 def sentence_to_glosses(gloss_line):
     gloss_line = general_preprocess(gloss_line)
-
     # Break apart line morpheme-by-morpheme
     gloss_line = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + "\s" + r"]", gloss_line)
-
-    # Remove any empty glosses - this can happen if there's double spaces in the line
-    while "" in gloss_line:
-            gloss_line.remove("")
 
     return gloss_line
     
@@ -525,13 +512,13 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
 
     updated_gloss = []
     updated_gloss_line = []
-    for gloss_line, gloss_line_with_boundaries in zip(gloss, list_with_boundaries):
-        gloss_line_with_boundaries = general_preprocess(gloss_line_with_boundaries)
+    for gloss_line, line_with_boundaries in zip(gloss, list_with_boundaries):
+        line_with_boundaries = general_preprocess(line_with_boundaries)
         # So now both lines are lists of items
-        gloss_line_with_boundaries = gloss_line_with_boundaries.split()
+        line_with_boundaries = line_with_boundaries.split()
         morpheme_index = 0
         # Go word by word
-        for i, word in enumerate(gloss_line_with_boundaries):
+        for word in line_with_boundaries:
             # Confirm our assumptions about infixes being marked symmetrically
             assert(word.count(LEFT_INFIX_BOUNDARY) == word.count(RIGHT_INFIX_BOUNDARY))
             assert(word.count(LEFT_REDUP_INFIX_BOUNDARY) == word.count(RIGHT_REDUP_INFIX_BOUNDARY))

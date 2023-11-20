@@ -133,29 +133,9 @@ def sentence_to_glosses(gloss_line):
     gloss_line = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + "\s" + r"]", gloss_line)
 
     return gloss_line
-    
-
-# A check to see if any lines have discrepancies in the number of morphemes (segmented line vs gloss line)
-# At least for now, just remove these lines :(
-# Maybe in future, could replace problematic words with a NULL word, to not lose the data
-# Returns X and y with misaligned sentences removed
-def misalignment_check(X, y):
-    X_without_errors = []
-    y_without_errors = []
-    error_count = 0
-    for segmented_line, gloss_line in zip(X, y):
-        if len(segmented_line) != len(gloss_line):
-            error_count += 1
-            # print("ERROR: length mismatch in the following line:\n", gloss_line)
-            # print(f"Segmented line has {len(segmented_line)} elements, whereas gloss line has {len(gloss_line)} elements.\n")
-        else: # No errors!
-            X_without_errors.append(segmented_line)
-            y_without_errors.append(gloss_line)
-    print(f"Removed {error_count} mis-aligned sentences, with {len(X) - error_count} sentences remaining.\n")
-    return X_without_errors, y_without_errors
 
 # Gets each X and y into the right format for the model, and returns them
-def format_X_and_y(X, y, isTrain):
+def format_X_and_y(X, y):
     # What form of input do we need?
     # We need a morpheme-by-morpheme breakdown, with each morpheme in the form of a dictionary with features
     # Meanwhile, the gold-standard label for each morpheme is the corresponding entry in the gloss line
@@ -165,11 +145,6 @@ def format_X_and_y(X, y, isTrain):
 
     # Get a list of the training labels - i.e. the gloss for each morpheme
     y = [sentence_to_glosses(gloss_line) for gloss_line in y]
-
-    # Let's remove any lines with errors :(
-    if(isTrain):
-        print("For training data:")
-        X, y = misalignment_check(X, y)
 
     return X, y
 
@@ -193,25 +168,21 @@ def get_detailed_accuracy(y, predicted_y):
     assert(len(y) == len(predicted_y))
     total = 0
     wrong = 0
-    skip_count = 0 
 
     for gold_label_line, predicted_label_line in zip(y, predicted_y):
         # There must be the same number of words in the gold and the predicted lines
         # (The number of words is not impacted by the segmentation task)
-        if(len(gold_label_line) == len(predicted_label_line)):
-            wrong_per_sentence = 0
-            for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
-                # The number of morphemes can vary in the gold word vs the predicted word
-                # So this zip may end up skipping some morphemes if one word contains more
-                for gold_label, predicted_label in zip(gold_word, predicted_word):
-                    total += 1
-                    if gold_label != predicted_label:
-                        wrong += 1
-                        wrong_per_sentence +=1
-        else:
-            skip_count += 1
+        assert(len(gold_label_line) == len(predicted_label_line))
+        wrong_per_sentence = 0
+        for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
+            # The number of morphemes can vary in the gold word vs the predicted word
+            # So this zip may end up skipping some morphemes if one word contains more
+            for gold_label, predicted_label in zip(gold_word, predicted_word):
+                total += 1
+                if gold_label != predicted_label:
+                    wrong += 1
+                    wrong_per_sentence +=1
 
-    print(f"Accuracy calculation skipped {skip_count} lines due to word count mismatch.")
     assert(total > 0)
     accuracy = (total - wrong) / total
     return accuracy
@@ -330,48 +301,6 @@ def test_crf(train_X, train_y, dev_X, dev_y):
         print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm with a c2 of {best_c2}, and with a minimum feature frequency of {best_min_freq + 1}.")
     else:
         print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm and with a minimum feature frequency of {best_min_freq + 1}.")
-
-# Handles getting X in the right format
-def print_mislabelled_helper(X, X_with_boundaries, y, pred_y):
-    X_morpheme_list = []
-    morphemes_by_sentence = []
-    for sentence in X:
-        for morpheme_features in sentence:
-            morphemes_by_sentence.append(morpheme_features["morpheme"])
-        X_morpheme_list.append(morphemes_by_sentence)
-        morphemes_by_sentence = []
-    X_morpheme_list = add_word_boundaries_to_gloss(X_morpheme_list, X_with_boundaries)
-    print_mislabelled(X_morpheme_list, y, pred_y)
-
-
-# No return value, just prints mislabelled morphemes
-# Just a reminder - 
-# X = a list of sentences, which are lists of words, which are lists of morphemes (just transcribed)
-# y = a list of sentences, which are lists of words, which are lists of glosses (for each morpheme)
-def print_mislabelled(X, y, pred_y):
-    assert(len(X) == len(y))
-    skip_count = 0
-
-    # Sentence by sentence
-    for input_line, gold_label_line, predicted_label_line in zip(X, y, pred_y):
-        # Number of words should be consistent
-        # If there's issues, this funciton is just meant to be informative, so we don't need to quit.
-        # Let's just skip that line and flag it.
-        if ((len(input_line) == len(gold_label_line)) and (len(input_line) == len(predicted_label_line))):
-            # Word by word
-            for input_word, gold_label_word, predicted_label_word in zip(input_line, gold_label_line, predicted_label_line):
-                # Number of morphemes per word can vary (bc of segmentation) - but we still need to prevent an out of range error
-                if len(gold_label_word) != len(predicted_label_word):
-                    print("Hmm.. can't compare morphemes because the number of morphemes in this word isn't consistent between the gold and predicted lines!\n")
-                else:
-                    assert(len(input_word) == len(gold_label_word))
-                    for input_morpheme, gold_label_morpheme, predicted_label_morpheme in zip(input_word, gold_label_word, predicted_label_word):
-                            if gold_label_morpheme != predicted_label_morpheme:
-                                print(f"For {input_morpheme}: predicted {predicted_label_morpheme}, actually {gold_label_morpheme}\n")
-        else:
-            skip_count += 1
-        
-    print(f"Mislabel check skipped {skip_count} line(s) due to misalignment.")
 
 # Create dictionary, and replace their glosses with "STEM" for input to the CRF
 # Returns the stem-less version and the stem dictionary created
@@ -628,9 +557,9 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     test_y_with_boundaries = test_y
 
     # Format X as features, and y as labels
-    train_X, train_y = format_X_and_y(train_X, train_y, True)
-    dev_X, dev_y  = format_X_and_y(dev_X, dev_y, False)
-    test_X, test_y  = format_X_and_y(test_X, test_y, False)
+    train_X, train_y = format_X_and_y(train_X, train_y)
+    dev_X, dev_y  = format_X_and_y(dev_X, dev_y)
+    test_X, test_y  = format_X_and_y(test_X, test_y)
 
     # Train the whole system
     train_y_no_stems, stem_dict, crf = train_system(train_X, train_y)
@@ -648,6 +577,5 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # And create a file of the gold version, formatted the same way to permit comparison
     write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
 
-# Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':
-  main()
+    main()

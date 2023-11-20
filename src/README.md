@@ -2,6 +2,10 @@
 
 Put your data files (`train.txt`,  `dev.txt`, `test.txt`) into the `data` directory.  Your files should replace the small sample files that are included there.
 
+## Prescreen Your Data Files
+To ensure compliance with the formatting anticipated by the segmenting and glossing systems.  Once you get 0 errors flagged here, you're ready to proceed.  
+- `sh src/prescreen.sh`
+
 ## Preprocess and Train the Segmentation Model
 - Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling train_seg.sh).
 - To run on the dev set: ``sh src/dev_prepare_seg.sh``

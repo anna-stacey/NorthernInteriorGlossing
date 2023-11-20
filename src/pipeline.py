@@ -65,11 +65,11 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
 
     # Create the model
     train_X, train_y = extract_X_and_y(train, segmentation_line_number, gloss_line_number)
-    train_X, train_y = format_X_and_y(train_X, train_y, True)
+    train_X, train_y = format_X_and_y(train_X, train_y)
     throwaway, stem_dict, crf = train_system(train_X, train_y)
 
     # Now we can format the input and output for glossing
-    test_X, test_y = format_X_and_y(test_X, test_y, False)
+    test_X, test_y = format_X_and_y(test_X, test_y)
     # print(len(test_X), len(test_y))
     pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
 

@@ -29,11 +29,22 @@ seg_gloss_boundary_fails = 0
 # Takes in a dataset, and sends it off to various screening functions
 # No return value -- just updates all our global fail counts
 def screen_data(dataset, seg_line_number, gloss_line_number):
+    lines_per_sentence = len(dataset[0])
+
     for sentence in dataset:
+        general_sentence_screen(sentence, lines_per_sentence)
         for line in sentence:
             general_screen(line)
         seg_and_gloss_screen(sentence[seg_line_number])
         gloss_screen(sentence[seg_line_number], sentence[gloss_line_number])
+
+def general_sentence_screen(sentence, lines_per_sentence):
+    if not (len(sentence) == lines_per_sentence):
+        print("\nFatal error: The number of lines per sentence is inconsistent!")
+        print(f"The first sentence had {lines_per_sentence} lines, which was set as the standard.  But the following sentence has {len(sentence)} lines:")
+        print(sentence)
+        print("Prescreening cannot proceed correctly until this is fixed, so the rest of the checks have been cancelled.")
+        exit()
 
 # To be applied to every line!
 def general_screen(line):

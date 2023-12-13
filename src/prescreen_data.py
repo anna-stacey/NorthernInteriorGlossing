@@ -5,8 +5,10 @@ from gloss import read_datasets, sentence_to_glosses, sentence_to_words, LEFT_IN
 import re
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
-ALL_BOUNDARIES_REGEX = "<>\{\}\-=~"
 NON_GLOSS_LINE_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
+ALL_BOUNDARIES_FOR_REGEX = "<>\{\}\-=~"
+DOUBLE_BOUNDARY_REGEX = "[" + ALL_BOUNDARIES_FOR_REGEX + "][" + ALL_BOUNDARIES_FOR_REGEX + "]"
+DISCONNECTED_BOUNDARY_REGEX = "[" + ALL_BOUNDARIES_FOR_REGEX + "]" + "\s"
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -17,9 +19,12 @@ newline_fails = 0
 # Tests relevant for both segmentation or glossing
 seg_multi_boundary_fails = 0
 seg_disconnected_morpheme_fails = 0
+seg_infix_fails = 0 # There can be multiple of these per line (currently flagging both <> and {} errors)
 
 # Glossing-specific tests
 gloss_multi_boundary_fails = 0
+gloss_disconnected_morpheme_fails = 0
+gloss_infix_fails = 0
 seg_gloss_num_words_fails = 0
 seg_gloss_num_morphemes_fails = 0
 seg_gloss_word_num_morphemes_fails = 0 # There can be multiple of these per line
@@ -68,40 +73,85 @@ def general_screen(line):
 def seg_and_gloss_screen(seg_line):
     global seg_multi_boundary_fails
     global seg_disconnected_morpheme_fails
+    global seg_infix_fails
 
-    double_boundary_regex = "[" + ALL_BOUNDARIES_REGEX + "][" + ALL_BOUNDARIES_REGEX + "]"
-    if re.search(double_boundary_regex, seg_line):
-        print(f"\n- Error: the following segmentation line contains consecutive boundaries (i.e., at least two of f{ALL_BOUNDARIES} in immediate succession).\n", seg_line)
+    if re.search(DOUBLE_BOUNDARY_REGEX, seg_line):
+        print(f"\n- Error: the following segmentation line contains consecutive boundaries (i.e., at least two of f{ALL_BOUNDARIES} in immediate succession).")
+        print(seg_line)
         seg_multi_boundary_fails += 1
 
-    disconnected_boundary_regex = "[" + ALL_BOUNDARIES_REGEX + "]" + "\s"
-    if re.search(disconnected_boundary_regex, seg_line):
+    if re.search(DISCONNECTED_BOUNDARY_REGEX, seg_line):
         print(f"\n- Error: the following segmentation line contains a morpheme boundary not connected to two morphemes!")
         print(seg_line)
         seg_disconnected_morpheme_fails += 1
 
+    if not infix_check(seg_line, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY):
+        print(f"\n- Error: the following segmentation line contains an infix boundary (< or >) without a partner infix boundary in the right position.")
+        print(seg_line)
+        seg_infix_fails += 1
+
+    if not infix_check(seg_line, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY):
+        print("\n- Error: the following segmentation line contains a reduplicating infix boundary ({ or }) without a partner infix boundary in the right position.")
+        print(seg_line)
+        seg_infix_fails += 1
+
+# Check that infix boundaries are used as expected - i.e. in left/right pairs (<>) with no other boundaries in between
+# Returns a boolean - true if no such errors found, false if at least one was found
+def infix_check(line, left_boundary, right_boundary):
+    check_passed = True
+    words = line.split(" ")
+    for word in words:
+        if not check_passed: # You can quit early if we already found an issue to flag
+            break
+        # Ignore words that don't contain infixes at all
+        if left_boundary in word or right_boundary in word:
+            boundaries_list = re.findall("[" + ALL_BOUNDARIES_FOR_REGEX + "]", word)
+            for i, boundary in enumerate(boundaries_list):
+                # Left boundary must have a right boundary **immediately** to its right
+                if boundary == left_boundary:
+                    if (i == len(boundaries_list) - 1) or not (boundaries_list[i + 1] == right_boundary):
+                        check_passed = False
+                # Also want to flag any lone right boundaries
+                # This means in cases where both boundaries are present but there's another interceding boundary, this error will occur twice (above and here)
+                elif boundary == right_boundary:
+                    if not (boundaries_list[i - 1] == left_boundary):
+                        check_passed = False
+    return check_passed
+
 # Tests that are relevant only for glossing
 def gloss_screen(seg_line, gloss_line):
     global gloss_multi_boundary_fails
+    global gloss_disconnected_morpheme_fails
+    global gloss_infix_fails
     global gloss_boundary_marker_fails
     global seg_gloss_num_words_fails
     global seg_gloss_num_morphemes_fails
     global seg_gloss_word_num_morphemes_fails
     global seg_gloss_boundary_fails
 
-    # Only looking for a double boundary of the allowed boundary type (we're already checking for ANY instances of the non-permitted boundaries)
-    double_boundary_regex = "[\\" + REGULAR_BOUNDARY + "][\\" + REGULAR_BOUNDARY + "]"
-    if re.search(double_boundary_regex, gloss_line):
-        print(f"\n- Error: the following gloss line contains consecutive boundaries (i.e., at least two of f{REGULAR_BOUNDARY} in immediate succession).")
+    # Once I get the data sorted, this needs to be modified to handle the exception case (>-) - see README for an explanation
+    if re.search(DOUBLE_BOUNDARY_REGEX, gloss_line):
+        print(f"\n- Error: the following gloss line contains consecutive boundaries (i.e., at least two of {ALL_BOUNDARIES} in immediate succession).")
         print("Gloss line:", gloss_line)
         gloss_multi_boundary_fails += 1
 
+    if re.search(DISCONNECTED_BOUNDARY_REGEX, gloss_line):
+        print(f"\n- Error: the following gloss line contains a morpheme boundary not connected to two morphemes!")
+        print(gloss_line)
+        gloss_disconnected_morpheme_fails += 1
+
+    if not infix_check(gloss_line, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY):
+        print(f"\n- Error: the following gloss line contains an infix boundary (< or >) without a partner infix boundary in the right position.")
+        print(gloss_line)
+        gloss_infix_fails += 1
+
+    if not infix_check(gloss_line, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY):
+        print("\n- Error: the following gloss line contains a reduplicating infix boundary ({ or }) without a partner infix boundary in the right position.")
+        print(gloss_line)
+        gloss_infix_fails += 1
+
     seg_words = seg_line.split(" ")
     gloss_words = gloss_line.split(" ")
-
-    # if any(boundary in gloss_line for boundary in NON_GLOSS_LINE_BOUNDARIES):
-    #     print(f"\n- Error: the following line contains a morpheme boundary in the gloss line other than the regular boundary boundary.\n", gloss_line)
-    #     gloss_boundary_marker_fails += 1
 
     if len(seg_words) != len(gloss_words):
         print(f"\n- Error: the following line contains a mismatch between the number of *words* in the segmented and gloss lines.  The segmented line has {len(seg_words)} words, whereas the gloss line has {len(gloss_words)} words.")
@@ -122,6 +172,10 @@ def gloss_screen(seg_line, gloss_line):
         print(f"\n- Error: the following line contains a mismatch between the number of *morphemes* in the segmented and gloss lines.  The segmented line has {len(seg_morphemes)} morphemes, whereas the gloss line has {len(gloss_morphemes)} morphemes.")
         print("Segmentation line:", seg_line)
         print("Gloss line:", gloss_line)
+        # Uncomment this for more help identifying these problems!
+        # for i, (seg_morph, gloss_morph) in enumerate(zip(seg_morphemes, gloss_morphemes)):
+        #     print(f"Seg word #{i + 1}:\t", seg_morph)
+        #     print(f"Gloss word #{i + 1}:\t", gloss_morph)
         seg_gloss_num_morphemes_fails += 1
 
     # A slightly more nuanced morpheme alignment check
@@ -137,8 +191,8 @@ def gloss_screen(seg_line, gloss_line):
     # # Confirm that boundaries match between seg and gloss
     # # (e.g. if a morpheme has a reduplication boundary in the segmentation line, then it does in the gloss line too)
     # for seg_word, gloss_word in zip(seg_words, gloss_words):
-    #     seg_boundaries = re.findall("[" + ALL_BOUNDARIES_REGEX + "]", seg_word)
-    #     gloss_boundaries = re.findall("[" + ALL_BOUNDARIES_REGEX + "]", gloss_word)
+    #     seg_boundaries = re.findall("[" + ALL_BOUNDARIES_FOR_REGEX + "]", seg_word)
+    #     gloss_boundaries = re.findall("[" + ALL_BOUNDARIES_FOR_REGEX + "]", gloss_word)
     #     for seg_boundary, gloss_boundary in zip(seg_boundaries, gloss_boundaries):
     #         if seg_boundary != gloss_boundary:
     #             print(f"\n- Error: the following line contains a different boundary between the segmentation and gloss lines.  In the word {seg_word} '{gloss_word}', the segmentation line has a {seg_boundary} where the gloss line has a {gloss_boundary}.")
@@ -149,7 +203,7 @@ def gloss_screen(seg_line, gloss_line):
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, gloss_multi_boundary_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -161,8 +215,11 @@ def print_screen_summary():
         print(f"    - {multi_space_fails} lines contained multiple spaces in a row.")
         print(f"    - {newline_fails} lines contained a newline character.")
         print(f"    - {seg_multi_boundary_fails} segmentation lines contained multiple boundaries in a row.")
-        print(f"    - {seg_disconnected_morpheme_fails} segmentation lines contained a morpheme boundary that wasn't connected to a morpheme (on one side).")
         print(f"    - {gloss_multi_boundary_fails} gloss lines contained multiple boundaries in a row.")
+        print(f"    - {seg_disconnected_morpheme_fails} segmentation lines contained a morpheme boundary that wasn't connected to a morpheme (on one side).")
+        print(f"    - {gloss_disconnected_morpheme_fails} gloss lines contained a morpheme boundary that wasn't connected to a morpheme (on one side).")
+        print(f"    - There were {seg_infix_fails} instances in the segmentation line of an infix boundary whose partner infix boundary was absent or misplaced.")
+        print(f"    - There were {gloss_infix_fails} instances in the gloss line of an infix boundary whose partner infix boundary was absent or misplaced.")
         print(f"    - {gloss_boundary_marker_fails} lines contained a morpheme boundary in the gloss line other than the regular boundary marker (i.e., one of {NON_GLOSS_LINE_BOUNDARIES}).")
         print(f"    - {seg_gloss_num_words_fails} lines contained a different number of *words* between the segmented and gloss lines.")
         print(f"    - {seg_gloss_num_morphemes_fails} lines contained a different number of *morphemes* between the segmented and gloss lines.")

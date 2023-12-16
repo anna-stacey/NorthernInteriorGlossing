@@ -126,9 +126,13 @@ def sentence_to_features(sentence):
 
 
 # Returns a list of glosses (one for each morpheme in the sentence)
-# Possible complications with capital letters, apostrophes
 def sentence_to_glosses(gloss_line):
     gloss_line = general_preprocess(gloss_line)
+    # Recall that infix boundaries aren't so complex to handle in the gloss line (just gloss1<gloss2>-gloss3)
+    # We can just replace them with regular boundaries here, so they'll get handled by the re.split line
+    gloss_line = re.sub(r"[" + LEFT_INFIX_BOUNDARY + "\\" + LEFT_REDUP_INFIX_BOUNDARY + "]", REGULAR_BOUNDARY, gloss_line)
+    gloss_line = re.sub(r"[" + RIGHT_INFIX_BOUNDARY + "\\" + RIGHT_REDUP_INFIX_BOUNDARY + "]", "", gloss_line)
+
     # Break apart line morpheme-by-morpheme
     gloss_line = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + "\s" + r"]", gloss_line)
 

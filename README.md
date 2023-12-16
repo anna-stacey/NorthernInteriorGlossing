@@ -16,11 +16,12 @@ For example, if you have a 4-line system (transcription, segmentation, gloss, tr
 
 4.  **The segmentation line and gloss lines do not contain multiple consecutive boundaries.**  
 That is, morphemes are always connected by either a space or a single boundary character, as in `morpheme1 morpheme2-morpheme3~morpheme4`.  
-There is one exception here: infixes in the gloss line. This is because the standard way to gloss something like `start.of.morpheme1<morpheme2>more.morpheme1-morpheme3` is `gloss1<gloss2>-gloss3`.  There's really no boundary between gloss2 and gloss3 at all because they're not adjacent, but this format tells us that `gloss2` is an infix on `gloss1`, and `gloss3` regularly attaches to the end of `gloss1`.  Confusing!  But standard, and intelligble.
+There is one exception here: infixes in the gloss line, which frequently involve the closing ">" boundary immediately followed by any other boundary. See expectation #10 for more details.
 
 5.  **The segmentation line does not contain "hanging" boundaries.**  
 That is, morpheme boundaries are always directly connected to a morpheme on either side (e.g., `morpheme1-morpheme2- morpheme3` is *not* permitted).  
-This has been seen in cases where a speaker revised what they were saying, or perhaps interrupted themselves, leading to an isolated prefix written as `morpheme-`.  In this case, this should be written as just `morpheme` since it's not attached to anything.
+This has been seen in cases where a speaker revised what they were saying, or perhaps interrupted themselves, leading to an isolated prefix written as `morpheme-`.  In this case, this should be written as just `morpheme` since it's not attached to anything.  
+Again, there's an exception with infixes in the gloss line: since > isn't really indicating a boundary per se, it can occur before a space or EOL.  See expectation #10 for more details about infixes.
 
 6.  **The same boundary types are used between the segmentation and gloss line.**  
 For example, consider this segmentation line:  
@@ -36,7 +37,9 @@ Morphemes can be whole words, or pieces or words separated by morpheme boundarie
 
 9.  **Each word has the same number of morphemes in the segmentation and gloss lines.**
 
-10.  **Infixing boundaries (see below) occur in pairs, with no morpheme boundaries (incl. spaces) occurring in between.**
+10.  **If used, infix boundaries appear in pairs, with only the infixing morpheme in between.  In the segmentation line the infix (with boundaries) of course appears within another morpheme, but in the gloss line it follows that morpheme.**  
+This sounds complicated, but it just expects that infixes are formatted in the typical way we've observed.  
+Essentially, a word with an infix might be segmented like `start.of.morpheme1<morpheme2>more.morpheme1-morpheme3`, and the corresponding gloss would be `gloss1<gloss2>-gloss3`.  There's really no boundary between gloss2 and gloss3 at all because they're not adjacent, but this format tells us that `gloss2` is an infix on `gloss1`, and `gloss3` regularly attaches to the end of `gloss1`.  Confusing!  But standard, and intelligble.  So with infix boundaries in the gloss line, we expect a morpheme immediately preceding <, and a morpheme boundary or space or EOL immediately following >.
 
 ## Boundary System
 The only distinction that is fundamentally important when breaking up morphemes is that of infixes vs. regular (linearly-attaching) morphemes.  This is because infixes need to be specially handled to make sure morphemes are correctly identified.  Consider a regular case:  

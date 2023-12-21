@@ -7,10 +7,11 @@ import re
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 NON_GLOSS_LINE_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
+ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS = (ALL_BOUNDARIES_FOR_REGEX.replace("\}", "")).replace(">", "")
 DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + ALL_BOUNDARIES_FOR_REGEX
-GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX.replace(">", "") + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
+GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
 DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + "(\s|$)"
-GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX.replace(">", "") + "(\s|$)" # To permit an exception - see data expectations in README for reasoning
+GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + "(\s|$)" # To permit an exception - see data expectations in README for reasoning
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -244,17 +245,17 @@ def gloss_screen(seg_line, gloss_line):
             print("Gloss line:", gloss_line)
             seg_gloss_word_num_morphemes_fails += 1
 
-    # # Confirm that boundaries match between seg and gloss
-    # # (e.g. if a morpheme has a reduplication boundary in the segmentation line, then it does in the gloss line too)
-    # for seg_word, gloss_word in zip(seg_words, gloss_words):
-    #     seg_boundaries = re.findall("[" + ALL_BOUNDARIES_FOR_REGEX + "]", seg_word)
-    #     gloss_boundaries = re.findall("[" + ALL_BOUNDARIES_FOR_REGEX + "]", gloss_word)
-    #     for seg_boundary, gloss_boundary in zip(seg_boundaries, gloss_boundaries):
-    #         if seg_boundary != gloss_boundary:
-    #             print(f"\n- Error: the following line contains a different boundary between the segmentation and gloss lines.  In the word {seg_word} '{gloss_word}', the segmentation line has a {seg_boundary} where the gloss line has a {gloss_boundary}.")
-    #             print("Segmentation line:", seg_line)
-    #             print("Gloss line:", gloss_line)
-    #             seg_gloss_boundary_fails += 1
+    # Confirm that boundaries match between seg and gloss
+    # (e.g. if a morpheme has a reduplication boundary in the segmentation line, then it does in the gloss line too)
+    for seg_word, gloss_word in zip(seg_words, gloss_words):
+        seg_boundaries = re.findall(ALL_BOUNDARIES_FOR_REGEX, seg_word)
+        gloss_boundaries = re.findall(ALL_BOUNDARIES_FOR_REGEX, gloss_word)
+        for seg_boundary, gloss_boundary in zip(seg_boundaries, gloss_boundaries):
+            if seg_boundary != gloss_boundary:
+                print(f"\n- Error: the following line contains a different boundary between the segmentation and gloss lines.  In the word {seg_word} '{gloss_word}', the segmentation line has a {seg_boundary} where the gloss line has a {gloss_boundary}.")
+                print("Segmentation line:", seg_line)
+                print("Gloss line:", gloss_line)
+                seg_gloss_boundary_fails += 1
 
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!

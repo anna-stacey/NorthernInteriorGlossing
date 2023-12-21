@@ -16,7 +16,7 @@ For example, if you have a 4-line system (transcription, segmentation, gloss, tr
 
 4.  **The segmentation line and gloss lines do not contain multiple consecutive boundaries.**  
 That is, morphemes are always connected by either a space or a single boundary character, as in `morpheme1 morpheme2-morpheme3~morpheme4`.  
-There is one exception here: infixes in the gloss line, which frequently involve the closing ">" boundary immediately followed by any other boundary. See expectation #10 for more details.
+There is one exception here: infixes in the gloss line, which frequently involve the closing ">" (or "}") boundary immediately followed by any other boundary. See expectation #10 for more details.
 
 5.  **The segmentation line does not contain "hanging" boundaries.**  
 That is, morpheme boundaries are always directly connected to a morpheme on either side (e.g., `morpheme1-morpheme2- morpheme3` is *not* permitted).  

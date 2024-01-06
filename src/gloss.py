@@ -7,6 +7,7 @@ from os import getcwd, mkdir, path
 OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
+
 LEFT_INFIX_BOUNDARY = "<"
 RIGHT_INFIX_BOUNDARY = ">"
 LEFT_REDUP_INFIX_BOUNDARY = "{"
@@ -15,6 +16,7 @@ REGULAR_BOUNDARY = "-"
 CLITIC_BOUNDARY = "="
 REDUPLICATION_BOUNDARY = "~"
 NON_INFIXING_BOUNDARIES = [REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY, CLITIC_BOUNDARY]
+ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
 
 def read_datasets(train_file, dev_file, test_file):
     train = read_file(train_file)
@@ -66,18 +68,22 @@ def general_preprocess(sentence):
 
     return sentence 
 
-# Break down each (transcription) sentence into "words",
-# where each word is a list of morphemes (could be just one) - this is done for feature generation
-# Returns the sentence as a word list instead
-def sentence_to_words(sentence):
-    word_list = []
+# Given a segmentation line, return a list of its morphemes
+# The as_words parameter specfies whether you want the returned morpheme list
+# to be divided into word sub-lists
+# For example:
+# as_words = False, then it returns [w1m1, w1m2, w2m1, w2m2]
+# as_words = True, then it returns [[w1m1, w1m2], [w2m1, w2m2]]
+def sentence_to_morphemes(seg_line, as_words):
+    morpheme_list = []
+    if as_words:
+        word_list = []
 
-    sentence = general_preprocess(sentence)
+    seg_line = general_preprocess(seg_line)
 
-    for word in sentence.split(" "):
-        morpheme_list = []
-        # Split up morphemes
-        morpheme_list = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + r"]", word)
+    for word in seg_line.split(" "):
+        # Grab the morphemes from this current word
+        morpheme_list += re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + r"]", word)
         # Infix marking requires special handling
         for i, morpheme in enumerate(morpheme_list):
             # Check for infixing
@@ -107,16 +113,20 @@ def sentence_to_words(sentence):
         while "" in morpheme_list:
             morpheme_list.remove("")
 
-        if morpheme_list: # Only if non-empty (again, to avoid empty morphemes)
+        if as_words and morpheme_list: # Only if non-empty (again, to avoid empty morphemes)
             word_list.append(morpheme_list)
+            morpheme_list = []
 
-    return word_list
+    if as_words:
+        return word_list
+    else:
+        return morpheme_list
 
 
 # Returns a list of features for each morpheme for each word in the given sentence
-def sentence_to_features(sentence):
+def sentence_to_features(segmentation_line):
     # Get a list of words, which are in turn lists of morphemes
-    preprocessed_sentence = sentence_to_words(sentence)
+    preprocessed_sentence = sentence_to_morphemes(segmentation_line, as_words = True)
     featureVectorList = []
     for word in preprocessed_sentence:
         for i in range(len(word)):
@@ -145,7 +155,7 @@ def format_X_and_y(X, y):
     # Meanwhile, the gold-standard label for each morpheme is the corresponding entry in the gloss line
 
     # Get a list of training feature vectors (in the form of a list of lists by sentence)
-    X = [sentence_to_features(transcription_line) for transcription_line in X]
+    X = [sentence_to_features(segmentation_line) for segmentation_line in X]
 
     # Get a list of the training labels - i.e. the gloss for each morpheme
     y = [sentence_to_glosses(gloss_line) for gloss_line in y]
@@ -428,10 +438,9 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     print(f"Morpheme-level accuracy: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.\n")
     print(f"Word-level accuracy: {round(get_word_level_accuracy(y, pred_y) * 100, 2)}%.\n")
 
-    # Results - print by-stem and by-gram accuracy, and check out mislabelled morphemes
+    # Results - print by-stem and by-gram accuracy
     interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
     get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
-    #print_mislabelled_helper(X, X_with_boundaries, y, pred_y)
 
     return pred_y
 
@@ -518,8 +527,9 @@ def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_
         translation_line = TRANSLATION_LINE_MARKER + sentence[gloss_line_number + 1]  # Assuming the translation line follows the gloss line
 
         # Make all morpheme boundaries just a hyphen, so that the sigmorphon eval process recognizes them
-        seg_line = re.sub(r'=', "-", seg_line)
-        gloss_line = re.sub(r'=', "-", gloss_line)
+        seg_line = re.sub(ALL_BOUNDARIES_FOR_REGEX, REGULAR_BOUNDARY, seg_line)
+        gloss_line = re.sub(ALL_BOUNDARIES_FOR_REGEX, REGULAR_BOUNDARY, gloss_line)
+        gloss_line = re.sub(REGULAR_BOUNDARY + REGULAR_BOUNDARY, REGULAR_BOUNDARY, gloss_line) # Because the gloss line can have consecutive boundaries due to infixes (e.g. crazy<PL>-1PL.II)
 
         # Put the sentence back together with the new formatting
         if isOpenTrack: # In the closed track, segmentation is not used
@@ -552,6 +562,7 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
     # Grab the appropriate lines from each sentence
+    # X = seg lines, y = gloss lines
     train_X, train_y = extract_X_and_y(train, segmentation_line_number, gloss_line_number)
     dev_X, dev_y = extract_X_and_y(dev, segmentation_line_number, gloss_line_number)
     test_X, test_y  = extract_X_and_y(test, segmentation_line_number, gloss_line_number)

@@ -1,12 +1,11 @@
 # For formatting fixes that can be done irrespective of language
 # Ensuring that the glossing code doesn't need to worry about screening for these kinds of anomalies
 import click
-from gloss import read_datasets, sentence_to_glosses, sentence_to_words, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
+from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX
 import re
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 NON_GLOSS_LINE_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
-ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
 ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS = (ALL_BOUNDARIES_FOR_REGEX.replace("\}", "")).replace(">", "")
 DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + ALL_BOUNDARIES_FOR_REGEX
 GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
@@ -221,7 +220,7 @@ def gloss_screen(seg_line, gloss_line):
         seg_gloss_num_words_fails += 1
 
     # These two functions I'm using from gloss.py are probably needlessly complicated and should be simplified
-    seg_morphemes = [morpheme for word in sentence_to_words(seg_line) for morpheme in word]
+    seg_morphemes = sentence_to_morphemes(seg_line, as_words = False)
     # Might modify gloss_line btw...
     gloss_morphemes = sentence_to_glosses(gloss_line)
 
@@ -236,8 +235,8 @@ def gloss_screen(seg_line, gloss_line):
         seg_gloss_num_morphemes_fails += 1
 
     # A slightly more nuanced morpheme alignment check
-    seg_morphemes_by_word = sentence_to_words(seg_line)
-    gloss_morphemes_by_word = sentence_to_words(gloss_line)
+    seg_morphemes_by_word = sentence_to_morphemes(seg_line, as_words = True)
+    gloss_morphemes_by_word = sentence_to_morphemes(gloss_line, as_words = True)
     for i, (seg_word_with_morphemes, gloss_word_with_morphemes) in enumerate(zip(seg_morphemes_by_word, gloss_morphemes_by_word)):
         if len(seg_word_with_morphemes) != len(gloss_word_with_morphemes):
             print(f"\n- Error: the following line contains a mismatch between the number of *morphemes* in a word between the segmented and gloss lines.  The word {seg_morphemes_by_word[i]} at position {i} has {len(seg_word_with_morphemes)} morphemes in the segmented line, whereas in the gloss line it has {len(gloss_word_with_morphemes)} morphemes ({gloss_word_with_morphemes}).")

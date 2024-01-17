@@ -60,12 +60,24 @@ def morpheme_to_features(word, i):
 
     return features
 
-# Preprocessing steps that are done for BOTH the seg and gloss lines (i.e. X and y)
-# Returns the updated sentence
-def general_preprocess(sentence):
-    # Remove bracketed affixes (at least for now)
-    sentence = re.sub(r'\[[^\]]*\]', "", sentence)
-
+# We are removing the brackets but *leaving* the bracketed affix in
+# This is to handle the glossing style where unrealized morphemes/pieces of morphemes
+# appear in brackets.  This is a concern of the segmentation stage, not the glossing stage.
+# So we can just remove the brackets, e.g. treat náq̓ʷ-m[in][-t]-∅-s as náq̓ʷ-min-t-∅-s
+# Let's run through why that is:
+# - If the data doesn't use bracketed affixes, this does nothing.
+# - If the data puts such affixes in brackets in the seg line but not the gloss line,
+#   then the glossing process can act as if the brackets aren't even there.
+# - If the data puts such affixes in brackets in the seg line AND the gloss line,
+#   then it's just regurgitating the brackets, so we can ignore them during the glossing
+#   process and just add them back if printing the sentences.
+# - And, if the data uses brackets for parts of affixes (e.g., m[in]) above,
+#   then it also make sense to remove the brackets there so the glossing process
+#   has access to the full, regular morpheme (i.e., min).
+# This is the same as boundary types - the glossing process doesn't need to care
+# if there's a - or = etc., but if we're printing our predictions we need to maintain them.
+def ignore_brackets(sentence):
+    sentence = re.sub(r'[\[\]]', "", sentence)
     return sentence 
 
 # Given a segmentation line, return a list of its morphemes
@@ -79,7 +91,7 @@ def sentence_to_morphemes(seg_line, as_words):
     if as_words:
         word_list = []
 
-    seg_line = general_preprocess(seg_line)
+    seg_line = ignore_brackets(seg_line)
 
     for word in seg_line.split(" "):
         # Grab the morphemes from this current word
@@ -137,7 +149,7 @@ def sentence_to_features(segmentation_line):
 
 # Returns a list of glosses (one for each morpheme in the sentence)
 def sentence_to_glosses(gloss_line):
-    gloss_line = general_preprocess(gloss_line)
+    gloss_line = ignore_brackets(gloss_line)
     # Recall that infix boundaries aren't so complex to handle in the gloss line (just gloss1<gloss2>-gloss3)
     # We can just replace them with regular boundaries here, so they'll get handled by the re.split line
     gloss_line = re.sub(r"[" + LEFT_INFIX_BOUNDARY + "\\" + LEFT_REDUP_INFIX_BOUNDARY + "]", REGULAR_BOUNDARY, gloss_line)
@@ -455,7 +467,7 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
     updated_gloss = []
     updated_gloss_line = []
     for gloss_line, line_with_boundaries in zip(gloss, list_with_boundaries):
-        line_with_boundaries = general_preprocess(line_with_boundaries)
+        line_with_boundaries = ignore_brackets(line_with_boundaries)
         # So now both lines are lists of items
         line_with_boundaries = line_with_boundaries.split()
         morpheme_index = 0

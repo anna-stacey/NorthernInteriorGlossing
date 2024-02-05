@@ -283,6 +283,62 @@ def print_screen_summary():
         print(f"    - {seg_gloss_num_morphemes_fails} lines contained a different number of *morphemes* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_word_num_morphemes_fails} instances of a different number of *morphemes* in a given *word* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_boundary_fails} instances of a different kind of morpheme boundary between the segmented and gloss lines.")
+    print("\n")
+
+def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
+    # Dictionary where the keys are glosses, and the values are lists of morphemes
+    # e.g. 3ERG: [es, s]
+    gloss_dict = {}
+    for sentence in all_data:
+        seg_line = sentence[segmentation_line_number]
+        gloss_line = sentence[gloss_line_number]
+        morphemes = sentence_to_morphemes(seg_line, as_words = False)
+        glosses = sentence_to_glosses(gloss_line)
+        assert(len(morphemes) == len(glosses))
+        for morpheme, gloss in zip(morphemes, glosses):
+            assert(morpheme)
+            # If there's no entry for the gloss, add a new one
+            # If there is an entry, check if this morpheme is already listed
+            # If not, add it
+            if not (gloss in gloss_dict.keys()):
+                gloss_dict.update({gloss: [morpheme]})
+            else: # Add to the existing entry
+                existing_entry = (gloss_dict.get(gloss))
+                if morpheme in existing_entry:
+                    pass
+                else:
+                    existing_entry.append(morpheme)
+                    gloss_dict.update({gloss: existing_entry})
+
+    # Switch to a separate dict for grams and stems, and words that are not translated (e.g., English words, people's names)
+    gram_dict = {}
+    stem_dict = {}
+    not_translated_dict = {}
+    for entry in gloss_dict.items():
+        if entry[0].isupper():
+            gram_dict.update({entry[0]: entry[1]})
+        elif len(entry[1]) == 1 and entry[1][0] == entry[0]:
+            not_translated_dict.update({entry[0]: entry[1]})
+        else:
+            stem_dict.update({entry[0]: entry[1]})
+
+    # Alphabetize, then print the results!
+    gram_list = sorted(gram_dict.items())
+    stem_list = sorted(stem_dict.items())
+    english_list = sorted(not_translated_dict.items())
+    print("***** GLOSS INVENTORY *****")
+    print("--- Grams: ---")
+    print("Total number of unique gram glosses:", len(gram_list))
+    for entry in gram_list:
+        print(entry[0], ":", entry[1])
+    print("\n\n--- Stems: ---")
+    print("Total number of unique stem glosses:", len(stem_list))
+    for entry in stem_list:
+        print(entry[0], ":", entry[1])
+    print("\n\n--- \"Stems\" that are just English/onomatopoeia: ---")
+    print("Total number of such unique glosses:", len(english_list))
+    for entry in english_list:
+        print(entry[0], ":", entry[1])
 
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
@@ -299,7 +355,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
     # Screen each dataset!
-    print("\n--- Errors found in train dataset: ---")
+    print("***** PRESCREENING SUMMARY ******")
+    print("--- Errors found in train dataset: ---")
     screen_data(train, segmentation_line_number, gloss_line_number)
 
     print("\n--- Errors found in dev dataset: ---")
@@ -310,6 +367,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
 
     # Print the results
     print_screen_summary()
+
+    get_gloss_inventory(train + dev + test, segmentation_line_number, gloss_line_number)
 
 if __name__ == '__main__':
     main()

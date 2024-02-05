@@ -46,9 +46,16 @@ def tidy_dataset(dataset):
     updated_dataset = []
     for sentence in dataset:
         updated_sentence = []
-        for line in sentence:
+        for i, line in enumerate(sentence):
             # Find 2+ spaces, and replace them with only one space
             line = sub(r"[ ]+[ ]+", " ", line)
+
+            # Remove commas, periods, and question marks from the seg line
+            if i == 1:
+                line = line.replace(",", "")
+                line = line.replace(".", "")
+                line = line.replace("?", "")
+
             updated_sentence.append(line)
         updated_dataset.append(updated_sentence)
         updated_sentence = []
@@ -76,4 +83,3 @@ def write_sentences(examples, file_path):
                     if (j >= len(example) - 1) and (i < len(examples) - 1):
                         file.write("\n")
         file.close()
-    

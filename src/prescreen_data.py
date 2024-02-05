@@ -11,6 +11,8 @@ DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + ALL_BOUNDARIES_FOR_REGEX
 GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
 DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + "(\s|$)"
 GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + "(\s|$)" # To permit an exception - see data expectations in README for reasoning
+NON_PERMITTED_PUNCTUATION = [".", ",", "?"]
+NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?]"
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -23,6 +25,7 @@ seg_multi_boundary_fails = 0
 seg_disconnected_morpheme_fails = 0
 seg_infix_boundary_mismatch_fails = 0 # There can be multiple of these per line (currently flagging up to 1 <> error and up to 1 {} error)
 seg_infix_boundary_misplacement_fails = 0 # There can be multiple of these per line (currently flagging up to 1 <> error and up to 1 {} error)
+seg_non_permitted_punctuation_fails = 0
 
 # Glossing-specific tests
 gloss_multi_boundary_fails = 0
@@ -74,11 +77,13 @@ def general_screen(line):
         newline_fails += 1
 
 # Tests that are relevant whether your doing segmentation OR glossing
+# (Note these are only *applied* to the seg line, but they're *relevant* for both processes)
 def seg_and_gloss_screen(seg_line):
     global seg_multi_boundary_fails
     global seg_disconnected_morpheme_fails
     global seg_infix_boundary_mismatch_fails
     global seg_infix_boundary_misplacement_fails
+    global seg_non_permitted_punctuation_fails
 
     if re.search(DOUBLE_BOUNDARY_REGEX, seg_line):
         print(f"\n- Error: the following segmentation line contains consecutive boundaries (i.e., at least two of f{ALL_BOUNDARIES} in immediate succession).")
@@ -109,6 +114,11 @@ def seg_and_gloss_screen(seg_line):
         print("\n- Error: the following segmentation line contains a reduplicating infix boundary ({ or }) that was misplaced.")
         print(seg_line)
         seg_infix_boundary_misplacement_fails += 1
+
+    if re.search(NON_PERMITTED_PUNCTUATION_REGEX, seg_line):
+        print(f"\n- Error: the following segmentation line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
+        print(seg_line)
+        seg_non_permitted_punctuation_fails += 1
 
 # Check that infix boundaries are used as expected - i.e. in left/right pairs (<>) with no other boundaries in between
 # Returns a boolean - true if no such errors found, false if at least one was found
@@ -259,7 +269,7 @@ def gloss_screen(seg_line, gloss_line):
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -283,6 +293,7 @@ def print_screen_summary():
         print(f"    - {seg_gloss_num_morphemes_fails} lines contained a different number of *morphemes* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_word_num_morphemes_fails} instances of a different number of *morphemes* in a given *word* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_boundary_fails} instances of a different kind of morpheme boundary between the segmented and gloss lines.")
+        print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
     print("\n")
 
 def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):

@@ -41,6 +41,9 @@ Morphemes can be whole words, or pieces or words separated by morpheme boundarie
 This sounds complicated, but it just expects that infixes are formatted in the typical way we've observed.  
 Essentially, a word with an infix might be segmented like `start.of.morpheme1<morpheme2>more.morpheme1-morpheme3`, and the corresponding gloss would be `gloss1<gloss2>-gloss3`.  There's really no boundary between gloss2 and gloss3 at all because they're not adjacent, but this format tells us that `gloss2` is an infix on `gloss1`, and `gloss3` regularly attaches to the end of `gloss1`.  Confusing!  But standard, and intelligble.  So with infix boundaries in the gloss line, we expect a morpheme immediately preceding <, and a morpheme boundary or space or EOL immediately following >.
 
+11. **The segmentation line does not contain punctuation that are not part of morphemes.**  
+The same punctuation often seems to be included in the segmentation line as in the transcription line -- things like commas and end-of-sentence punctuation (. or ? or !).  This is understandable, but for the sake of pulling morphemes out of the segmentation line, it's problematic.
+
 ## Boundary System
 The only distinction that is fundamentally important when breaking up morphemes is that of infixes vs. regular (linearly-attaching) morphemes.  This is because infixes need to be specially handled to make sure morphemes are correctly identified.  Consider a regular case:  
 `morpheme1-morpheme2-morpheme3`  

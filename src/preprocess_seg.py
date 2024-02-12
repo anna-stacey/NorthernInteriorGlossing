@@ -28,8 +28,8 @@ def create_file_of_words(list, file_name):
         file.close()
 
 # Char removal that applies to both unsegmented and segmented lines
-def general_preprocess(sentence, isSegmented):
-    if isSegmented:
+def general_preprocess(sentence, is_segmented):
+    if is_segmented:
         # Remove bracketed affixes
         sentence = re.sub(r'\[[^\]]*\]', "", sentence)
         # Sometimes, double dashes (pause) were included
@@ -49,10 +49,10 @@ def general_preprocess(sentence, isSegmented):
     return sentence
 
 # Go from a list of sentence strings, to a list of sentences which are lists of words
-def strings_to_word_lists(dataset, isSegmented):
+def strings_to_word_lists(dataset, is_segmented):
     sentences_list = []
     for sentence in dataset:
-        sentence = general_preprocess(sentence, isSegmented)
+        sentence = general_preprocess(sentence, is_segmented)
         sentence = sentence.split(" ")
         sentences_list.append(sentence)
 

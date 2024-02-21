@@ -7,7 +7,7 @@ To ensure compliance with the formatting anticipated by the segmenting and gloss
 - `sh src/prescreen.sh`
 
 ## Preprocess and Train the Segmentation Model
-- Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling train_seg.sh).
+- Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling train_seg.sh).  Once it's done running (i.e. when you see output telling you the last epoch has completed), you have to manually press enter to make it finish.
 - To run on the dev set: ``sh src/dev_prepare_seg.sh``
 - To run on the test set: ``sh src/prepare_seg.sh``
 

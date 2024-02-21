@@ -487,7 +487,7 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
             # Go morpheme by morpheme
             word_glossed = []
             for j in range(morpheme_count):
-                assert((morpheme_index) < len(gloss_line))
+                assert (morpheme_index) < len(gloss_line), f"Morpheme index ({morpheme_index}) has exceeded bounds for the following gloss line of length {len(gloss_line)}: {gloss_line}.  \nThe whole line is {line_with_boundaries}."
                 word_glossed.append(gloss_line[morpheme_index])
                 morpheme_index += 1
             updated_gloss_line.append(word_glossed)

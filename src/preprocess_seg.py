@@ -39,8 +39,6 @@ def general_preprocess(sentence, is_segmented):
         # It seems these are sometimes to indicate a long pause (written as "--"), but sometimes in words e.g. Git-anyaaw
         sentence = re.sub(r'-', "", sentence)
     sentence = sentence.replace("\n", "")
-    # Remove chars we don't care about
-    sentence = re.sub(r'[\',".\u0332]', "", sentence)
     # Remove any double spaces that may be created from char removals
     sentence = re.sub(r'\s+', " ", sentence)
 

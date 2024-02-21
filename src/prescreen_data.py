@@ -11,8 +11,8 @@ DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + ALL_BOUNDARIES_FOR_REGEX
 GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
 DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + "(\s|$)"
 GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + "(\s|$)" # To permit an exception - see data expectations in README for reasoning
-NON_PERMITTED_PUNCTUATION = [".", ",", "?"]
-NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?]"
+NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\""]
+NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"]"
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -29,6 +29,7 @@ seg_non_permitted_punctuation_fails = 0
 
 # Segmentation-specific tests
 trans_seg_num_words_fails = 0
+trans_non_permitted_punctuation_fails = 0
 
 # Glossing-specific tests
 gloss_multi_boundary_fails = 0
@@ -83,6 +84,7 @@ def general_screen(line):
 # Tests that are relevant only for segmentation
 def seg_screen(transcription_line, seg_line):
     global trans_seg_num_words_fails
+    global trans_non_permitted_punctuation_fails
 
     transcription_words = transcription_line.split()
     seg_words = seg_line.split()
@@ -92,6 +94,11 @@ def seg_screen(transcription_line, seg_line):
         print("Transcription line:", transcription_line)
         print("Segmentation line:", seg_line)
         trans_seg_num_words_fails += 1
+
+    if re.search(NON_PERMITTED_PUNCTUATION_REGEX, transcription_line):
+        print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
+        print(transcription_line)
+        trans_non_permitted_punctuation_fails += 1
 
 # Tests that are relevant whether your doing segmentation OR glossing
 # (Note these are only *applied* to the seg line, but they're *relevant* for both processes)
@@ -286,7 +293,7 @@ def gloss_screen(seg_line, gloss_line):
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -298,6 +305,8 @@ def print_screen_summary():
         print(f"    - {tab_fails} lines contained tab character(s).")
         print(f"    - {multi_space_fails} lines contained multiple spaces in a row.")
         print(f"    - {newline_fails} lines contained a newline character.")
+        # Transcrption tests
+        print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
         # Seg tests
         print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")

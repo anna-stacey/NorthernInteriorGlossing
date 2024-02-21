@@ -2,6 +2,8 @@
 from os import getcwd, mkdir, path
 from re import sub
 
+NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\""]
+
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
     with open(file_path) as f:
@@ -47,14 +49,13 @@ def tidy_dataset(dataset):
     for sentence in dataset:
         updated_sentence = []
         for i, line in enumerate(sentence):
+            # Remove commas, periods, and question marks from the seg and transcription lines
+            if i == 0 or i == 1:
+                for punctuation in NON_PERMITTED_PUNCTUATION:
+                    line = line.replace(punctuation, "")
+
             # Find 2+ spaces, and replace them with only one space
             line = sub(r"[ ]+[ ]+", " ", line)
-
-            # Remove commas, periods, and question marks from the seg line
-            if i == 1:
-                line = line.replace(",", "")
-                line = line.replace(".", "")
-                line = line.replace("?", "")
 
             updated_sentence.append(line)
         updated_dataset.append(updated_sentence)

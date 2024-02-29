@@ -2,7 +2,8 @@
 from os import getcwd, mkdir, path
 from re import sub
 
-NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\""]
+NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "!"]
+NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"!]"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):

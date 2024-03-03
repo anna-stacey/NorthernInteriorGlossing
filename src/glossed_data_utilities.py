@@ -2,8 +2,9 @@
 from os import getcwd, mkdir, path
 from re import sub
 
-NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "!"]
-NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"!]"
+# Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
+NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "!", "♪"]
+NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"!♪]"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -57,6 +58,10 @@ def tidy_dataset(dataset):
 
             # Find 2+ spaces, and replace them with only one space
             line = sub(r"[ ]+[ ]+", " ", line)
+            # Find sentence-initial or -final spaces, and remove them
+            line = sub(r"^ ", "", line)
+            line = sub(r" $", "", line)
+
 
             updated_sentence.append(line)
         updated_dataset.append(updated_sentence)

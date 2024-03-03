@@ -12,6 +12,8 @@ DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + ALL_BOUNDARIES_FOR_REGEX
 GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
 DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + "(\s|$)"
 GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + "(\s|$)" # To permit an exception - see data expectations in README for reasoning
+NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_ONLY = ["="]
+NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_ONLY_REGEX = "[=]"
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -94,8 +96,8 @@ def seg_screen(transcription_line, seg_line):
         print("Segmentation line:", seg_line)
         trans_seg_num_words_fails += 1
 
-    if re.search(NON_PERMITTED_PUNCTUATION_REGEX, transcription_line):
-        print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
+    if re.search(NON_PERMITTED_PUNCTUATION_REGEX, transcription_line) or re.search(NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_ONLY_REGEX, transcription_line):
+        print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION} or {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_ONLY}).")
         print(transcription_line)
         trans_non_permitted_punctuation_fails += 1
 
@@ -305,7 +307,7 @@ def print_screen_summary():
         print(f"    - {multi_space_fails} lines contained multiple spaces in a row.")
         print(f"    - {newline_fails} lines contained a newline character.")
         # Transcrption tests
-        print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
+        print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCTUATION} or {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_ONLY}).")
         # Seg tests
         print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")

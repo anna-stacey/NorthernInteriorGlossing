@@ -53,8 +53,7 @@ def tidy_dataset(dataset):
         for i, line in enumerate(sentence):
             # Remove commas, periods, and question marks from the seg and transcription lines
             if i == 0 or i == 1:
-                for punctuation in NON_PERMITTED_PUNCTUATION:
-                    line = line.replace(punctuation, "")
+                line = sub(NON_PERMITTED_PUNCTUATION_REGEX, "", line)
 
             # Find 2+ spaces, and replace them with only one space
             line = sub(r"[ ]+[ ]+", " ", line)

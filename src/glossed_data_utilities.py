@@ -136,27 +136,24 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     # exclude a lot of problematic lines from being fixed. Something to think about...
                     if len(ortho_line_word_list) > seg_word_index and ortho_line_word_list[seg_word_index] == double_pre_clitics[clitic]:
                         # Okay, now we need to modify the seg and gloss lines
-                        # The below should always be true, so eventually this should just be a sanity check (and could be an assert)
-                        if len(seg_line_word_list) == len(gloss_line_word_list):
+                        assert len(seg_line_word_list) == len(gloss_line_word_list)
 
-                            # Replace this word in the list with two words, separating the clitic
-                            seg_line_word_list.pop(seg_word_index)
-                            seg_line_word_list.insert(seg_word_index, clitic)
-                            seg_line_word_list.insert(seg_word_index + 1, word_without_clitic)
+                        # Replace this word in the list with two words, separating the clitic
+                        seg_line_word_list.pop(seg_word_index)
+                        seg_line_word_list.insert(seg_word_index, clitic)
+                        seg_line_word_list.insert(seg_word_index + 1, word_without_clitic)
 
-                            # Split the gloss
-                            removed_gloss_word = gloss_line_word_list.pop(seg_word_index)
-                            removed_gloss_split = removed_gloss_word.partition(CLITIC_BOUNDARY)
-                            double_removed_gloss_split = removed_gloss_split[2].partition(CLITIC_BOUNDARY)
-                            removed_gloss_split = (removed_gloss_split[0] + CLITIC_BOUNDARY + double_removed_gloss_split[0], CLITIC_BOUNDARY, double_removed_gloss_split[2])
-                            gloss_line_word_list.insert(seg_word_index, removed_gloss_split[0])
-                            gloss_line_word_list.insert(seg_word_index + 1, removed_gloss_split[2])
+                        # Split the gloss
+                        removed_gloss_word = gloss_line_word_list.pop(seg_word_index)
+                        removed_gloss_split = removed_gloss_word.partition(CLITIC_BOUNDARY)
+                        double_removed_gloss_split = removed_gloss_split[2].partition(CLITIC_BOUNDARY)
+                        removed_gloss_split = (removed_gloss_split[0] + CLITIC_BOUNDARY + double_removed_gloss_split[0], CLITIC_BOUNDARY, double_removed_gloss_split[2])
+                        gloss_line_word_list.insert(seg_word_index, removed_gloss_split[0])
+                        gloss_line_word_list.insert(seg_word_index + 1, removed_gloss_split[2])
 
-                            # Update the current word, for the sake of the while loop
-                            seg_word = word_without_clitic
+                        # Update the current word, for the sake of the while loop
+                        seg_word = word_without_clitic
 
-                        else:
-                            possibly_more_pre_clitics = False
                     else:
                         possibly_more_pre_clitics = False
                 else:
@@ -170,37 +167,29 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 # If there was an equals sign, and a clitic after it
                 potential_clitic_original_form = clitic_check[2]
                 potential_clitic = sub(PUNCTUATION_TO_IGNORE, "", potential_clitic_original_form)
-                #print("\nPotential clitic: ", potential_clitic)
-                #print("List of words:", seg_line_word_list)
                 if clitic_check[1] != "" and potential_clitic in post_clitics.keys():
                     clitic = potential_clitic
-                    #print("Clitic:", clitic)
                     clitic_original_form = potential_clitic_original_form
                     word_without_clitic = clitic_check[0]
-                    #print("Word without clitic:", word_without_clitic)
                     # Now: does that clitic appear as its own word in the orthographic line?
                     if _clitic_in_word_list(post_clitics[clitic], ortho_line_word_list):
-                        #print("Found match in orthography")
                         # Okay, now we need to modify the seg and gloss lines
-                        # The below should always be true, so eventually this should just be a sanity check (and could be an assert)
-                        if len(seg_line_word_list) == len(gloss_line_word_list):
+                        assert len(seg_line_word_list) == len(gloss_line_word_list)
 
-                            # Replace this word in the list with two words, separating the clitic
-                            seg_line_word_list.pop(seg_word_index)
-                            seg_line_word_list.insert(seg_word_index, word_without_clitic)
-                            seg_line_word_list.insert(seg_word_index + 1, clitic_original_form)
+                        # Replace this word in the list with two words, separating the clitic
+                        seg_line_word_list.pop(seg_word_index)
+                        seg_line_word_list.insert(seg_word_index, word_without_clitic)
+                        seg_line_word_list.insert(seg_word_index + 1, clitic_original_form)
 
-                            # Split the gloss
-                            removed_gloss_word = gloss_line_word_list.pop(seg_word_index)
-                            removed_gloss_split = removed_gloss_word.rpartition(CLITIC_BOUNDARY)
-                            gloss_line_word_list.insert(seg_word_index, removed_gloss_split[0])
-                            gloss_line_word_list.insert(seg_word_index + 1, removed_gloss_split[2])
+                        # Split the gloss
+                        removed_gloss_word = gloss_line_word_list.pop(seg_word_index)
+                        removed_gloss_split = removed_gloss_word.rpartition(CLITIC_BOUNDARY)
+                        gloss_line_word_list.insert(seg_word_index, removed_gloss_split[0])
+                        gloss_line_word_list.insert(seg_word_index + 1, removed_gloss_split[2])
 
-                            # Update the current word, for the sake of the while loop
-                            seg_word = word_without_clitic
+                        # Update the current word, for the sake of the while loop
+                        seg_word = word_without_clitic
 
-                        else:
-                            possibly_more_post_clitics = False
                     else:
                         possibly_more_post_clitics = False
                 else:
@@ -223,26 +212,27 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     word_without_clitic = clitic_check[0]
                     # Now: does that clitic appear as its own word in the orthographic line?
                     if _clitic_in_word_list(double_post_clitics[clitic], ortho_line_word_list):
+                        assert len(seg_line_word_list) == len(gloss_line_word_list)
 
-                            # Replace this word in the list with two words, separating the clitic
-                            seg_line_word_list.pop(seg_word_index)
-                            seg_line_word_list.insert(seg_word_index, word_without_clitic)
-                            seg_line_word_list.insert(seg_word_index + 1, clitic_original_form)
+                        # Replace this word in the list with two words, separating the clitic
+                        seg_line_word_list.pop(seg_word_index)
+                        seg_line_word_list.insert(seg_word_index, word_without_clitic)
+                        seg_line_word_list.insert(seg_word_index + 1, clitic_original_form)
 
-                            # Split the gloss
-                            removed_gloss_word = gloss_line_word_list.pop(seg_word_index)
-                            removed_gloss_split = removed_gloss_word.rpartition(CLITIC_BOUNDARY)
-                            second_clitic_gloss = removed_gloss_split[2]
-                            removed_gloss_split = removed_gloss_split[0].rpartition(CLITIC_BOUNDARY)
-                            first_clitic_gloss = removed_gloss_split[2]
-                            # Stuff before the double clitic
-                            gloss_line_word_list.insert(seg_word_index, removed_gloss_split[0])
-                            # The double clitic
-                            gloss_line_word_list.insert(seg_word_index + 1, first_clitic_gloss + CLITIC_BOUNDARY + second_clitic_gloss)
+                        # Split the gloss
+                        removed_gloss_word = gloss_line_word_list.pop(seg_word_index)
+                        removed_gloss_split = removed_gloss_word.rpartition(CLITIC_BOUNDARY)
+                        second_clitic_gloss = removed_gloss_split[2]
+                        removed_gloss_split = removed_gloss_split[0].rpartition(CLITIC_BOUNDARY)
+                        first_clitic_gloss = removed_gloss_split[2]
+                        # Stuff before the double clitic
+                        gloss_line_word_list.insert(seg_word_index, removed_gloss_split[0])
+                        # The double clitic
+                        gloss_line_word_list.insert(seg_word_index + 1, first_clitic_gloss + CLITIC_BOUNDARY + second_clitic_gloss)
 
-                            # Update the current word, for the sake of the while loop
-                            # (We're already at the end of the loop here, but for consistency)
-                            seg_word = word_without_clitic
+                        # Update the current word, for the sake of the while loop
+                        # (We're already at the end of the loop here, but for consistency)
+                        seg_word = word_without_clitic
 
         # Reassemble the modified lines
         seg_line = " ".join(seg_line_word_list)

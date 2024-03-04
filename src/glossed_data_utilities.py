@@ -3,8 +3,9 @@ from os import getcwd, mkdir, path
 from re import sub
 
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
-NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "!", "♪"]
-NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"!♪]"
+# Note that double colons (::) are being permitted b/c the St̓át̓imcets data seems to use them legitimately as a vowel length thing
+NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "!", "♪", ":"]
+NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"!♪]|([^:]):([^:])" # Any of these characters, but including only *single* colons, not two in a row
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -53,7 +54,7 @@ def tidy_dataset(dataset):
         for i, line in enumerate(sentence):
             # Remove commas, periods, and question marks from the seg and transcription lines
             if i == 0 or i == 1:
-                line = sub(NON_PERMITTED_PUNCTUATION_REGEX, "", line)
+                line = sub(NON_PERMITTED_PUNCTUATION_REGEX, r"\1\2", line)
 
             # Find 2+ spaces, and replace them with only one space
             line = sub(r"[ ]+[ ]+", " ", line)

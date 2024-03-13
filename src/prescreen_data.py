@@ -329,7 +329,7 @@ def print_screen_summary():
     print("\n")
 
 def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
-    # Dictionary where the keys are glosses, and the values are lists of morphemes
+    # Dictionary where the keys are glosses, and the values are also dicts with morpheme keys and count values
     # e.g. 3ERG: [es, s]
     gloss_dict = {}
     for sentence in all_data:
@@ -344,13 +344,17 @@ def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
             # If there is an entry, check if this morpheme is already listed
             # If not, add it
             if not (gloss in gloss_dict.keys()):
-                gloss_dict.update({gloss: [morpheme]})
+                gloss_dict.update({gloss: {morpheme: 1}})
             else: # Add to the existing entry
                 existing_entry = (gloss_dict.get(gloss))
                 if morpheme in existing_entry:
-                    pass
+                    current_count = existing_entry[morpheme]
+                    # Update the morpheme + count dictionary
+                    existing_entry.update({morpheme: current_count + 1 })
+                    # Then update the gloss entry (with this updated morpheme/count dict)
+                    gloss_dict.update({gloss: existing_entry})
                 else:
-                    existing_entry.append(morpheme)
+                    existing_entry.update({morpheme: 1})
                     gloss_dict.update({gloss: existing_entry})
 
     # Switch to a separate dict for grams and stems, and words that are not translated (e.g., English words, people's names)
@@ -358,12 +362,15 @@ def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
     stem_dict = {}
     not_translated_dict = {}
     for entry in gloss_dict.items():
-        if entry[0].isupper():
-            gram_dict.update({entry[0]: entry[1]})
-        elif len(entry[1]) == 1 and entry[1][0] == entry[0]:
-            not_translated_dict.update({entry[0]: entry[1]})
+        gloss = entry[0]
+        morphemes_with_counts = entry[1]
+        if gloss.isupper():
+            gram_dict.update({gloss: morphemes_with_counts})
+        # If there's only one morpheme form, and it's identical to the gloss!
+        elif len(morphemes_with_counts) == 1 and list(morphemes_with_counts.keys())[0] == gloss:
+            not_translated_dict.update({gloss: morphemes_with_counts})
         else:
-            stem_dict.update({entry[0]: entry[1]})
+            stem_dict.update({gloss: morphemes_with_counts})
 
     # Alphabetize, then print the results!
     gram_list = sorted(gram_dict.items())
@@ -373,15 +380,23 @@ def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
     print("--- Grams: ---")
     print("Total number of unique gram glosses:", len(gram_list))
     for entry in gram_list:
-        print(entry[0], ":", entry[1])
+        print(entry[0], ":", _format_morpheme_and_count_dict(entry[1]))
     print("\n\n--- Stems: ---")
     print("Total number of unique stem glosses:", len(stem_list))
     for entry in stem_list:
-        print(entry[0], ":", entry[1])
+        print(entry[0], ":", _format_morpheme_and_count_dict(entry[1]))
     print("\n\n--- \"Stems\" that are just English/onomatopoeia: ---")
     print("Total number of such unique glosses:", len(english_list))
     for entry in english_list:
-        print(entry[0], ":", entry[1])
+        print(entry[0], ":", _format_morpheme_and_count_dict(entry[1]))
+
+def _format_morpheme_and_count_dict(dict):
+    line_to_print = ""
+    for entry in dict.items():
+        line_to_print += entry[0] + " (" + str(entry[1]) + "), "
+
+    line_to_print = re.sub(", $", "", line_to_print)
+    return line_to_print
 
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")

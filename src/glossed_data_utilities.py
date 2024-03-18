@@ -1,5 +1,6 @@
 # *** Common functions for creating train/dev/tests datasets ***
 from os import getcwd, mkdir, path
+from random import shuffle
 from re import sub
 
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
@@ -259,7 +260,7 @@ def _clitic_in_word_list(clitic, word_list):
 
     return found
 
-def create_file_of_sentences(examples, file_name):
+def create_file_of_sentences(examples, file_name, randomize_order = False):
     output_folder = "/data/"
 
     # Create the generated_data subdirectory, if it doesn't already exist
@@ -267,16 +268,20 @@ def create_file_of_sentences(examples, file_name):
     if not path.exists(dir_path):
         mkdir(dir_path)
 
-    write_sentences(examples, dir_path + file_name)
+    write_sentences(examples, dir_path + file_name, randomize_order)
 
 # Assumes that lines do NOT end in "\n", and will add it as it prints
-def write_sentences(examples, file_path):
+def write_sentences(examples, file_path, randomize_order = False):
+    examples_to_write = examples
+    if randomize_order:
+        shuffle(examples_to_write)
+
     with open(file_path, "w") as file:
-        for i, example in enumerate(examples):
+        for i, example in enumerate(examples_to_write):
             if len(example) > 0:
                 for j, line in enumerate(example):
                     file.write(line + "\n")
                     # Add blank line after each example (but not if it's the end of the dataset, bc that results in a double newline at EOF)
-                    if (j >= len(example) - 1) and (i < len(examples) - 1):
+                    if (j >= len(example) - 1) and (i < len(examples_to_write) - 1):
                         file.write("\n")
         file.close()

@@ -35,6 +35,8 @@ def extract_X_and_y(dataset, segmentation_line_number, gloss_line_number):
 # This is done so we can look at the neighbouring morphemes and the word the morpheme is a part of
 # Returns a dictionary of features for the current morpheme
 def morpheme_to_features(word, i):
+    ACUTE_ACCENT = "\u0301"
+
     morpheme = word[i]
     word_str = ""
     for each_morpheme in word:
@@ -44,18 +46,31 @@ def morpheme_to_features(word, i):
     features = {
       "morpheme": morpheme.lower(),
       "morpheme[-3:]": morpheme[-3:].lower(),
+      "morpheme_no_stress": re.sub(ACUTE_ACCENT,"", morpheme.lower())
     }
 
     # If it's not the first morpheme in the word
     if (i > 0):
         features.update({
-            "-1_morpheme": word[i - 1].lower()
+            "-1_morpheme": word[i - 1].lower(),
+            "first_morpheme": False
+        })
+    else:
+        features.update({
+            "-1_morpheme": "",
+            "first_morpheme": True
         })
 
     # If it's not the last morpheme in the word
     if (i < len(word) - 1):
         features.update({
-            "+1_morpheme": word[i + 1].lower()
+            "+1_morpheme": word[i + 1].lower(),
+            "last_morpheme": False
+        })
+    else:
+        features.update({
+            "+1_morpheme": "",
+            "last_morpheme": True
         })
 
     return features

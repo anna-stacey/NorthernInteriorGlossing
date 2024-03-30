@@ -32,12 +32,6 @@ def general_preprocess(sentence, is_segmented):
     if is_segmented:
         # Remove bracketed affixes
         sentence = re.sub(r'\[[^\]]*\]', "", sentence)
-        # Sometimes, double dashes (pause) were included
-        sentence = sentence.replace("--", "")
-    else:
-        # There are sometimes hyphens in the unsegmented input.
-        # It seems these are sometimes to indicate a long pause (written as "--"), but sometimes in words e.g. Git-anyaaw
-        sentence = re.sub(r'-', "", sentence)
     sentence = sentence.replace("\n", "")
     # Remove any double spaces that may be created from char removals
     sentence = re.sub(r'\s+', " ", sentence)

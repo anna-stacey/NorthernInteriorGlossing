@@ -328,7 +328,11 @@ def print_screen_summary():
         print(f"    - There were {seg_gloss_boundary_fails} instances of a different kind of morpheme boundary between the segmented and gloss lines.")
     print("\n")
 
-def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
+# Returns three lists
+# Each list element is a tuple
+# Tuple[0] = a string gloss, like "1PL.EMPH"
+# Tuple[1] = a dictionary with morphemes glossed with that label and their counts, like {'nmímɬ': 1, 'nmimɬ': 1}
+def get_tags(all_data, segmentation_line_number, gloss_line_number):
     # Dictionary where the keys are glosses, and the values are also dicts with morpheme keys and count values
     # e.g. 3ERG: [es, s]
     gloss_dict = {}
@@ -372,23 +376,35 @@ def get_gloss_inventory(all_data, segmentation_line_number, gloss_line_number):
         else:
             stem_dict.update({gloss: morphemes_with_counts})
 
-    # Alphabetize, then print the results!
+    # Alphabetize the results!
     gram_list = sorted(gram_dict.items())
     stem_list = sorted(stem_dict.items())
     english_list = sorted(not_translated_dict.items())
+
+    return gram_list, stem_list, english_list
+
+def print_tags(gram_list, stem_list, english_list):
     print("***** GLOSS INVENTORY *****")
     print("--- Grams: ---")
     print("Total number of unique gram glosses:", len(gram_list))
     for entry in gram_list:
-        print(entry[0], ":", _format_morpheme_and_count_dict(entry[1]))
+        gloss = entry[0]
+        morpheme_and_count_dict = entry[1]
+        print(gloss, ":", _format_morpheme_and_count_dict(morpheme_and_count_dict))
+
     print("\n\n--- Stems: ---")
     print("Total number of unique stem glosses:", len(stem_list))
     for entry in stem_list:
-        print(entry[0], ":", _format_morpheme_and_count_dict(entry[1]))
+        gloss = entry[0]
+        morpheme_and_count_dict = entry[1]
+        print(gloss, ":", _format_morpheme_and_count_dict(morpheme_and_count_dict))
+
     print("\n\n--- \"Stems\" that are just English/onomatopoeia: ---")
     print("Total number of such unique glosses:", len(english_list))
     for entry in english_list:
-        print(entry[0], ":", _format_morpheme_and_count_dict(entry[1]))
+        gloss = entry[0]
+        morpheme_and_count_dict = entry[1]
+        print(gloss, ":", _format_morpheme_and_count_dict(morpheme_and_count_dict))
 
 def _format_morpheme_and_count_dict(dict):
     line_to_print = ""
@@ -398,13 +414,50 @@ def _format_morpheme_and_count_dict(dict):
     line_to_print = re.sub(", $", "", line_to_print)
     return line_to_print
 
+def compare_tags(lang_1_data, lang_2_data, segmentation_line_number, gloss_line_number):
+    # Let's get a list of gram glosses for each lang
+    gram_list_1, throwaway, throwaway = get_tags(lang_1_data, segmentation_line_number, gloss_line_number)
+    gram_list_2, throwaway, throwaway = get_tags(lang_2_data, segmentation_line_number, gloss_line_number)
+    lang_1_tags = [entry[0] for entry in gram_list_1]
+    lang_2_tags = [entry[0] for entry in gram_list_2]
+
+    shared_tags = []
+    for tag in lang_1_tags:
+        if tag in lang_2_tags:
+            shared_tags.append(tag)
+
+    lang_1_tags = [entry for entry in lang_1_tags if entry not in shared_tags]
+    lang_2_tags = [entry for entry in lang_2_tags if entry not in shared_tags]
+
+    print("\nTags Only in Language 1:")
+    print("Total: ", (len(lang_1_tags)))
+    for tag in lang_1_tags:
+        print(tag)
+
+    print("\nTags Only in Language 2:")
+    print("Total: ", (len(lang_2_tags)))
+    for tag in lang_2_tags:
+        print(tag)
+
+    print("\nShared Tags:")
+    print("Total: ", (len(shared_tags)))
+    for tag in shared_tags:
+        print(tag)
+
+# This code can do multiple things -- you need to tell it to do one (or more) of screen_data, print_tags, and/or compare_tags
 @click.command()
-@click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
-@click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
-@click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
-@click.option("--segmentation_line_number", help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
-@click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
-def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number):
+@click.option("--do_screen_data", is_flag = True, help = "A flag that indicates we should prescreen the inputed datasets.")
+@click.option("--do_print_tags", is_flag = True, help = "A flag that indicates we should summarize the glossing tags found in the inputted datasets.")
+@click.option("--do_compare_tags", is_flag = True, help = "A flag that indicates we should compare the tags from two languages.")
+@click.option("--train_file", required = True, type = str, help = "The name of the file containing all sentences in the train set.")
+@click.option("--dev_file", required = True, type = str, help = "The name of the file containing all sentences in the dev set.")
+@click.option("--test_file", required = True, type = str, help = "The name of the file containing all sentences in the test set.")
+@click.option("--train_file_to_compare", type = str, help = "The name of the file containing all sentences in the train set *of the language to be compared with*.")
+@click.option("--dev_file_to_compare", type = str, help = "The name of the file containing all sentences in the dev set *of the language to be compared with*.")
+@click.option("--test_file_to_compare", type = str, help = "The name of the file containing all sentences in the test set *of the language to be compared with*.")
+@click.option("--segmentation_line_number", required = True, type = int, help = "The line that contains the segmented sentence.  Note that this starts with the first line = 1.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
+@click.option("--gloss_line_number", required = True, type = int, help = "The line that contains the glossed sentence.  Note that this starts with the first line = 1.  For example if there are four lines each and the gloss is the third line, this will be 3.")
+def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number, do_screen_data, do_print_tags, do_compare_tags, train_file_to_compare = None, dev_file_to_compare = None, test_file_to_compare = None):
     # Convert right away to prevent off-by-one errors
     segmentation_line_number = int(segmentation_line_number) - 1
     gloss_line_number = int(gloss_line_number) - 1
@@ -413,20 +466,33 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
     # Screen each dataset!
-    print("\n***** PRESCREENING ******\n")
-    print("--- Errors found in train dataset: ---")
-    screen_data(train, segmentation_line_number, gloss_line_number)
+    if do_screen_data:
+        print("\n***** PRESCREENING ******\n")
+        print("--- Errors found in train dataset: ---")
+        screen_data(train, segmentation_line_number, gloss_line_number)
 
-    print("\n--- Errors found in dev dataset: ---")
-    screen_data(dev, segmentation_line_number, gloss_line_number)
-    
-    print("\n--- Errors found in test dataset: ---")
-    screen_data(test, segmentation_line_number, gloss_line_number)
+        print("\n--- Errors found in dev dataset: ---")
+        screen_data(dev, segmentation_line_number, gloss_line_number)
 
-    # Print the results
-    print_screen_summary()
+        print("\n--- Errors found in test dataset: ---")
+        screen_data(test, segmentation_line_number, gloss_line_number)
 
-    get_gloss_inventory(train + dev + test, segmentation_line_number, gloss_line_number)
+        # Print the results
+        print_screen_summary()
+
+    if do_print_tags:
+        gram_list, stem_list, english_list = get_tags(train + dev + test, segmentation_line_number, gloss_line_number)
+        print_tags(gram_list, stem_list, english_list)
+
+    if do_compare_tags:
+        if train_file_to_compare and dev_file_to_compare and test_file_to_compare:
+            train_2, dev_2, test_2 = read_datasets(train_file_to_compare, dev_file_to_compare, test_file_to_compare)
+            compare_tags(train + dev + test, train_2 + dev_2 + test_2, segmentation_line_number, gloss_line_number)
+        else:
+            print("\nERROR: --compare_tags flag used, but one or more of the train/dev/test files to compare with were NOT given!")
+
+    if not(do_screen_data) and not(do_print_tags) and not(do_compare_tags):
+        print("No tasks were requested, so this code isn't doing anything!\nRun `python src/prescreen_data.py --help` to see the possible options, including which tasks you can specify.")
 
 if __name__ == '__main__':
     main()

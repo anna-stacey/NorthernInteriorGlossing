@@ -54,7 +54,6 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     seg_output = remove_infix_boundary_errors(seg_output)
     # Put the sentences back together
     test_X = reassemble_sentences(seg_output, word_count_by_sentence)
-
     # Ok! Now we have our input prepped. Now let's get our gold standard glosses
     train, throwaway, test = read_datasets(gloss_train_file, gloss_dev_file, gloss_test_file)
     throwaway, test_y = extract_X_and_y(test, segmentation_line_number, gloss_line_number)
@@ -76,7 +75,8 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     # Create output files for the sigmorphon evaluation
     isOpenTrack = False
     # Assemble output file of predictions
-    make_output_file(test, PRED_OUTPUT_FILE_NAME, pred_y, segmentation_line_number, gloss_line_number, isOpenTrack)
+    test_with_predictions = make_output_file(test, pred_y, gloss_line_number)
+    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
     # And create a file of the gold version, formatted the same way to permit comparison
     write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
 

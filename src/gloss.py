@@ -512,7 +512,7 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
     return updated_gloss
 
 # Take the whole list of sentences (with transcription, seg, etc.) and replace the gloss line with our predicted glosses
-def make_output_file(sentence_list, file_name, gloss_pred_list, segmentation_line_number, gloss_line_number, isOpenTrack):
+def make_output_file(sentence_list, gloss_pred_list, gloss_line_number):
     new_sentence_list = []
     for sentence, pred_gloss_line in zip(sentence_list, gloss_pred_list):
         new_sentence = []
@@ -522,8 +522,7 @@ def make_output_file(sentence_list, file_name, gloss_pred_list, segmentation_lin
 
         new_sentence_list.append(new_sentence)
 
-    # Now that it's formatted correctly, we can write the output file
-    write_output_file(new_sentence_list, file_name, segmentation_line_number, gloss_line_number, isOpenTrack)
+    return new_sentence_list
 
 # Given the gloss line as a list of words, each containing lists of morpheme glosses, convert this to just a single string representing the sentence
 def reassemble_gloss_line(line):
@@ -615,7 +614,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
     isOpenTrack = True # Because we had the segmentation to work with in this case!
-    make_output_file(test, PRED_OUTPUT_FILE_NAME, pred_y, segmentation_line_number, gloss_line_number, isOpenTrack)
+    test_with_predictions = make_output_file(test, pred_y, gloss_line_number)
+    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
     # And create a file of the gold version, formatted the same way to permit comparison
     write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
 

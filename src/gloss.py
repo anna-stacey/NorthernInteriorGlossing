@@ -512,28 +512,28 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
     return updated_gloss
 
 # Take the whole list of sentences (with transcription, seg, etc.) and replace the gloss line with our predicted glosses
-def make_output_file(sentence_list, gloss_pred_list, gloss_line_number):
+# This function was made generic, so it could also be used to replace the segmentation line
+def make_sentence_list_with_prediction(sentence_list, prediction_line_list, line_number_to_replace):
     new_sentence_list = []
-    for sentence, pred_gloss_line in zip(sentence_list, gloss_pred_list):
-        new_sentence = []
-        new_sentence.extend(sentence[0:gloss_line_number])
-        new_sentence.append(reassemble_gloss_line(pred_gloss_line))
-        new_sentence.extend(sentence[gloss_line_number + 1:len(sentence)])
-
-        new_sentence_list.append(new_sentence)
+    for sentence, predicted_line in zip(sentence_list, prediction_line_list):
+        sentence[line_number_to_replace] = predicted_line
+        new_sentence_list.append(sentence)
 
     return new_sentence_list
 
-# Given the gloss line as a list of words, each containing lists of morpheme glosses, convert this to just a single string representing the sentence
-def reassemble_gloss_line(line):
-    sentence_as_list_of_words = []
-    for word in line:
-        new_word = "-".join(word)
-        sentence_as_list_of_words.append(new_word)
+# Given the a list of gloss lines as a list of words, each containing lists of morpheme glosses, convert each line to just a single string
+def reassemble_gloss_line(gloss_line_list):
+    new_gloss_line_list = []
+    for line in gloss_line_list:
+        sentence_as_list_of_words = []
+        for word in line:
+            new_word = "-".join(word)
+            sentence_as_list_of_words.append(new_word)
 
-    sentence_as_string = " ".join(sentence_as_list_of_words)
+        sentence_as_string = " ".join(sentence_as_list_of_words)
+        new_gloss_line_list.append(sentence_as_string)
 
-    return sentence_as_string
+    return new_gloss_line_list
 
 # Takes a list of sentences, where each sentence contains the transcription line, segmentation line, etc.
 # No return value, just creates and write to an output file
@@ -614,7 +614,7 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
     isOpenTrack = True # Because we had the segmentation to work with in this case!
-    test_with_predictions = make_output_file(test, pred_y, gloss_line_number)
+    test_with_predictions = make_sentence_list_with_prediction(test, reassemble_gloss_line(pred_y), gloss_line_number)
     write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
     # And create a file of the gold version, formatted the same way to permit comparison
     write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)

@@ -1,6 +1,6 @@
 import click
 import re
-from test_seg import read_file, format_fairseq_output
+from test_seg import read_lines_from_file, format_fairseq_output
 from gloss import evaluate_system, extract_X_and_y, format_X_and_y, make_sentence_list_with_prediction, read_datasets, reassemble_gloss_line, train_system, write_output_file, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
 
 GOLD_OUTPUT_FILE_NAME = "pipeline_gold.txt"
@@ -43,9 +43,9 @@ def main(seg_output_file, data_summary_file, gloss_train_file, gloss_dev_file, g
     segmentation_line_number = int(segmentation_line_number) - 1
 
     # Read in our word counts, for re-assembling sentences
-    word_count_by_sentence = read_file(data_summary_file)
+    word_count_by_sentence = read_lines_from_file(data_summary_file)
     # Read in the fairseq output (segmented words)
-    seg_output = read_file(seg_output_file)
+    seg_output = read_lines_from_file(seg_output_file)
     # Process the gross fairseq output format so we just have the words
     seg_output = format_fairseq_output(seg_output)
     # Remove spaces from words

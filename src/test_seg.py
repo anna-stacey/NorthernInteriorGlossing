@@ -1,7 +1,9 @@
 import click
+from gloss import make_sentence_list_with_prediction
+from glossed_data_utilities import read_file, write_sentences
 
 # Returns a list of lines in the file, "\n" within the line removed
-def read_file(file_path):
+def read_lines_from_file(file_path):
     with open(file_path) as f:
         lines = f.readlines()
 
@@ -40,22 +42,45 @@ def evaluate(output, gold_output):
     accuracy = round(accuracy * 100, 2)
     print(f"Accuracy: {accuracy}% on {seg_count} words.")
 
+def reassemble_sentences(entire_input, predicted_seg_word_list):
+    predicted_seg_line_list = []
+    current_word_index = 0
+    for sentence in entire_input:
+        current_sentence = []
+        current_word_count = len(sentence[0].split())
+        current_sentence.extend(predicted_seg_word_list[current_word_index : current_word_index + current_word_count])
+        current_sentence = [word.replace(" ", "") for word in current_sentence]
+        current_sentence = " ".join(current_sentence)
+        current_word_index += current_word_count
+        predicted_seg_line_list.append(current_sentence)
+
+    return predicted_seg_line_list
+
 @click.command()
+@click.option("--whole_input_file", help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
 @click.option("--output_file", help="The name of the output file.")
 @click.option("--gold_output_file", help="The name of the gold output file.")
-def main(output_file, gold_output_file):
+def main(whole_input_file, output_file, gold_output_file):
     print("Comparing these files:", output_file, gold_output_file)
     
     # Get the test results
-    output = read_file(output_file)
+    output = read_lines_from_file(output_file)
     output = format_fairseq_output(output)
 
     # Get the gold labels
-    gold_output = read_file(gold_output_file)
+    gold_output = read_lines_from_file(gold_output_file)
     
     # Compare!
     evaluate(output, gold_output)
 
+    # Print a viewable output
+    # First read in and print out the gold
+    entire_input = read_file(whole_input_file)
+    write_sentences(entire_input, "generated_data/seg_gold.txt")
+    # Now format and print a version with our predictions
+    formatted_output = reassemble_sentences(entire_input, output)
+    sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_output, 1)
+    write_sentences(sentences_with_predictions, "generated_data/seg_pred.txt")
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':
     main()

@@ -516,8 +516,9 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
 def make_sentence_list_with_prediction(sentence_list, prediction_line_list, line_number_to_replace):
     new_sentence_list = []
     for sentence, predicted_line in zip(sentence_list, prediction_line_list):
-        sentence[line_number_to_replace] = predicted_line
-        new_sentence_list.append(sentence)
+        new_sentence = sentence.copy()
+        new_sentence[line_number_to_replace] = predicted_line
+        new_sentence_list.append(new_sentence)
 
     return new_sentence_list
 

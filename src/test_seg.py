@@ -42,7 +42,7 @@ def evaluate(output, gold_output):
     accuracy = round(accuracy * 100, 2)
     print(f"Accuracy: {accuracy}% on {seg_count} words.")
 
-def reassemble_sentences(entire_input, predicted_seg_word_list):
+def reassemble_predicted_line(entire_input, predicted_seg_word_list):
     predicted_seg_line_list = []
     current_word_index = 0
     for sentence in entire_input:
@@ -78,7 +78,7 @@ def main(whole_input_file, output_file, gold_output_file):
     entire_input = read_file(whole_input_file)
     write_sentences(entire_input, "generated_data/seg_gold.txt")
     # Now format and print a version with our predictions
-    formatted_output = reassemble_sentences(entire_input, output)
+    formatted_output = reassemble_predicted_line(entire_input, output)
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_output, 1)
     write_sentences(sentences_with_predictions, "generated_data/seg_pred.txt")
 # Doing this so that I can export functions to pipeline.py

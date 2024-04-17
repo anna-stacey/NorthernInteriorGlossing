@@ -385,13 +385,15 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
         pred_glossed_sentence = []
         for morpheme_features, predicted_gloss in zip(sentence, glossed_sentence):
             morpheme = morpheme_features["morpheme"]
-            if predicted_gloss == "STEM" and morpheme in stem_dict:
-                known_stem_count += 1
-                pred_glossed_sentence.append(stem_dict[morpheme])
-            else:
-                if predicted_gloss == "STEM":
+            # Look at everything the CRF identified as a stem
+            if predicted_gloss == "STEM":
+                if morpheme in stem_dict:
+                    # We know this stem! Fill it in
+                    predicted_gloss = stem_dict[morpheme]
+                    known_stem_count += 1
+                else:
                     unknown_stem_count += 1
-                pred_glossed_sentence.append(predicted_gloss)
+            pred_glossed_sentence.append(predicted_gloss)
         pred_dev_y.append(pred_glossed_sentence)
     
     total_stem_count = known_stem_count + unknown_stem_count

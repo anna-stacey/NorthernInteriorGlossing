@@ -117,12 +117,12 @@ def main(train_file, dev_file, test_file, pipeline_file):
     create_file_of_words(train_y_formatted, TRAIN_OUTPUT_NAME)
 
     dev_X_formatted, dev_y_formatted = format_data(dev_X, dev_y)
-    assert(len(train_X_formatted) == len(train_y_formatted))
+    assert(len(dev_X_formatted) == len(dev_y_formatted))
     create_file_of_words(dev_X_formatted, DEV_INPUT_NAME)
     create_file_of_words(dev_y_formatted, DEV_OUTPUT_NAME)
 
     test_X_formatted, test_y_formatted = format_data(test_X, test_y)
-    assert(len(train_X_formatted) == len(train_y_formatted))
+    assert(len(test_X_formatted) == len(test_y_formatted))
     create_file_of_words(test_X_formatted, TEST_INPUT_NAME)
     create_file_of_words(test_y_formatted, TEST_OUTPUT_NAME)
 

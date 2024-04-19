@@ -190,7 +190,8 @@ def format_X_and_y(X, y):
     return X, y
 
 # Returns the accuracy value (for each morpheme)
-def get_accuracy(y, predicted_y):
+# Expects a list of sentences as lists of morphemes
+def get_simple_morpheme_level_accuracy(y, predicted_y):
     assert len(y) == len(predicted_y), f"Mismatch between length of gold glosses ({len(y)}) and length of predicted glosses ({len(predicted_y)})."
     total = 0
     wrong = 0
@@ -205,7 +206,8 @@ def get_accuracy(y, predicted_y):
     return accuracy
 
 # Returns the accuracy value - this version includes going word-by-word
-def get_detailed_accuracy(y, predicted_y):
+# Expects a list of sentences as lists of words as lists of morphemes
+def get_morpheme_level_accuracy(y, predicted_y):
     assert(len(y) == len(predicted_y))
     total = 0
     wrong = 0
@@ -228,42 +230,41 @@ def get_detailed_accuracy(y, predicted_y):
     accuracy = (total - wrong) / total
     return accuracy
 
-# Just returns the value
+# Returns the accuracy value
+# Expects a list of sentences as lists of words as lists of morphemes
+# Operates at the word-level, i.e., a word must have all its morphemes
+# glossed correctly to be considered correct
 def get_word_level_accuracy(y, predicted_y):
     assert(len(y) == len(predicted_y))
     total = 0
     wrong = 0
-    skip_count = 0
 
     for gold_label_line, predicted_label_line in zip(y, predicted_y):
-        wrong_per_sentence = 0
         # There must be the same number of words in the gold and the predicted lines
         # (The number of words is not impacted by the segmentation task)
-        if(len(gold_label_line) == len(predicted_label_line)):
-            for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
-                total += 1
-                is_correct = True
-                # The number of morphemes can vary in the gold word vs the predicted word
-                # So this zip may end up skipping some morphemes if one word contains more
-                for gold_label, predicted_label in zip(gold_word, predicted_word):
-                    if gold_label != predicted_label:
-                        is_correct = False
+        assert(len(gold_label_line) == len(predicted_label_line))
 
-                # Was the whole word correct?
-                if not is_correct:
-                    wrong += 1
-        else:
-            skip_count += 1
+        for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
+            total += 1
+            is_correct = True
+            # The number of morphemes can vary in the gold word vs the predicted word
+            # So this zip may end up skipping some morphemes if one word contains more
+            for gold_label, predicted_label in zip(gold_word, predicted_word):
+                if gold_label != predicted_label:
+                    is_correct = False
 
-    print(f"Accuracy calculation skipped {skip_count} lines due to word count mismatch.")
+            # Was any morpheme in the word wrong?  If so, mark the whole word wrong.
+            if not is_correct:
+                wrong += 1
+
     assert(total > 0)
     accuracy = (total - wrong) / total
     return accuracy
 
-# Returns the predictions and the accuracy value
+# Returns the prediction list
 def run_crf(model, X, y):
     pred_y = model.predict(X)
-    return pred_y, get_accuracy(y, pred_y)
+    return pred_y
 
 # Returns the model itself (trained)
 def create_crf(train_X, train_y, max_iter, alg, min_freq, c2):
@@ -317,7 +318,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                         # Create a crf model with these parameters
                         crf = create_crf(train_X, train_y, max_iter, alg, min_freq, c2)
                         # And see how the model does on the dev set
-                        throwaway, result = run_crf(crf, dev_X, dev_y)
+                        result = get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
                         print(f"With {max_iter} (max.) iterations, the {alg} algorithm using a c2 of {c2}, and {min_freq + 1} minimum feature frequency: {result}")
                         if result > best_accuracy:
                             best_accuracy = result
@@ -329,7 +330,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                     # Create a crf model with these parameters
                     crf = create_crf(train_X, train_y, max_iter, alg, min_freq, -1)
                     # And see how the model does on the dev set
-                    throwaway, result = run_crf(crf, dev_X, dev_y)
+                    result = get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
                     print(f"With {max_iter} (max.) iterations, the {alg} algorithm, and {min_freq + 1} minimum feature frequency: {result}")
                     if result > best_accuracy:
                         best_accuracy = result
@@ -436,8 +437,9 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         y_stems_sentence = []
         y_grams_sentence = []
 
-    print(f"Accuracy for stems: {round(get_accuracy(y_stems, pred_y_stems) * 100, 2)}%.")
-    print(f"Accuracy for grams: {round(get_accuracy(y_grams, pred_y_grams) * 100, 2)}%.")
+    # Now each list has one entry per sentence, which is itself a list of morphemes
+    print(f"Accuracy for stems: {round(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems) * 100, 2)}%.")
+    print(f"Accuracy for grams: {round(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams) * 100, 2)}%.")
 
 # Trains and returns the dictionary and the CRF!
 # As well as train_y formatted without stems, which is needed for the CRF to tune hyperparameters
@@ -455,7 +457,7 @@ def train_system(train_X, train_y):
 def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
 
     # Run the CRF model for bound morphemes
-    interim_pred_y, interim_accuracy = run_crf(crf, X, y)
+    interim_pred_y = run_crf(crf, X, y)
 
     # Take that prediction, and apply the stem dictionary to it
     pred_y = gloss_stems(X, interim_pred_y, stem_dict)
@@ -464,7 +466,7 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
     print("\n** Accuracy scores: **")
-    print(f"Morpheme-level accuracy: {round(get_detailed_accuracy(y, pred_y) * 100, 2)}%.\n")
+    print(f"Morpheme-level accuracy: {round(get_morpheme_level_accuracy(y, pred_y) * 100, 2)}%.\n")
     print(f"Word-level accuracy: {round(get_word_level_accuracy(y, pred_y) * 100, 2)}%.\n")
 
     # Results - print by-stem and by-gram accuracy

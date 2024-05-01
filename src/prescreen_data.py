@@ -3,7 +3,7 @@
 import click
 from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX
 import re
-from glossed_data_utilities import NON_PERMITTED_PUNCTUATION, NON_PERMITTED_PUNCTUATION_REGEX
+from glossed_data_utilities import NON_PERMITTED_PUNCTUATION, NON_PERMITTED_PUNCTUATION_REGEX, OUT_OF_LANGUAGE_MARKER
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 NON_GLOSS_LINE_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
@@ -31,6 +31,8 @@ seg_non_permitted_punctuation_fails = 0
 # Segmentation-specific tests
 trans_seg_num_words_fails = 0
 trans_non_permitted_punctuation_fails = 0
+trans_seg_OOL_marker_fails = 0
+trans_seg_OOL_word_fails = 0
 
 # Glossing-specific tests
 gloss_multi_boundary_fails = 0
@@ -42,6 +44,8 @@ seg_gloss_num_morphemes_fails = 0
 seg_gloss_word_num_morphemes_fails = 0 # There can be multiple of these per line
 gloss_boundary_marker_fails = 0
 seg_gloss_boundary_fails = 0
+seg_gloss_OOL_marker_fails = 0
+seg_gloss_OOL_word_fails = 0
 
 # Takes in a dataset, and sends it off to various screening functions
 # No return value -- just updates all our global fail counts
@@ -86,6 +90,8 @@ def general_screen(line):
 def seg_screen(transcription_line, seg_line):
     global trans_seg_num_words_fails
     global trans_non_permitted_punctuation_fails
+    global trans_seg_OOL_marker_fails
+    global trans_seg_OOL_word_fails
 
     transcription_words = transcription_line.split()
     seg_words = seg_line.split()
@@ -100,6 +106,21 @@ def seg_screen(transcription_line, seg_line):
         print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION} or {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_ONLY}).")
         print(transcription_line)
         trans_non_permitted_punctuation_fails += 1
+
+    if not (transcription_line.count(OUT_OF_LANGUAGE_MARKER) == seg_line.count(OUT_OF_LANGUAGE_MARKER)):
+        print(f"\n- Error: this sentence has an inconsistent number of out-of-language markers ({OUT_OF_LANGUAGE_MARKER}) between the transcription and segmentation lines.")
+        print(transcription_line)
+        print(seg_line)
+        trans_seg_OOL_marker_fails += 1
+
+    for transcription_word, seg_word in zip(transcription_words, seg_words):
+        # Check OOL words
+        if transcription_word.startswith(OUT_OF_LANGUAGE_MARKER) and seg_word.startswith(OUT_OF_LANGUAGE_MARKER):
+            if transcription_word != seg_word:
+                print(f"\n- Error: this sentence has a word that is marked as out-of-language that is not identical between the transcription and segmentation lines. Word: {transcription_word} vs. {seg_word}.")
+                print(transcription_line)
+                print(seg_line)
+                trans_seg_OOL_word_fails += 1
 
 # Tests that are relevant whether your doing segmentation OR glossing
 # (Note these are only *applied* to the seg line, but they're *relevant* for both processes)
@@ -210,6 +231,8 @@ def gloss_screen(seg_line, gloss_line):
     global seg_gloss_num_morphemes_fails
     global seg_gloss_word_num_morphemes_fails
     global seg_gloss_boundary_fails
+    global seg_gloss_OOL_marker_fails
+    global seg_gloss_OOL_word_fails
 
     if re.search(GLOSS_DOUBLE_BOUNDARY_REGEX, gloss_line):
         print(f"\n- Error: the following gloss line contains consecutive boundaries (i.e., at least two of {ALL_BOUNDARIES} in immediate succession).")
@@ -291,10 +314,25 @@ def gloss_screen(seg_line, gloss_line):
                 print("Gloss line:", gloss_line)
                 seg_gloss_boundary_fails += 1
 
+    if not (seg_line.count(OUT_OF_LANGUAGE_MARKER) == gloss_line.count(OUT_OF_LANGUAGE_MARKER)):
+        print(f"\n- Error: this sentence has an inconsistent number of out-of-language markers ({OUT_OF_LANGUAGE_MARKER}) between the segmentation and gloss lines.")
+        print(seg_line)
+        print(gloss_line)
+        seg_gloss_OOL_marker_fails += 1
+
+    for seg_word, gloss_word in zip(seg_words, gloss_words):
+        # Check OOL words
+        if seg_word.startswith(OUT_OF_LANGUAGE_MARKER) and gloss_word.startswith(OUT_OF_LANGUAGE_MARKER):
+            if seg_word != gloss_word:
+                print(f"\n- Error: this sentence has a word that is marked as out-of-language that is not identical between the segmentation and gloss lines. Word: {seg_word} vs. {gloss_word}.")
+                print(seg_line)
+                print(gloss_line)
+                seg_gloss_OOL_word_fails += 1
+
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails]
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -311,6 +349,8 @@ def print_screen_summary():
         # Seg tests
         print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION}).")
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")
+        print(f"    - {trans_seg_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the transcription and segmented lines.")
+        print(f"    - {trans_seg_OOL_word_fails} words were marked as out-of-language in the transcription and segmented lines but were not consistent in form between these two lines.")
         # Pairs of tests (one for seg, one for gloss)
         print(f"    - {seg_multi_boundary_fails} segmentation lines contained multiple boundaries in a row.")
         print(f"    - {gloss_multi_boundary_fails} gloss lines contained multiple boundaries in a row.")
@@ -326,6 +366,8 @@ def print_screen_summary():
         print(f"    - {seg_gloss_num_morphemes_fails} lines contained a different number of *morphemes* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_word_num_morphemes_fails} instances of a different number of *morphemes* in a given *word* between the segmented and gloss lines.")
         print(f"    - There were {seg_gloss_boundary_fails} instances of a different kind of morpheme boundary between the segmented and gloss lines.")
+        print(f"    - {seg_gloss_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the segmented and gloss lines.")
+        print(f"    - {seg_gloss_OOL_word_fails} words were marked as out-of-language in the segmented and gloss lines but were not consistent in form between these two lines.")
     print("\n")
 
 # Returns three lists

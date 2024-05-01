@@ -9,6 +9,7 @@ NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "“", "”", "!", "♪", ":",
 NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"“”!♪;–]|([^:]):([^:])" # Any of these characters, but including only *single* colons, not two in a row
 CLITIC_BOUNDARY = "="
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
+OUT_OF_LANGUAGE_MARKER = "*"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):

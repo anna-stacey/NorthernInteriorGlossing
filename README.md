@@ -48,6 +48,9 @@ We have also seen (e.g. in Gitksan data) '???' used in the segmentation line for
 12.  **The segmentation line has the same number of words as the transcription line.**
 Clitics can be an exception to this and require special handling.
 
+13. **Asterisks can be optionally used to mark words that are not in the target language (e.g., English words, onomatopoeia) which should be ignored by the system.  If so, the word must be consistent across the transcription/segmentation/gloss lines: it must begin with an asterisk in all three, and have an identical form in all three.**  
+For example, if you use the word Vancouver but want it to be ignored, it should appear as "\*Vancouver" in the transcription, segmentation, *and* gloss lines.  Even the capitalization must be consistent.  
+The purpose of this is so that users have a way to communicate to the system to ignore certain words -- if you want to input a sentence that has, say, a person's name, you want the system to ignore it, not try to segment and gloss it!  At this stage, there is the added benefit of removing these words from training (so as not to feed the language-specific systems what is essentially garbage), and not evaluating on them (so we are more accurately evaluating on the target language).
 ## Boundary System
 The only distinction that is fundamentally important when breaking up morphemes is that of infixes vs. regular (linearly-attaching) morphemes.  This is because infixes need to be specially handled to make sure morphemes are correctly identified.  Consider a regular case:  
 `morpheme1-morpheme2-morpheme3`  

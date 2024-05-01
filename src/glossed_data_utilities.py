@@ -10,6 +10,7 @@ NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"“”!♪;–]|([^:]):([^:])" # Any 
 CLITIC_BOUNDARY = "="
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
 OUT_OF_LANGUAGE_MARKER = "*"
+OUT_OF_LANGUAGE_LABEL = "OOL"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -260,6 +261,21 @@ def _clitic_in_word_list(clitic, word_list):
             found = True
 
     return found
+
+# Can replace with "OOL" or just delete (does the latter by default)
+def handle_OOL_words(datasets, replace = False):
+    for dataset in datasets:
+        for example in dataset:
+            for line_number, line in enumerate(example):
+                words = line.split()
+                for word_number, word in enumerate(words):
+                    if word.startswith(OUT_OF_LANGUAGE_MARKER):
+                        words.pop(word_number)
+                        if replace:
+                            words.insert(word_number, OUT_OF_LANGUAGE_LABEL)
+                example[line_number] = " ".join(words)
+
+    return datasets
 
 def create_file_of_sentences(examples, file_name, randomize_order = False):
     output_folder = "/data/"

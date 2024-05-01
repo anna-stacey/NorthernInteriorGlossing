@@ -1,6 +1,6 @@
 import click
 from gloss import make_sentence_list_with_prediction
-from glossed_data_utilities import read_file, write_sentences
+from glossed_data_utilities import read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
@@ -47,14 +47,19 @@ def reassemble_predicted_line(entire_input, predicted_seg_word_list):
     current_word_index = 0
     # Go through each input sentence and count the number of words.
     # Then grab that many words from our long list of predicted words, and that will be our prediction line.
-    # But also, add back in words marked with an asterisk.
+    # But also, add back in words marked as OOL.
     for input_sentence in entire_input:
         predicted_seg_line = []
-        line_word_count = len(input_sentence[0].split())
+        line_word_count = len(input_sentence[0].split()) - input_sentence[0].count(OUT_OF_LANGUAGE_MARKER)
         # Grab the predicted words
         predicted_seg_line.extend(predicted_seg_word_list[current_word_index : current_word_index + line_word_count])
         # Get rid of s p a c e s between letters
         predicted_seg_line = [word.replace(" ", "") for word in predicted_seg_line]
+        # Add back any asterisk-marked words
+        for index, input_word in enumerate(input_sentence[0].split()):
+            if input_word.startswith(OUT_OF_LANGUAGE_MARKER):
+                predicted_seg_line.insert(index, input_word)
+
         predicted_seg_line = " ".join(predicted_seg_line)
         # Update our progress through the predicted word list
         current_word_index += line_word_count

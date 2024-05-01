@@ -5,6 +5,7 @@ import click
 import re
 from gloss import read_datasets, read_file
 from os import getcwd, mkdir, path
+from glossed_data_utilities import handle_OOL_words
 
 OUTPUT_FOLDER = "/generated_data/"
 TRAIN_INPUT_NAME = "train.input"
@@ -99,6 +100,9 @@ def main(train_file, dev_file, test_file, pipeline_file):
     # Break down the data into three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
     pipeline = read_file(pipeline_file)
+
+    datasets = handle_OOL_words([train, dev, test])
+    train, dev, test = datasets[:3]
 
     # Grab the lines we're interested in - unsegmented transcription for input, segmented orthographic transcription for output
     train_X = [sentence[0] for sentence in train]

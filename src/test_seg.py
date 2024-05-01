@@ -45,14 +45,20 @@ def evaluate(output, gold_output):
 def reassemble_predicted_line(entire_input, predicted_seg_word_list):
     predicted_seg_line_list = []
     current_word_index = 0
-    for sentence in entire_input:
-        current_sentence = []
-        current_word_count = len(sentence[0].split())
-        current_sentence.extend(predicted_seg_word_list[current_word_index : current_word_index + current_word_count])
-        current_sentence = [word.replace(" ", "") for word in current_sentence]
-        current_sentence = " ".join(current_sentence)
-        current_word_index += current_word_count
-        predicted_seg_line_list.append(current_sentence)
+    # Go through each input sentence and count the number of words.
+    # Then grab that many words from our long list of predicted words, and that will be our prediction line.
+    # But also, add back in words marked with an asterisk.
+    for input_sentence in entire_input:
+        predicted_seg_line = []
+        line_word_count = len(input_sentence[0].split())
+        # Grab the predicted words
+        predicted_seg_line.extend(predicted_seg_word_list[current_word_index : current_word_index + line_word_count])
+        # Get rid of s p a c e s between letters
+        predicted_seg_line = [word.replace(" ", "") for word in predicted_seg_line]
+        predicted_seg_line = " ".join(predicted_seg_line)
+        # Update our progress through the predicted word list
+        current_word_index += line_word_count
+        predicted_seg_line_list.append(predicted_seg_line)
 
     return predicted_seg_line_list
 

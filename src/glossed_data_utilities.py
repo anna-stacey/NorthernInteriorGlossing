@@ -264,18 +264,52 @@ def _clitic_in_word_list(clitic, word_list):
 
 # Can replace with "OOL" or just delete (does the latter by default)
 def handle_OOL_words(datasets, replace = False):
+    updated_datasets = []
     for dataset in datasets:
+        updated_dataset = []
         for example in dataset:
-            for line_number, line in enumerate(example):
+            updated_example = []
+            for line in example:
                 words = line.split()
-                for word_number, word in enumerate(words):
+                updated_words = words.copy()
+                # Go word-by-word, and remove any marked with an asterisk
+                # If replace = True, replcae the asterisked words with a generic label
+                for word_number, word in enumerate(updated_words):
                     if word.startswith(OUT_OF_LANGUAGE_MARKER):
-                        words.pop(word_number)
+                        updated_words.pop(word_number)
                         if replace:
-                            words.insert(word_number, OUT_OF_LANGUAGE_LABEL)
-                example[line_number] = " ".join(words)
+                            updated_words.insert(word_number, OUT_OF_LANGUAGE_LABEL)
 
-    return datasets
+                updated_line = " ".join(updated_words)
+                updated_example.append(updated_line)
+            updated_dataset.append(updated_example)
+        updated_datasets.append(updated_dataset)
+
+    return updated_datasets
+
+# We have a list of predicted lines, each of which is a list of words
+# Go through the input lines to know where to add back in OOL words, then convert the whole line to a string for printing
+def add_back_OOL_words(transcription_lines, predicted_lines):
+    updated_predicted_lines = []
+
+    # But also, add back in words marked as OOL.
+    for transcription_line, predicted_line in zip(transcription_lines, predicted_lines):
+        updated_predicted_line = predicted_line
+        # Add back any asterisk-marked words
+        for index, input_word in enumerate(transcription_line.split()):
+            if input_word.startswith(OUT_OF_LANGUAGE_MARKER):
+                updated_predicted_line.insert(index, input_word)
+
+        # Remove any instances of the OOL label, if used
+        while OUT_OF_LANGUAGE_LABEL in updated_predicted_line:
+            OOL_pos = updated_predicted_line.index(OUT_OF_LANGUAGE_LABEL)
+            updated_predicted_line.pop(OOL_pos)
+
+        updated_predicted_line = " ".join(updated_predicted_line)
+        # Update our progress through the predicted word list
+        updated_predicted_lines.append(updated_predicted_line)
+
+    return updated_predicted_lines
 
 def create_file_of_sentences(examples, file_name, randomize_order = False):
     output_folder = "/data/"

@@ -1,7 +1,7 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import read_file, write_sentences
+from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences
 from os import getcwd, mkdir, path
 
 OUTPUT_FOLDER = "/generated_data/"
@@ -515,8 +515,7 @@ def add_word_boundaries_to_gloss(gloss, list_with_boundaries):
 
     return updated_gloss
 
-# Take the whole list of sentences (with transcription, seg, etc.) and replace the gloss line with our predicted glosses
-# This function was made generic, so it could also be used to replace the segmentation line
+# Take the whole list of sentences (with transcription, seg, etc.) and replace one line with our predicted lines
 def make_sentence_list_with_prediction(sentence_list, prediction_line_list, line_number_to_replace):
     new_sentence_list = []
     for sentence, predicted_line in zip(sentence_list, prediction_line_list):
@@ -526,8 +525,10 @@ def make_sentence_list_with_prediction(sentence_list, prediction_line_list, line
 
     return new_sentence_list
 
-# Given the a list of gloss lines as a list of words, each containing lists of morpheme glosses, convert each line to just a single string
-def reassemble_gloss_line(gloss_line_list):
+# Input: a list of predicted gloss lines, which are lists of words, which are lists of morphemes
+# Output: a list of predicted gloss lines, which are lists of words, which are strings (where morphemes are connected by hyphens)
+# i.e., go from ["dog", "s"] to "dog-s"
+def reassemble_predicted_words(gloss_line_list):
     new_gloss_line_list = []
     for line in gloss_line_list:
         sentence_as_list_of_words = []
@@ -535,8 +536,7 @@ def reassemble_gloss_line(gloss_line_list):
             new_word = "-".join(word)
             sentence_as_list_of_words.append(new_word)
 
-        sentence_as_string = " ".join(sentence_as_list_of_words)
-        new_gloss_line_list.append(sentence_as_string)
+        new_gloss_line_list.append(sentence_as_list_of_words)
 
     return new_gloss_line_list
 
@@ -592,6 +592,13 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Read the files and break them down into the three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
 
+    # Save the test set as-is for output-printing purposes
+    original_test = test
+    original_test_transcription_lines = list(sentence[0] for sentence in original_test)
+    # Replace OOL tokens with just a generic label, so that they will be included generically as -1_morpheme type features
+    # We will add in steps to ignore these at a) training and b) evaluation, and add their form back in when printing output
+    train, dev, test = handle_OOL_words([train, dev, test])[:3]
+
     # Grab the appropriate lines from each sentence
     # X = seg lines, y = gloss lines
     train_X, train_y = extract_X_and_y(train, segmentation_line_number, gloss_line_number)
@@ -619,7 +626,10 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
     isOpenTrack = True # Because we had the segmentation to work with in this case!
-    test_with_predictions = make_sentence_list_with_prediction(test, reassemble_gloss_line(pred_y), gloss_line_number)
+    # Reassemble the predicted morphemes into string lines
+    pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words(pred_y))
+    # Take the original test set, and substitute in our predicted gloss lines
+    test_with_predictions = make_sentence_list_with_prediction(original_test, pred_y_to_print, gloss_line_number)
     write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
     # And create a file of the gold version, formatted the same way to permit comparison
     write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)

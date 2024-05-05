@@ -1,6 +1,6 @@
 import click
 from gloss import make_sentence_list_with_prediction
-from glossed_data_utilities import read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
+from glossed_data_utilities import add_back_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
@@ -42,25 +42,22 @@ def evaluate(output, gold_output):
     accuracy = round(accuracy * 100, 2)
     print(f"Accuracy: {accuracy}% on {seg_count} words.")
 
-def reassemble_predicted_line(entire_input, predicted_seg_word_list):
+# Input: a list of predicted segmented words, with no sentence structure
+# Look back at the input to figure out where sentence boundaries should be
+# Output: a list of predicted segmentation lines (as lists of words)
+def reassemble_predicted_line(transcription_lines, predicted_seg_word_list):
     predicted_seg_line_list = []
     current_word_index = 0
     # Go through each input sentence and count the number of words.
     # Then grab that many words from our long list of predicted words, and that will be our prediction line.
-    # But also, add back in words marked as OOL.
-    for input_sentence in entire_input:
+    for transcription_line in transcription_lines:
         predicted_seg_line = []
-        line_word_count = len(input_sentence[0].split()) - input_sentence[0].count(OUT_OF_LANGUAGE_MARKER)
+        line_word_count = len(transcription_line.split()) - transcription_line.count(OUT_OF_LANGUAGE_MARKER)
         # Grab the predicted words
         predicted_seg_line.extend(predicted_seg_word_list[current_word_index : current_word_index + line_word_count])
         # Get rid of s p a c e s between letters
         predicted_seg_line = [word.replace(" ", "") for word in predicted_seg_line]
-        # Add back any asterisk-marked words
-        for index, input_word in enumerate(input_sentence[0].split()):
-            if input_word.startswith(OUT_OF_LANGUAGE_MARKER):
-                predicted_seg_line.insert(index, input_word)
 
-        predicted_seg_line = " ".join(predicted_seg_line)
         # Update our progress through the predicted word list
         current_word_index += line_word_count
         predicted_seg_line_list.append(predicted_seg_line)
@@ -86,10 +83,12 @@ def main(whole_input_file, output_file, gold_output_file):
 
     # Print a viewable output
     # First read in and print out the gold
+    # (note this is not just the input to the segmenter, but the ENTIRE input file (4-lines))
     entire_input = read_file(whole_input_file)
     write_sentences(entire_input, "generated_data/seg_gold.txt")
     # Now format and print a version with our predictions
-    formatted_output = reassemble_predicted_line(entire_input, output)
+    formatted_output = reassemble_predicted_line((sentence[0] for sentence in entire_input), output)
+    formatted_output = add_back_OOL_words((sentence[0] for sentence in entire_input), formatted_output)
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_output, 1)
     write_sentences(sentences_with_predictions, "generated_data/seg_pred.txt")
 # Doing this so that I can export functions to pipeline.py

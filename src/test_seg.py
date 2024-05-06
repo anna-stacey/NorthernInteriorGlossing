@@ -2,6 +2,9 @@ import click
 from gloss import make_sentence_list_with_prediction
 from glossed_data_utilities import add_back_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
+GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
+PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
+
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
     with open(file_path) as f:
@@ -85,12 +88,12 @@ def main(whole_input_file, output_file, gold_output_file):
     # First read in and print out the gold
     # (note this is not just the input to the segmenter, but the ENTIRE input file (4-lines))
     entire_input = read_file(whole_input_file)
-    write_sentences(entire_input, "generated_data/seg_gold.txt")
+    write_sentences(entire_input, GOLD_OUTPUT_FILE_NAME)
     # Now format and print a version with our predictions
     formatted_output = reassemble_predicted_line((sentence[0] for sentence in entire_input), output)
     formatted_output = add_back_OOL_words((sentence[0] for sentence in entire_input), formatted_output)
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_output, 1)
-    write_sentences(sentences_with_predictions, "generated_data/seg_pred.txt")
+    write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':
     main()

@@ -272,13 +272,19 @@ def handle_OOL_words(datasets, replace = False):
             for line in example:
                 words = line.split()
                 updated_words = words.copy()
+                word_number = 0
                 # Go word-by-word, and remove any marked with an asterisk
-                # If replace = True, replcae the asterisked words with a generic label
-                for word_number, word in enumerate(updated_words):
+                # We are looping with while because the number of words can *change* if we remove any!
+                # If replace = True, replace the asterisked words with a generic label
+                while word_number < len(updated_words):
+                    word = updated_words[word_number]
                     if word.startswith(OUT_OF_LANGUAGE_MARKER):
                         updated_words.pop(word_number)
-                        if replace:
+                        if not replace:
+                            word_number -= 1 # To cancel out the incrementation
+                        else: # Replace!
                             updated_words.insert(word_number, OUT_OF_LANGUAGE_LABEL)
+                    word_number += 1
 
                 updated_line = " ".join(updated_words)
                 updated_example.append(updated_line)

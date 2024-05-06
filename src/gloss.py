@@ -1,7 +1,7 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences
+from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL
 from os import getcwd, mkdir, path
 
 OUTPUT_FOLDER = "/generated_data/"
@@ -186,6 +186,10 @@ def format_X_and_y(X, y):
 
     # Get a list of the training labels - i.e. the gloss for each morpheme
     y = [sentence_to_glosses(gloss_line) for gloss_line in y]
+
+    # Now that we've used them for features like morpheme_1, we can remove OOL tokens altogether
+    remove_OOL_from_X_or_y(X, is_X = True)
+    remove_OOL_from_X_or_y(y, is_X = False)
 
     return X, y
 
@@ -578,6 +582,27 @@ def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_
     # And create the output file!
     write_sentences(sentence_list_to_print, dir_path + "/" + file_name)
 
+# Input: X or y, a list of sentences, where each sentence is a list of morphemes
+# Output: X or y with any OOL morpheme removed
+def remove_OOL_from_X_or_y(X_or_y, is_X):
+    for sentence in X_or_y:
+        morpheme_count = len(sentence)
+        morpheme_index = 0
+        while morpheme_index < morpheme_count:
+            morpheme = sentence[morpheme_index]
+            # Check if this item is OOL!
+            if (is_X and _is_X_token_OOL(morpheme)) or ((not is_X) and _is_y_token_OOL(morpheme)):
+                sentence.pop(morpheme_index)
+                morpheme_count = len(sentence)
+            else:
+                morpheme_index += 1
+
+def _is_X_token_OOL(X_token):
+    return (X_token["morpheme"] == OUT_OF_LANGUAGE_LABEL or X_token["morpheme"] == OUT_OF_LANGUAGE_LABEL.lower())
+
+def _is_y_token_OOL(y_token):
+    return y_token == OUT_OF_LANGUAGE_LABEL
+
 @click.command()
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
@@ -596,8 +621,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     original_test = test
     original_test_transcription_lines = list(sentence[0] for sentence in original_test)
     # Replace OOL tokens with just a generic label, so that they will be included generically as -1_morpheme type features
-    # We will add in steps to ignore these at a) training and b) evaluation, and add their form back in when printing output
-    train, dev, test = handle_OOL_words([train, dev, test])[:3]
+    # After feature generation, these OOL tokens will be removed altogether from X and y! Then they just get added back (as their full word form) when output-printing
+    train, dev, test = handle_OOL_words([train, dev, test], replace = True)[:3]
 
     # Grab the appropriate lines from each sentence
     # X = seg lines, y = gloss lines
@@ -605,11 +630,11 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     dev_X, dev_y = extract_X_and_y(dev, segmentation_line_number, gloss_line_number)
     test_X, test_y  = extract_X_and_y(test, segmentation_line_number, gloss_line_number)
 
-    # Save versions with boundaries, so we can do word-level evaluation
-    test_X_with_boundaries = test_X
-    test_y_with_boundaries = test_y
+    # Save versions with boundaries (and without OOL tokens), so we can do word-level evaluation
+    test_without_OOL = handle_OOL_words([test])[0]
+    test_X_with_boundaries, test_y_with_boundaries  = extract_X_and_y(test_without_OOL, segmentation_line_number, gloss_line_number)
 
-    # Format X as features, and y as labels
+    # Format X as features, and y as labels (OOL tokens will be removed here too)
     train_X, train_y = format_X_and_y(train_X, train_y)
     dev_X, dev_y  = format_X_and_y(dev_X, dev_y)
     test_X, test_y  = format_X_and_y(test_X, test_y)

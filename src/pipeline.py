@@ -65,13 +65,14 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
     original_test = test
     original_test_transcription_lines = list(sentence[0] for sentence in original_test)
 
-    train, test = handle_OOL_words([train, test])[:2]
+    # Replace them with "OOL" for now, but after feature generation the formatting code will remove these tokens altogether
+    train, test = handle_OOL_words([train, test], replace = True)[:2]
 
     test_X, test_y = extract_X_and_y(test, segmentation_line_number, gloss_line_number)
 
-    # Keep versions with boundaries for word-by-word evaluation
-    test_X_with_boundaries = test_X
-    test_y_with_boundaries = test_y
+    # Keep versions with boundaries (but no OOL tokens!) for word-by-word evaluation
+    test_without_OOL = handle_OOL_words([test])[0]
+    test_X_with_boundaries, test_y_with_boundaries  = extract_X_and_y(test_without_OOL, segmentation_line_number, gloss_line_number)
 
     # Create the model
     train_X, train_y = extract_X_and_y(train, segmentation_line_number, gloss_line_number)

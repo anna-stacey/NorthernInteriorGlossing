@@ -262,6 +262,7 @@ def _clitic_in_word_list(clitic, word_list):
 
     return found
 
+# Matches any words that are marked as OOL (e.g., "*Mary" OR "OOL")
 # Can replace with "OOL" or just delete (does the latter by default)
 def handle_OOL_words(datasets, replace = False):
     updated_datasets = []
@@ -278,7 +279,7 @@ def handle_OOL_words(datasets, replace = False):
                 # If replace = True, replace the asterisked words with a generic label
                 while word_number < len(updated_words):
                     word = updated_words[word_number]
-                    if word.startswith(OUT_OF_LANGUAGE_MARKER):
+                    if word.startswith(OUT_OF_LANGUAGE_MARKER) or word == OUT_OF_LANGUAGE_LABEL:
                         updated_words.pop(word_number)
                         if not replace:
                             word_number -= 1 # To cancel out the incrementation

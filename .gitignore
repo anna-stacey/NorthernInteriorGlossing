@@ -1,0 +1,9 @@
+*.xlsx
+.DS_Store
+gloss_dict.txt
+__pycache__/
+data/
+data-bin/
+generated_data/
+models/
+sigmorphon/

@@ -11,6 +11,7 @@ CLITIC_BOUNDARY = "="
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
 OUT_OF_LANGUAGE_MARKER = "*"
 OUT_OF_LANGUAGE_LABEL = "OOL"
+DOUBLE_OOL_MARKER_REGEX = "\*[\*]+"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -261,6 +262,34 @@ def _clitic_in_word_list(clitic, word_list):
             found = True
 
     return found
+
+def mark_OOL_words(data, OOL_WORDS, LINES_PER_SENTENCE):
+    for example in data:
+        # Only consider full examples
+        if len(example) == LINES_PER_SENTENCE:
+            transcription_words = example[0].split()
+            seg_words = example[1].split()
+            gloss_words = example[2].split()
+                # Go word-by-word through the sentence
+            for word_index, (transciption_word, seg_word, gloss_word) in enumerate(zip(transcription_words, seg_words, gloss_words)):
+                # Check for any of the target words
+                if transciption_word in OOL_WORDS:
+                    word = transciption_word
+                    # Next check this word is identical in the seg and gloss lines, too
+                    if seg_word == word and gloss_word == word:
+                        # Mark the word in the transcription, segmentation, and gloss lines
+                        transcription_words[word_index] = OUT_OF_LANGUAGE_MARKER + word
+                        seg_words[word_index] = OUT_OF_LANGUAGE_MARKER + word
+                        gloss_words[word_index] = OUT_OF_LANGUAGE_MARKER + word
+
+            example[0] = " ".join(transcription_words)
+            example[1] = " ".join(seg_words)
+            example[2] = " ".join(gloss_words)
+            for i in range(0, 3):
+                # Prevent double OOL markers
+                example[i] = sub(DOUBLE_OOL_MARKER_REGEX, OUT_OF_LANGUAGE_MARKER, example[i])
+
+    return data
 
 # Matches any words that are marked as OOL (e.g., "*Mary" OR "OOL")
 # Can replace with "OOL" or just delete (does the latter by default)

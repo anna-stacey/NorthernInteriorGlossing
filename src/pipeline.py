@@ -2,6 +2,7 @@ import click
 import re
 from gloss import evaluate_system, extract_X_and_y, format_X_and_y, make_sentence_list_with_prediction, read_datasets, reassemble_predicted_words, train_system, write_output_file, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file
+from prescreen_data import DOUBLE_BOUNDARY_REGEX
 
 GOLD_OUTPUT_FILE_NAME = "pipeline_gold.txt"
 PRED_OUTPUT_FILE_NAME = "pipeline_pred.txt"
@@ -20,17 +21,21 @@ def reassemble_sentences(word_list, word_count_by_sentence):
     return sentence_list
 
 # Input: a list of segmentation lines, as strings
-def remove_infix_boundary_errors(seg_line_list):
+def remove_boundary_errors(seg_line_list):
     updated_seg_line_list = []
     for seg_line in seg_line_list:
         word_list = seg_line.split()
         for i, word in enumerate(word_list):
+            # Handle infix boundary errors
             if word.count(LEFT_INFIX_BOUNDARY) != word.count(RIGHT_INFIX_BOUNDARY):
                 word_list[i] = re.sub(LEFT_INFIX_BOUNDARY, REGULAR_BOUNDARY, word_list[i])
                 word_list[i] = re.sub(RIGHT_INFIX_BOUNDARY, REGULAR_BOUNDARY, word_list[i])
             if word.count(LEFT_REDUP_INFIX_BOUNDARY) != word.count(RIGHT_REDUP_INFIX_BOUNDARY):
                 word_list[i] = re.sub(LEFT_REDUP_INFIX_BOUNDARY, REDUPLICATION_BOUNDARY, word_list[i])
                 word_list[i] = re.sub(RIGHT_REDUP_INFIX_BOUNDARY, REDUPLICATION_BOUNDARY, word_list[i])
+            # Fix any instances of double boundaries (e.g. one time the segmentation split abc as ab--c)
+            if re.search(DOUBLE_BOUNDARY_REGEX, word):
+                word_list[i] = re.sub(DOUBLE_BOUNDARY_REGEX, REGULAR_BOUNDARY, word_list[i])
 
         updated_seg_line = " ".join(word_list)
         updated_seg_line_list.append(updated_seg_line)
@@ -55,7 +60,7 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
     # Next, get the predicted seg lines.  These will be our input.
     seg_output = (sentence[1] for sentence in read_file(seg_pred_file))
     # For now... remove single infix markers (incorrect!)
-    seg_output = remove_infix_boundary_errors(seg_output)
+    seg_output = remove_boundary_errors(seg_output)
     # Modify our test set to contain the *predicted* seg lines
     test = make_sentence_list_with_prediction(test, seg_output, 1)
     # Now we have the original training set,

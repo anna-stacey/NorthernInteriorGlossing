@@ -18,6 +18,8 @@ REDUPLICATION_BOUNDARY = "~"
 NON_INFIXING_BOUNDARIES = [REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY, CLITIC_BOUNDARY]
 ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
 
+UNICODE_STRESS = "\u0301"
+
 def read_datasets(train_file, dev_file, test_file):
     train = read_file(train_file)
     dev = read_file(dev_file)
@@ -384,7 +386,6 @@ def deal_with_stems_helper(segmented_lines_as_features, gloss_lines):
 # Look for (some kind of) match for a given stem morpheme in our stem_dict
 # Returns None if no match found, otherwise returns the matching stem morpheme from the stem_dict
 def match_stem(morpheme, stem_dict):
-    STRESS_UNICODE = "\u0301"
     match = None
 
     # First, try for an exact match
@@ -395,21 +396,26 @@ def match_stem(morpheme, stem_dict):
     # For now we will consider:
     # 1) e/ə ambiguity and 2) stress ambiguity
     # A simple way to do this: convert all ə to e and remove all stress, then check for equality
-    modified_morpheme = morpheme.replace(STRESS_UNICODE,"")
-    modified_morpheme = modified_morpheme.replace("ə","e")
+    modified_morpheme = _generalize_morpheme(morpheme)
 
     stems = list(stem_dict.keys())
     stem_index = 0
     # Loop until we find a match or run out of stems to consider
     while match == None and stem_index < len(stem_dict):
         stem = stems[stem_index]
-        modified_stem = stem.replace(STRESS_UNICODE, "")
-        modified_stem = modified_stem.replace("ə","e")
+        modified_stem = _generalize_morpheme(stem)
         if modified_morpheme == modified_stem:
             match = stem
         stem_index += 1
 
     return match
+
+def _generalize_morpheme(morpheme):
+    modified_morpheme = morpheme
+    modified_morpheme = modified_morpheme.replace(UNICODE_STRESS,"")
+    modified_morpheme = modified_morpheme.replace("ə","e")
+
+    return modified_morpheme
 
 # Returns the predicted glosses
 def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):

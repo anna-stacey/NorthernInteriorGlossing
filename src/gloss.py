@@ -381,6 +381,36 @@ def deal_with_stems_helper(segmented_lines_as_features, gloss_lines):
 
     return gloss_lines_with_stems_replaced, stem_dict
 
+# Look for (some kind of) match for a given stem morpheme in our stem_dict
+# Returns None if no match found, otherwise returns the matching stem morpheme from the stem_dict
+def match_stem(morpheme, stem_dict):
+    STRESS_UNICODE = "\u0301"
+    match = None
+
+    # First, try for an exact match
+    if morpheme in stem_dict:
+        match = morpheme
+
+    # Otherwise -- try to find a close match
+    # For now we will consider:
+    # 1) e/ə ambiguity and 2) stress ambiguity
+    # A simple way to do this: convert all ə to e and remove all stress, then check for equality
+    modified_morpheme = morpheme.replace(STRESS_UNICODE,"")
+    modified_morpheme = modified_morpheme.replace("ə","e")
+
+    stems = list(stem_dict.keys())
+    stem_index = 0
+    # Loop until we find a match or run out of stems to consider
+    while match == None and stem_index < len(stem_dict):
+        stem = stems[stem_index]
+        modified_stem = stem.replace(STRESS_UNICODE, "")
+        modified_stem = modified_stem.replace("ə","e")
+        if modified_morpheme == modified_stem:
+            match = stem
+        stem_index += 1
+
+    return match
+
 # Returns the predicted glosses
 def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
     pred_dev_y = []
@@ -392,9 +422,11 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
             morpheme = morpheme_features["morpheme"]
             # Look at everything the CRF identified as a stem
             if predicted_gloss == "STEM":
-                if morpheme in stem_dict:
+                # Check for a match
+                match = match_stem(morpheme, stem_dict)
+                if match:
                     # We know this stem! Fill it in
-                    predicted_gloss = stem_dict[morpheme]
+                    predicted_gloss = stem_dict[match]
                     known_stem_count += 1
                 else:
                     unknown_stem_count += 1

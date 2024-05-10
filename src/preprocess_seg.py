@@ -29,7 +29,10 @@ def create_file_of_words(list, file_name):
             if len(word) > 0:
                 for i, char in enumerate(word):
                     file.write(char)
-                    if i < len(word) - 1: # non-final char
+                    # Don't print a space if the next "char" is ʷ
+                    if i < len(word) - 1 and word[i + 1] == 'ʷ':
+                        pass
+                    elif i < len(word) - 1: # non-final char
                         file.write(" ")
                     else: # final char - this should end the line
                         file.write("\n")

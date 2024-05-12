@@ -1,7 +1,7 @@
 # For formatting fixes that can be done irrespective of language
 # Ensuring that the glossing code doesn't need to worry about screening for these kinds of anomalies
 import click
-from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX
+from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
 import re
 from glossed_data_utilities import NON_PERMITTED_PUNCTUATION, NON_PERMITTED_PUNCTUATION_REGEX, OUT_OF_LANGUAGE_MARKER
 
@@ -370,6 +370,61 @@ def print_screen_summary():
         print(f"    - {seg_gloss_OOL_word_fails} words were marked as out-of-language in the segmented and gloss lines but were not consistent in form between these two lines.")
     print("\n")
 
+# What if we want the list organized not by gloss, but by morpheme?
+# Ignoring the english list because its morphemes are its glosses, by definition!
+# Combining the stem/gram lists because the same morpheme may be being glossed as a stem or a gram! e.g. "only" and "EXCL"
+def organize_tags_by_morpheme(gram_list, stem_list):
+    morphemes_dict = {}
+
+    for entry in (gram_list + stem_list):
+        gloss = entry[0]
+        morpheme_and_count_dict = entry[1]
+        # Look at each of the morphemes under this gloss entry
+        for morpheme in morpheme_and_count_dict.keys():
+            # Check if there is already an entry in our new dict for this morpheme
+            if morpheme in morphemes_dict.keys():
+                # Get the existing value for this morpheme
+                current_entry = morphemes_dict[morpheme]
+                # Update the value with this current gloss label, and the number of times this gloss/morpheme combo appeared
+                current_entry.update({gloss: morpheme_and_count_dict[morpheme]})
+            else:
+                # Add it to our new morpheme dict
+                morphemes_dict.update({morpheme: {gloss: morpheme_and_count_dict[morpheme]}})
+
+    # Combine entries that differ only by stress (can be made optional if desired)
+    original_morpheme_keys = sorted(list(morphemes_dict.keys()))
+    morpheme_index = 0
+    while morpheme_index < len(original_morpheme_keys):
+        current_morpheme = original_morpheme_keys[morpheme_index]
+        current_morpheme_unstressed = current_morpheme.replace(UNICODE_STRESS, "")
+        current_entry = morphemes_dict[current_morpheme]
+        # a) Is this a stressed morpheme and b) Is its unstressed counterpart in the dict?
+        if UNICODE_STRESS in current_morpheme and (current_morpheme_unstressed in original_morpheme_keys):
+            # Combine the entries!
+            updated_morpheme = current_morpheme + "/" + current_morpheme.replace(UNICODE_STRESS, "")
+            updated_entry = current_entry # Start with one of the entries...
+            # ...and update it with the other entry
+            for gloss_count_pair in (morphemes_dict[current_morpheme_unstressed]).items():
+                gloss = gloss_count_pair[0]
+                count = gloss_count_pair[1]
+                # Check if we are updating an existing count, or adding a new one
+                if gloss in updated_entry.keys():
+                    updated_entry.update({gloss: count + updated_entry[gloss]})
+                else:
+                    updated_entry.update({gloss: count})
+
+            # Update our dict: remove the old indiviudal entries and add the combined one
+            morphemes_dict.pop(current_morpheme)
+            morphemes_dict.pop(current_morpheme_unstressed)
+            morphemes_dict.update({updated_morpheme: updated_entry})
+            # We don't need to update morpheme_keys, because the unstressed version will even be checked
+
+        morpheme_index += 1
+
+    morphemes_list = sorted(morphemes_dict.items())
+
+    return morphemes_list
+
 # Returns three lists
 # Each list element is a tuple
 # Tuple[0] = a string gloss, like "1PL.EMPH"
@@ -430,25 +485,8 @@ def get_tags(all_data, segmentation_line_number, gloss_line_number):
 
     return gram_list, stem_list, english_list
 
-def print_tags(gram_list, stem_list, english_list):
-    print("***** GLOSS INVENTORY *****")
-    print("--- Grams: ---")
-    print("Total number of unique gram glosses:", len(gram_list))
-    for entry in gram_list:
-        gloss = entry[0]
-        morpheme_and_count_dict = entry[1]
-        print(gloss, ":", _format_morpheme_and_count_dict(morpheme_and_count_dict))
-
-    print("\n\n--- Stems: ---")
-    print("Total number of unique stem glosses:", len(stem_list))
-    for entry in stem_list:
-        gloss = entry[0]
-        morpheme_and_count_dict = entry[1]
-        print(gloss, ":", _format_morpheme_and_count_dict(morpheme_and_count_dict))
-
-    print("\n\n--- \"Stems\" that are just English/onomatopoeia: ---")
-    print("Total number of such unique glosses:", len(english_list))
-    for entry in english_list:
+def print_tags(tag_list):
+    for entry in tag_list:
         gloss = entry[0]
         morpheme_and_count_dict = entry[1]
         print(gloss, ":", _format_morpheme_and_count_dict(morpheme_and_count_dict))
@@ -529,7 +567,20 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
 
     if do_print_tags:
         gram_list, stem_list, english_list = get_tags(train + dev + test, segmentation_line_number, gloss_line_number)
-        print_tags(gram_list, stem_list, english_list)
+        print("***** GLOSS INVENTORY *****")
+        print("--- Grams: ---")
+        print("Total number of unique gram glosses:", len(gram_list))
+        print_tags(gram_list)
+        print("\n\n--- Stems: ---")
+        print("Total number of unique stem glosses:", len(stem_list))
+        print_tags(stem_list)
+        print("\n\n--- \"Stems\" that are just English/onomatopoeia: ---")
+        print("Total number of such unique glosses:", len(english_list))
+        print_tags(english_list)
+
+        print("\n\n--- Stems and Grams, Organized by Morpheme: ---")
+        morphemes_list = organize_tags_by_morpheme(gram_list, stem_list)
+        print_tags(morphemes_list)
 
     if do_compare_tags:
         if train_file_to_compare and dev_file_to_compare and test_file_to_compare:

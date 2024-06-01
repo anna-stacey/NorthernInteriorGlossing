@@ -1,9 +1,10 @@
 import click
-from gloss import make_sentence_list_with_prediction
+from gloss import make_sentence_list_with_prediction, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
+ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
@@ -43,7 +44,42 @@ def evaluate(output, gold_output):
     assert(seg_count > 0)
     accuracy = (seg_count - incorrect_seg_count) / seg_count
     accuracy = round(accuracy * 100, 2)
-    print(f"Accuracy: {accuracy}% on {seg_count} words.")
+    print(f"\nAccuracy: {accuracy}% on {seg_count} words.")
+
+# It may be interesting to know whether the model is under- or over-segmenting
+# i.e. inserting too few or too many boundaries
+# So let's compare the number of boundaries predicted to the number in the gold version
+def compare_boundary_count(output, gold_output):
+    predicted_count = _get_boundary_count(output)
+    gold_count = _get_boundary_count(gold_output)
+    print(f"Boundary count: {predicted_count} predicted vs. {gold_count} in gold ({round(predicted_count/gold_count * 100, 2)}%).")
+
+def _get_boundary_count(output):
+    boundary_count = 0
+    for word in output:
+        for boundary in ALL_BOUNDARIES:
+            boundary_count += word.count(boundary)
+
+    return boundary_count
+
+# Compare the train and test word-lists to see how many OOV tokens we dealt with
+# (Assuming they're OOV if their output differs (rather than their input))
+# Plus track performance on just those OOV tokens
+# Note that some of these OOV tokens may be repeats
+def evaluate_OOV_performance(output, gold_output, train_output):
+    OOV_count = 0
+    OOV_incorrect_count = 0
+    for output_word, gold_word in zip(output, gold_output):
+        # If this word is OOV
+        if not (gold_word in train_output):
+            OOV_count += 1
+            if gold_word != output_word:
+                OOV_incorrect_count += 1
+
+    print(f"\nOOV count: {OOV_count}/{len(output)} words ({round(OOV_count / len(output) * 100, 2)}%).")
+
+    OOV_acc = round((OOV_count - OOV_incorrect_count) / OOV_count * 100, 2)
+    print(f"OOV accuracy: {OOV_acc}% on {OOV_count} OOV words.\n")
 
 # Input: a list of predicted segmented words, with no sentence structure
 # Look back at the input to figure out where sentence boundaries should be
@@ -71,18 +107,22 @@ def reassemble_predicted_line(transcription_lines, predicted_seg_word_list):
 @click.option("--whole_input_file", help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
 @click.option("--output_file", help="The name of the output file.")
 @click.option("--gold_output_file", help="The name of the gold output file.")
-def main(whole_input_file, output_file, gold_output_file):
+@click.option("--train_output_file", help="The name of the training output file.")
+def main(whole_input_file, output_file, gold_output_file, train_output_file):
     print("Comparing these files:", output_file, gold_output_file)
     
     # Get the test results
     output = read_lines_from_file(output_file)
     output = format_fairseq_output(output)
 
-    # Get the gold labels
+    # Get the labels
     gold_output = read_lines_from_file(gold_output_file)
+    train_output = read_lines_from_file(train_output_file)
     
     # Compare!
     evaluate(output, gold_output)
+    compare_boundary_count(output, gold_output)
+    evaluate_OOV_performance(output, gold_output, train_output)
 
     # Print a viewable output
     # First read in and print out the gold
@@ -94,6 +134,7 @@ def main(whole_input_file, output_file, gold_output_file):
     formatted_output = add_back_OOL_words((sentence[0] for sentence in entire_input), formatted_output)
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_output, 1)
     write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
+
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':
     main()

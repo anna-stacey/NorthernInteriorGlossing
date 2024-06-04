@@ -1,8 +1,9 @@
 # For formatting fixes that can be done irrespective of language
 # Ensuring that the glossing code doesn't need to worry about screening for these kinds of anomalies
 import click
-from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
 import re
+from unicodedata import normalize
+from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
 from glossed_data_utilities import NON_PERMITTED_PUNCTUATION, NON_PERMITTED_PUNCTUATION_REGEX, OUT_OF_LANGUAGE_MARKER
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
@@ -33,6 +34,7 @@ trans_seg_num_words_fails = 0
 trans_non_permitted_punctuation_fails = 0
 trans_seg_OOL_marker_fails = 0
 trans_seg_OOL_word_fails = 0
+trans_seg_stress_fails = 0
 
 # Glossing-specific tests
 gloss_multi_boundary_fails = 0
@@ -92,6 +94,7 @@ def seg_screen(transcription_line, seg_line):
     global trans_non_permitted_punctuation_fails
     global trans_seg_OOL_marker_fails
     global trans_seg_OOL_word_fails
+    global trans_seg_stress_fails
 
     transcription_words = transcription_line.split()
     seg_words = seg_line.split()
@@ -121,6 +124,22 @@ def seg_screen(transcription_line, seg_line):
                 print(transcription_line)
                 print(seg_line)
                 trans_seg_OOL_word_fails += 1
+
+        # Check that stress matches b/w the trans and seg lines
+        # Catches cases where a) one line has the word with stress marking, the other lacks it altogether and b) both lines have the word with stress, but in different places
+        # First, convert to split chars/diacritics so that we don't have to handle BOTH combined- and uncombined-formatted inputs
+        transcription_word = normalize('NFD', transcription_word)
+        seg_word = normalize('NFD', seg_word)
+        # For now, only check words that are not otherwise modified (e.g. underlying sounds added in seg line)
+        transcription_word_unstressed = transcription_word.replace(UNICODE_STRESS, "")
+        seg_word_unsegmented = re.sub(ALL_BOUNDARIES_FOR_REGEX, "", seg_word)
+        seg_word_unsegmented_unstressed = seg_word_unsegmented.replace(UNICODE_STRESS, "")
+        # If they're the same without stress marking, whereas with stress (and no boundaries in the seg line) they're no longer the same
+        if (transcription_word_unstressed == seg_word_unsegmented_unstressed) and (transcription_word != seg_word_unsegmented):
+            print(f"\n- Error: this sentence has a word with inconsistent stress marking between the transcription and segmentation lines. Word: {transcription_word} vs. {seg_word_unsegmented}.")
+            print(transcription_line)
+            print(seg_line)
+            trans_seg_stress_fails += 1
 
 # Tests that are relevant whether your doing segmentation OR glossing
 # (Note these are only *applied* to the seg line, but they're *relevant* for both processes)
@@ -332,7 +351,7 @@ def gloss_screen(seg_line, gloss_line):
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, trans_seg_stress_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails]
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -351,6 +370,7 @@ def print_screen_summary():
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_word_fails} words were marked as out-of-language in the transcription and segmented lines but were not consistent in form between these two lines.")
+        print(f"    - {trans_seg_stress_fails} words had inconsistent stress-marking bewteen the transcription and segmented lines.")
         # Pairs of tests (one for seg, one for gloss)
         print(f"    - {seg_multi_boundary_fails} segmentation lines contained multiple boundaries in a row.")
         print(f"    - {gloss_multi_boundary_fails} gloss lines contained multiple boundaries in a row.")

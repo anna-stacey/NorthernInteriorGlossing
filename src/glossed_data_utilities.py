@@ -107,7 +107,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     if len(ortho_line_word_list) > seg_word_index and ortho_line_word_list[seg_word_index].lower() == pre_clitics[clitic] and word_without_clitic != "":
                         # Confirmed: we've found a clitic to fix!
                         # Now we need to modify the seg and gloss lines
-                        assert len(seg_line_word_list) == len(gloss_line_word_list)
+                        assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
                         # Replace the seg word with two words - leaving the clitic standalone
                         seg_line_word_list.pop(seg_word_index)
@@ -140,7 +140,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     # exclude a lot of problematic lines from being fixed. Something to think about...
                     if len(ortho_line_word_list) > seg_word_index and ortho_line_word_list[seg_word_index] == double_pre_clitics[clitic] and word_without_clitic != "":
                         # Okay, now we need to modify the seg and gloss lines
-                        assert len(seg_line_word_list) == len(gloss_line_word_list)
+                        assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
                         # Replace this word in the list with two words, separating the clitic
                         seg_line_word_list.pop(seg_word_index)
@@ -179,7 +179,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     # Now: does that clitic appear as its own word in the orthographic line?
                     if _clitic_in_word_list(post_clitics[clitic], ortho_line_word_list) and word_without_clitic != "":
                         # Okay, now we need to modify the seg and gloss lines
-                        assert len(seg_line_word_list) == len(gloss_line_word_list)
+                        assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
                         # Replace this word in the list with two words, separating the clitic
                         seg_line_word_list.pop(seg_word_index)
@@ -217,7 +217,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     word_without_clitic = clitic_check[0]
                     # Now: does that clitic appear as its own word in the orthographic line?
                     if _clitic_in_word_list(double_post_clitics[clitic], ortho_line_word_list) and word_without_clitic != "":
-                        assert len(seg_line_word_list) == len(gloss_line_word_list)
+                        assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
                         # Replace this word in the list with two words, separating the clitic
                         seg_line_word_list.pop(seg_word_index)

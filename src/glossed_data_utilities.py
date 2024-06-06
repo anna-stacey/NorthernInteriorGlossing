@@ -1,17 +1,22 @@
 # *** Common functions for creating train/dev/tests datasets ***
 from os import getcwd, mkdir, path
 from random import shuffle
-from re import sub
+import re
+from unicodedata import normalize
 
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
 # Note that double colons (::) are being permitted b/c the St́át́imcets data seems to use them legitiamtely as a vowel length thing
 NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "“", "”", "!", "♪", ":", ";", "–"]
 NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"“”!♪;–]|([^:]):([^:])" # Any of these characters, but including only *single* colons, not two in a row
-CLITIC_BOUNDARY = "="
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
+
 OUT_OF_LANGUAGE_MARKER = "*"
 OUT_OF_LANGUAGE_LABEL = "OOL"
 DOUBLE_OOL_MARKER_REGEX = "\*[\*]+"
+
+CLITIC_BOUNDARY = "="
+NUMBER_OF_LINES = 4
+UNICODE_STRESS = "\u0301"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -60,13 +65,13 @@ def tidy_dataset(dataset):
         for i, line in enumerate(sentence):
             # Remove commas, periods, and question marks from the seg and transcription lines
             if i == 0 or i == 1:
-                line = sub(NON_PERMITTED_PUNCTUATION_REGEX, r"\1\2", line)
+                line = re.sub(NON_PERMITTED_PUNCTUATION_REGEX, r"\1\2", line)
 
             # Find 2+ spaces, and replace them with only one space
-            line = sub(r"[ ]+[ ]+", " ", line)
+            line = re.sub(r"[ ]+[ ]+", " ", line)
             # Find sentence-initial or -final spaces, and remove them
-            line = sub(r"^ ", "", line)
-            line = sub(r" $", "", line)
+            line = re.sub(r"^ ", "", line)
+            line = re.sub(r" $", "", line)
 
 
             updated_sentence.append(line)
@@ -85,7 +90,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
         gloss_line = example[2]
         # Grab all the words in the orthography line, so we can look for clitics as words there
         # Remove punctuation so it doesn't get in the way of looking for the particular clitic
-        ortho_line_word_list = (sub(PUNCTUATION_TO_IGNORE, "", ortho_line)).split()
+        ortho_line_word_list = (re.sub(PUNCTUATION_TO_IGNORE, "", ortho_line)).split()
         seg_line_word_list = seg_line.split()
         gloss_line_word_list = gloss_line.split()
         # We're going to look word-by-word in the seg line
@@ -171,7 +176,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 clitic_check = seg_word.rpartition(CLITIC_BOUNDARY) # rpartition starts from the end of the word
                 # If there was an equals sign, and a clitic after it
                 potential_clitic_original_form = clitic_check[2]
-                potential_clitic = sub(PUNCTUATION_TO_IGNORE, "", potential_clitic_original_form)
+                potential_clitic = re.sub(PUNCTUATION_TO_IGNORE, "", potential_clitic_original_form)
                 if clitic_check[1] != "" and potential_clitic in post_clitics.keys():
                     clitic = potential_clitic
                     clitic_original_form = potential_clitic_original_form
@@ -209,7 +214,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 clitic_check = clitic_check[0].rpartition(CLITIC_BOUNDARY)
                 first_clitic = clitic_check[2]
                 potential_double_clitic_original_form = first_clitic + CLITIC_BOUNDARY + second_clitic
-                potential_double_clitic = sub(PUNCTUATION_TO_IGNORE, "", potential_double_clitic_original_form)
+                potential_double_clitic = re.sub(PUNCTUATION_TO_IGNORE, "", potential_double_clitic_original_form)
                 # Does this segmented word end in a double clitic?
                 if clitic_check[1] != "" and potential_double_clitic in double_post_clitics.keys():
                     clitic = potential_double_clitic
@@ -248,10 +253,10 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
 
 # Compare without worrying about accents, because stress can be inconsistenly marked between orthog/seg
 def _same_clitic(clitic_1, clitic_2):
-    clitic_1 = sub("á", "a", clitic_1)
-    clitic_2 = sub("á", "a", clitic_2)
-    clitic_1 = sub("ú", "u", clitic_1)
-    clitic_2 = sub("ú", "u", clitic_2)
+    clitic_1 = re.sub("á", "a", clitic_1)
+    clitic_2 = re.sub("á", "a", clitic_2)
+    clitic_1 = re.sub("ú", "u", clitic_1)
+    clitic_2 = re.sub("ú", "u", clitic_2)
 
     return clitic_1 == clitic_2
 
@@ -287,7 +292,7 @@ def mark_OOL_words(data, OOL_WORDS, LINES_PER_SENTENCE):
             example[2] = " ".join(gloss_words)
             for i in range(0, 3):
                 # Prevent double OOL markers
-                example[i] = sub(DOUBLE_OOL_MARKER_REGEX, OUT_OF_LANGUAGE_MARKER, example[i])
+                example[i] = re.sub(DOUBLE_OOL_MARKER_REGEX, OUT_OF_LANGUAGE_MARKER, example[i])
 
     return data
 
@@ -372,3 +377,57 @@ def write_sentences(examples, file_path, randomize_order = False):
                     if (j >= len(example) - 1) and (i < len(examples_to_write) - 1):
                         file.write("\n")
         file.close()
+
+# Problem: a word has stress marked in one of the transcription or segmented lines, but not the other
+# Sol'n: add stress in the right spot to the word in the other line!
+def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
+    updated_examples = []
+
+    for example in examples:
+        updated_example = example
+
+        # Only look at proper 4-line glossed lines
+        if len(example) == NUMBER_OF_LINES:
+
+            # Convert to split chars/diacritics so we don't have to handle both input styles
+            transcription_line = normalize('NFD', example[0])
+            seg_line = normalize('NFD', example[1])
+
+            BOUNDARIES_OR_SPACE_REGEX = "-|=|~|{|}|<|>| "
+            seg_morphemes = re.split(BOUNDARIES_OR_SPACE_REGEX, seg_line)
+            transcription_line_unstressed = transcription_line.replace(UNICODE_STRESS, "")
+            seg_line_unstressed = seg_line.replace(UNICODE_STRESS, "")
+
+            for morpheme in seg_morphemes:
+                # Check for stress in the seg line that's missing in the transcription line
+                if UNICODE_STRESS in morpheme:
+                    morpheme_unstressed = morpheme.replace(UNICODE_STRESS, "")
+                    # If we're missing the corresponding stress in the transcription line...
+                    if (not (morpheme in transcription_line)) and (morpheme_unstressed in transcription_line):
+                        # ...then add the stress to the transcription line!
+                        if transcription_line.count(morpheme_unstressed) == 1: # Don't do anything if there's multiple possible targets.  Better to do nothing than sometimes make mistakes.
+                            transcription_line = transcription_line.replace(morpheme_unstressed, morpheme, 1)
+
+                # Check for stress in the transcription line that's missing in the seg line
+                else:
+                    # If we're missing the corresponding stress in the seg line...
+                    # (The last condition here is ridiculous but necessary to not over-fix in some erroenous data).
+                    if (not (morpheme in transcription_line)) and (morpheme in transcription_line_unstressed) and (transcription_line_unstressed.count(morpheme) >= seg_line_unstressed.count(morpheme)):
+                        if seg_line.count(morpheme) == 1: # Don't do anything if there's multiple possible targets.
+                            # Find the stressed version of the morpheme in the transcription line
+                            for transcription_word in transcription_line.split():
+                                if len(transcription_word) >= len(morpheme) + 1: # +1 because stress adds a char
+                                    for starting_index in range(len(transcription_word) - (len(morpheme))):
+                                        possible_morpheme = transcription_word[starting_index : (starting_index + len(morpheme) + 1)]
+                                        if possible_morpheme.replace(UNICODE_STRESS, "") == morpheme:
+                                            # ...then add the stress to the seg line!
+                                            seg_line = seg_line.replace(morpheme, possible_morpheme)
+
+            if maintain_NFC_unicode:
+                transcription_line = normalize('NFC', transcription_line)
+                seg_line = normalize('NFC', seg_line)
+            updated_example = [transcription_line, seg_line, example[2], example[3]]
+
+        updated_examples.append(updated_example)
+
+    return updated_examples

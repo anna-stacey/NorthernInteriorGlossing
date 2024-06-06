@@ -1,7 +1,7 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL
+from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
 from os import getcwd, mkdir, path
 
 OUTPUT_FOLDER = "/generated_data/"
@@ -17,8 +17,6 @@ CLITIC_BOUNDARY = "="
 REDUPLICATION_BOUNDARY = "~"
 NON_INFIXING_BOUNDARIES = [REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY, CLITIC_BOUNDARY]
 ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
-
-UNICODE_STRESS = "\u0301"
 
 def read_datasets(train_file, dev_file, test_file):
     train = read_file(train_file)

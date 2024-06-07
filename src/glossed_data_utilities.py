@@ -393,20 +393,42 @@ def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
             transcription_line = normalize('NFD', example[0])
             seg_line = normalize('NFD', example[1])
 
-            BOUNDARIES_OR_SPACE_REGEX = "-|=|~|{|}|<|>| "
+            BOUNDARIES_OR_SPACE_REGEX = "-|=|~|·|<|>| "
             seg_morphemes = re.split(BOUNDARIES_OR_SPACE_REGEX, seg_line)
             transcription_line_unstressed = transcription_line.replace(UNICODE_STRESS, "")
             seg_line_unstressed = seg_line.replace(UNICODE_STRESS, "")
 
-            for morpheme in seg_morphemes:
+            for i, morpheme in enumerate(seg_morphemes):
                 # Check for stress in the seg line that's missing in the transcription line
                 if UNICODE_STRESS in morpheme:
                     morpheme_unstressed = morpheme.replace(UNICODE_STRESS, "")
                     # If we're missing the corresponding stress in the transcription line...
-                    if (not (morpheme in transcription_line)) and (morpheme_unstressed in transcription_line):
+                    if (transcription_line.count(morpheme) < seg_line.count(morpheme)) and (morpheme_unstressed in transcription_line):
                         # ...then add the stress to the transcription line!
-                        if transcription_line.count(morpheme_unstressed) == 1: # Don't do anything if there's multiple possible targets.  Better to do nothing than sometimes make mistakes.
+                        if transcription_line.count(morpheme_unstressed) == 1: # Easy case -- only one possible target for changing
                             transcription_line = transcription_line.replace(morpheme_unstressed, morpheme, 1)
+                        elif transcription_line_unstressed.count(morpheme_unstressed) == seg_line_unstressed.count(morpheme_unstressed): # Slightly more complex case
+                            # This is the xth instance of this morpheme in the seg line. Solve for x.
+                            prev_seg_line_unstressed = (" ".join(seg_morphemes[:i])).replace(UNICODE_STRESS, "")
+                            instances_to_skip = prev_seg_line_unstressed.count(morpheme_unstressed)
+                            starting_point = 0
+                            for j in range(instances_to_skip): # Should never run if x = 0
+                                next_unstressed_instance_pos = transcription_line.find(morpheme_unstressed, starting_point)
+                                next_stressed_instance_pos = transcription_line.find(morpheme, starting_point)
+                                assert((next_unstressed_instance_pos != -1) or (next_stressed_instance_pos != -1)) # at least one instance was found
+                                if next_unstressed_instance_pos == -1:
+                                    starting_point = next_stressed_instance_pos + len(morpheme)
+                                elif next_stressed_instance_pos == -1:
+                                    starting_point = next_unstressed_instance_pos + len(morpheme_unstressed)
+                                # Both have values
+                                elif next_stressed_instance_pos < next_unstressed_instance_pos:
+                                    starting_point = next_stressed_instance_pos + len(morpheme)
+                                else:
+                                    starting_point = next_unstressed_instance_pos + len(morpheme_unstressed)
+
+                            morpheme_pos = transcription_line.find(morpheme_unstressed, starting_point)
+                            assert(morpheme_pos != -1)
+                            transcription_line = transcription_line[:morpheme_pos] + morpheme + transcription_line[morpheme_pos + len(morpheme_unstressed):]
 
                 # Check for stress in the transcription line that's missing in the seg line
                 else:
@@ -422,6 +444,7 @@ def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
                                         if possible_morpheme.replace(UNICODE_STRESS, "") == morpheme:
                                             # ...then add the stress to the seg line!
                                             seg_line = seg_line.replace(morpheme, possible_morpheme)
+                                            seg_morphemes[i] == possible_morpheme # To keep this loop updated
 
             if maintain_NFC_unicode:
                 transcription_line = normalize('NFC', transcription_line)

@@ -103,17 +103,26 @@ def reassemble_predicted_line(transcription_lines, predicted_seg_word_list):
 
     return predicted_seg_line_list
 
+def print_predictions(predictions, entire_input):
+    formatted_predictions = reassemble_predicted_line((sentence[0] for sentence in entire_input), predictions)
+    formatted_predictions = add_back_OOL_words((sentence[0] for sentence in entire_input), formatted_predictions)
+    sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_predictions, 1)
+    write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
+
 @click.command()
 @click.option("--whole_input_file", help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
 @click.option("--output_file", help="The name of the output file.")
+# If this not specified, then we assume the output is just a list of words, like the input
+@click.option("--output_file_is_fairseq_formatted", is_flag = True, help = "A flag the output has fairseq formatting and needs to be handled as such.")
 @click.option("--gold_output_file", help="The name of the gold output file.")
 @click.option("--train_output_file", help="The name of the training output file.")
-def main(whole_input_file, output_file, gold_output_file, train_output_file):
+def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_output_file, train_output_file):
     print("Comparing these files:", output_file, gold_output_file)
     
     # Get the test results
     output = read_lines_from_file(output_file)
-    output = format_fairseq_output(output)
+    if output_file_is_fairseq_formatted:
+        output = format_fairseq_output(output)
 
     # Get the labels
     gold_output = read_lines_from_file(gold_output_file)
@@ -124,16 +133,13 @@ def main(whole_input_file, output_file, gold_output_file, train_output_file):
     compare_boundary_count(output, gold_output)
     evaluate_OOV_performance(output, gold_output, train_output)
 
-    # Print a viewable output
+    # Print viewable outputs
     # First read in and print out the gold
     # (note this is not just the input to the segmenter, but the ENTIRE input file (4-lines))
     entire_input = read_file(whole_input_file)
     write_sentences(entire_input, GOLD_OUTPUT_FILE_NAME)
     # Now format and print a version with our predictions
-    formatted_output = reassemble_predicted_line((sentence[0] for sentence in entire_input), output)
-    formatted_output = add_back_OOL_words((sentence[0] for sentence in entire_input), formatted_output)
-    sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_output, 1)
-    write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
+    print_predictions(output, entire_input)
 
 # Doing this so that I can export functions to pipeline.py
 if __name__ == '__main__':

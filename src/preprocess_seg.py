@@ -14,8 +14,6 @@ DEV_INPUT_NAME = "dev.input"
 DEV_OUTPUT_NAME = "dev.output"
 TEST_INPUT_NAME = "test.input"
 TEST_OUTPUT_NAME = "test.output"
-PIPELINE_INPUT_NAME = "pipeline.input"
-PIPELINE_OUTPUT_NAME = "pipeline.output"
 
 # Given a list of words, creates a file where each word is on a new line, with spaces in between the chars
 def create_file_of_words(list, file_name):
@@ -98,11 +96,9 @@ def format_data(X, y):
 @click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
 @click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
-@click.option("--pipeline_file", help = "The name of the file containing all sentences in the set to be used as input to the pipeline.")
-def main(train_file, dev_file, test_file, pipeline_file):
+def main(train_file, dev_file, test_file):
     # Break down the data into three sets
     train, dev, test = read_datasets(train_file, dev_file, test_file)
-    pipeline = read_file(pipeline_file)
 
     datasets = handle_OOL_words([train, dev, test])
     train, dev, test = datasets[:3]
@@ -114,8 +110,6 @@ def main(train_file, dev_file, test_file, pipeline_file):
     dev_y = [sentence[1] for sentence in dev]
     test_X = [sentence[0] for sentence in test]
     test_y = [sentence[1] for sentence in test]
-    pipeline_X = [sentence[0] for sentence in pipeline]
-    pipeline_y = [sentence[1] for sentence in pipeline]
 
     # Convert these to the appropriate format for fairseq
     train_X_formatted, train_y_formatted = format_data(train_X, train_y)
@@ -133,12 +127,7 @@ def main(train_file, dev_file, test_file, pipeline_file):
     create_file_of_words(test_X_formatted, TEST_INPUT_NAME)
     create_file_of_words(test_y_formatted, TEST_OUTPUT_NAME)
 
-    pipeline_X_full_formatted, pipeline_y_full_formatted = format_data(pipeline_X, pipeline_y)
-    assert(len(pipeline_X_full_formatted) == len(pipeline_y_full_formatted))
-    create_file_of_words(pipeline_X_full_formatted, PIPELINE_INPUT_NAME)
-    create_file_of_words(pipeline_y_full_formatted, PIPELINE_OUTPUT_NAME)
-
-    print("\nWrote to " + ", ".join([TRAIN_INPUT_NAME, TRAIN_OUTPUT_NAME, DEV_INPUT_NAME, DEV_OUTPUT_NAME, TEST_INPUT_NAME, TEST_OUTPUT_NAME, PIPELINE_INPUT_NAME]) + ", and " + PIPELINE_OUTPUT_NAME + ".\n")
+    print("\nWrote to " + ", ".join([TRAIN_INPUT_NAME, TRAIN_OUTPUT_NAME, DEV_INPUT_NAME, DEV_OUTPUT_NAME, TEST_INPUT_NAME]) + ", and " + TEST_OUTPUT_NAME + ".\n")
 
 if __name__ == '__main__':
     main()

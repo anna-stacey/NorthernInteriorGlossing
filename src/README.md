@@ -26,7 +26,7 @@ After running the above, run this to evaluate using the sigmorphon evaluation sy
 - ``python3 src/sigmorphon/eval.py --pred generated_data/gloss_pred.txt --gold generated_data/gloss_gold.txt``
 
 ## Run the Entire Pipeline
-The segmentation model must be trained first, so make sure to run the correct one of ``dev_prepare_seg.sh`` or ``prepare_seg.sh`` first.  The input to the segmentation stage is also prepared in that step, so don't forget to make changes there if you want to change the input to the pipeline.  
+The pipeline makes use of the segmentation predictions, so be sure to first [train](#preprocess-and-train-the-segmentation-model) and [run](#run-the-segmentation-model) the segmentation model.  
 Takes a couple of minutes.  
 There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!  
 - To run on the dev set: ``sh src/dev_pipeline.sh``

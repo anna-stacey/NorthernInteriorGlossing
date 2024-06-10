@@ -582,7 +582,7 @@ def reassemble_predicted_words(gloss_line_list):
 
 # Takes a list of sentences, where each sentence contains the transcription line, segmentation line, etc.
 # No return value, just creates and write to an output file
-def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_line_number, isOpenTrack):
+def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_line_number, is_open_track):
     ORTHOG_LINE_MARKER = "\\t "
     SEG_LINE_MARKER = "\\m "
     GLOSS_LINE_MARKER = "\\g "
@@ -603,7 +603,7 @@ def write_output_file(sentence_list, file_name, segmentation_line_number, gloss_
         gloss_line = re.sub(REGULAR_BOUNDARY + REGULAR_BOUNDARY, REGULAR_BOUNDARY, gloss_line) # Because the gloss line can have consecutive boundaries due to infixes (e.g. crazy<PL>-1PL.II)
 
         # Put the sentence back together with the new formatting
-        if isOpenTrack: # In the closed track, segmentation is not used
+        if is_open_track: # In the closed track, segmentation is not used
             new_sentence = [transcription_line, seg_line, gloss_line, translation_line]
         else:
             new_sentence = [transcription_line, gloss_line, translation_line]
@@ -686,14 +686,14 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
-    isOpenTrack = True # Because we had the segmentation to work with in this case!
+    is_open_track = True # Because we had the segmentation to work with in this case!
     # Reassemble the predicted morphemes into string lines
     pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words(pred_y))
     # Take the original test set, and substitute in our predicted gloss lines
     test_with_predictions = make_sentence_list_with_prediction(original_test, pred_y_to_print, gloss_line_number)
-    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
+    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, is_open_track)
     # And create a file of the gold version, formatted the same way to permit comparison
-    write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, isOpenTrack)
+    write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, is_open_track)
 
 if __name__ == '__main__':
     main()

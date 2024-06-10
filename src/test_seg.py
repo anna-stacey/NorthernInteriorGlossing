@@ -33,7 +33,7 @@ def format_fairseq_output(output):
 # No return value
 # Evaluate the accuracy word by word
 def evaluate(output, gold_output):
-    assert(len(output) == len(gold_output))
+    assert len(output) == len(gold_output), f"\nError: There are {len(output)} predicted words, and {len(gold_output)} gold words."
     seg_count = 0
     incorrect_seg_count = 0
     for output_seg, gold_seg in zip(output, gold_output):

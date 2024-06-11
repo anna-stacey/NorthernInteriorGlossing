@@ -505,7 +505,7 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     # Evaluate the overall result
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
-    print("\n** Accuracy scores: **")
+    print("\n** Glossing accuracy: **")
     print(f"Morpheme-level accuracy: {round(get_morpheme_level_accuracy(y, pred_y) * 100, 2)}%.\n")
     print(f"Word-level accuracy: {round(get_word_level_accuracy(y, pred_y) * 100, 2)}%.\n")
 

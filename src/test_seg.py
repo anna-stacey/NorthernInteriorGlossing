@@ -44,7 +44,8 @@ def evaluate(output, gold_output):
     assert(seg_count > 0)
     accuracy = (seg_count - incorrect_seg_count) / seg_count
     accuracy = round(accuracy * 100, 2)
-    print(f"\nAccuracy: {accuracy}% on {seg_count} words.")
+    print("\n** Segmentation accuracy: **")
+    print(f"Word-level accuracy: {accuracy}% on {seg_count} words.")
 
 # It may be interesting to know whether the model is under- or over-segmenting
 # i.e. inserting too few or too many boundaries

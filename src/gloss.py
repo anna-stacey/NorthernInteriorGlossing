@@ -565,18 +565,28 @@ def make_sentence_list_with_prediction(sentence_list, prediction_line_list, line
 
     return new_sentence_list
 
-# Input: a list of predicted gloss lines, which are lists of words, which are lists of morphemes
+# Input:
+# 1. a list of the input seg lines, which are lists of words (with the boundaries in place!)
+# 2. a list of predicted gloss lines, which are lists of words, which are lists of morphemes
 # Output: a list of predicted gloss lines, which are lists of words, which are strings (where morphemes are connected by hyphens)
 # i.e., go from ["dog", "s"] to "dog-s"
-def reassemble_predicted_words(gloss_line_list):
+def reassemble_predicted_words(input_seg_line_list, pred_gloss_line_list):
+    assert(len(input_seg_line_list) == len(pred_gloss_line_list))
     new_gloss_line_list = []
-    for line in gloss_line_list:
-        sentence_as_list_of_words = []
-        for word in line:
-            new_word = "-".join(word)
-            sentence_as_list_of_words.append(new_word)
+    for seg_line, gloss_line in zip(input_seg_line_list, pred_gloss_line_list):
+        assert(len(seg_line) == len(gloss_line))
+        gloss_line_as_list_of_words = []
+        for seg_word, gloss_word in zip(seg_line, gloss_line):
+            # Put the gloss morphemes together into a word, connected by the boundaries from the input
+            boundaries = re.findall(ALL_BOUNDARIES_FOR_REGEX, seg_word)
+            combined_gloss_word = gloss_word[0]
+            for i in range(1,len(gloss_word)):
+                combined_gloss_word += boundaries[i - 1]
+                combined_gloss_word += gloss_word[i]
 
-        new_gloss_line_list.append(sentence_as_list_of_words)
+            gloss_line_as_list_of_words.append(combined_gloss_word)
+
+        new_gloss_line_list.append(gloss_line_as_list_of_words)
 
     return new_gloss_line_list
 
@@ -691,7 +701,7 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
     # Reassemble the predicted morphemes into string lines
-    pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words(pred_y))
+    pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y))
     # Take the original test set, and substitute in our predicted gloss lines
     test_with_predictions = make_sentence_list_with_prediction(original_test, pred_y_to_print, gloss_line_number)
     write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME)

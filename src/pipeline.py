@@ -89,7 +89,7 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
 
     # Create the predictions output file
     # Add back OOl words to our predicted gloss lines (using untouched transcription lines)
-    pred_y_to_print = add_back_OOL_words(list(sentence[0] for sentence in seg_output), reassemble_predicted_words(pred_y))
+    pred_y_to_print = add_back_OOL_words(list(sentence[0] for sentence in seg_output), reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y))
     # Now we can just take the printed output from the seg step, and add in our new gloss line predictions
     test_with_predictions = make_sentence_list_with_prediction(seg_output, pred_y_to_print, gloss_line_number)
     # Write!

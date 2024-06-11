@@ -6,7 +6,6 @@ from prescreen_data import DOUBLE_BOUNDARY_REGEX
 
 GOLD_OUTPUT_FILE_NAME = "pipeline_gold.txt"
 PRED_OUTPUT_FILE_NAME = "pipeline_pred.txt"
-IS_OPEN_TRACK = True # Make this true if you want to see the segmentation output, too
 
 # Convert from a list of words, to a list of sentences
 def reassemble_sentences(word_list, word_count_by_sentence):
@@ -58,7 +57,7 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
     # First, let's read in the original train and test sets
     train, throwaway, test = read_datasets(gloss_train_file, gloss_dev_file, gloss_test_file)
     # Before preparing the test set for glossing, we can first use it to make the gold output file
-    write_output_file(test, GOLD_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, IS_OPEN_TRACK)
+    write_output_file(test, GOLD_OUTPUT_FILE_NAME)
 
     # Next, get the predicted seg lines.  These will be our input.
     seg_output = read_file(seg_pred_file)
@@ -94,7 +93,7 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
     # Now we can just take the printed output from the seg step, and add in our new gloss line predictions
     test_with_predictions = make_sentence_list_with_prediction(seg_output, pred_y_to_print, gloss_line_number)
     # Write!
-    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME, segmentation_line_number, gloss_line_number, IS_OPEN_TRACK)
+    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME)
 
 
 main()

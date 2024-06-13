@@ -157,13 +157,13 @@ def print_predictions(predictions, entire_input):
     write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
 
 @click.command()
-@click.option("--whole_input_file", help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
-@click.option("--output_file", help="The name of the output file.")
+@click.option("--whole_input_file", required=True, help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
+@click.option("--output_file", required=True, help="The name of the output file.")
 # If this not specified, then we assume the output is just a list of words, like the input
 @click.option("--output_file_is_fairseq_formatted", is_flag = True, help = "A flag the output has fairseq formatting and needs to be handled as such.")
-@click.option("--gold_output_file", help="The name of the gold output file.")
+@click.option("--gold_output_file", required=True, help="The name of the gold output file.")
 @click.option("--train_output_file", help="The name of the training output file.")
-def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_output_file, train_output_file):
+def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_output_file, train_output_file = None):
     print("Comparing these files:", output_file, gold_output_file)
     
     # Get the test results
@@ -173,12 +173,13 @@ def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_o
 
     # Get the labels
     gold_output = read_lines_from_file(gold_output_file)
-    train_output = read_lines_from_file(train_output_file)
     
     # Compare!
     evaluate(output, gold_output)
     compare_boundary_count(output, gold_output)
-    evaluate_OOV_performance(output, gold_output, train_output)
+    if train_output_file:
+        train_output = read_lines_from_file(train_output_file)
+        evaluate_OOV_performance(output, gold_output, train_output)
 
     # Print viewable outputs
     # First read in and print out the gold

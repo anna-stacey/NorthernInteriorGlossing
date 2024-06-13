@@ -1,10 +1,14 @@
 import click
+import re
 from gloss import make_sentence_list_with_prediction, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
+
+def _as_percent(number):
+    return round(number * 100, 2)
 
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
@@ -30,22 +34,64 @@ def format_fairseq_output(output):
 
     return formatted_output
 
-# No return value
-# Evaluate the accuracy word by word
+# No return value, just prints
+def _evaluate_f1(output, gold_output):
+    true_pos = 0
+    false_pos = 0
+    false_neg = 0
+
+    for output_seg_word, gold_seg_word in zip(output, gold_output):
+        # Is a true positive a boundary that is in exactly the right position? Recalling that there may be normalization processes.
+        # Or should we look at the sequence of boundaries inserted, and check that they're in the right order?
+        # Trying the former approach, but it will call a lot of almost-correct boundaries false positives...
+        for char_index, char in enumerate(output_seg_word):
+            if char in ALL_BOUNDARIES:
+                if char_index < len(gold_seg_word) and gold_seg_word[char_index] == char:
+                    true_pos += 1
+                else:
+                    false_pos += 1
+            elif char_index < len(gold_seg_word) and gold_seg_word[char_index] in ALL_BOUNDARIES:
+                false_neg += 1
+
+    # Calculations
+    if true_pos == 0: # Avoid division by 0
+        precision = 0
+        recall = 0
+        f1 = 0
+        f1_alt = 0
+    else:
+        precision = true_pos / (true_pos + false_pos)
+        recall = true_pos / (true_pos + false_neg)
+        f1 = (2 * true_pos) / ((2 * true_pos) + false_pos + false_neg)
+        f1_alt = 2 *((precision * recall) / (precision + recall))
+
+    # Format and print results
+    assert(_as_percent(f1) == _as_percent(f1_alt))
+    print(f"\nBoundary-level precision: {_as_percent(precision)}%.")
+    print(f"B-L recall: {_as_percent(recall)}%.")
+    print(f"B-L F1 Score: {_as_percent(f1)}%.")
+
+# No return value, just prints
+# Go word-by-word -- the entire thing must be right to be correct!
+def _evaluate_word_level_acc(output, gold_output):
+    num_words = 0
+    num_incorrect_words = 0
+
+    for output_seg_word, gold_seg_word in zip(output, gold_output):
+        if output_seg_word != gold_seg_word:
+            num_incorrect_words += 1
+        num_words += 1
+
+    assert(num_words > 0)
+    accuracy = (num_words - num_incorrect_words) / num_words
+    accuracy = _as_percent(accuracy)
+    print(f"\nWord-level accuracy: {accuracy}% on {num_words} words.")
+
 def evaluate(output, gold_output):
     assert len(output) == len(gold_output), f"\nError: There are {len(output)} predicted words, and {len(gold_output)} gold words."
-    seg_count = 0
-    incorrect_seg_count = 0
-    for output_seg, gold_seg in zip(output, gold_output):
-        if output_seg != gold_seg:
-            incorrect_seg_count += 1
-        seg_count += 1
-
-    assert(seg_count > 0)
-    accuracy = (seg_count - incorrect_seg_count) / seg_count
-    accuracy = round(accuracy * 100, 2)
     print("\n** Segmentation accuracy: **")
-    print(f"Word-level accuracy: {accuracy}% on {seg_count} words.")
+    _evaluate_word_level_acc(output, gold_output)
+    _evaluate_f1(output, gold_output)
 
 # It may be interesting to know whether the model is under- or over-segmenting
 # i.e. inserting too few or too many boundaries
@@ -53,7 +99,7 @@ def evaluate(output, gold_output):
 def compare_boundary_count(output, gold_output):
     predicted_count = _get_boundary_count(output)
     gold_count = _get_boundary_count(gold_output)
-    print(f"Boundary count: {predicted_count} predicted vs. {gold_count} in gold ({round(predicted_count/gold_count * 100, 2)}%).")
+    print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({_as_percent(predicted_count/gold_count)}%).")
 
 def _get_boundary_count(output):
     boundary_count = 0
@@ -79,8 +125,8 @@ def evaluate_OOV_performance(output, gold_output, train_output):
 
     print(f"\nOOV count: {OOV_count}/{len(output)} words ({round(OOV_count / len(output) * 100, 2)}%).")
 
-    OOV_acc = round((OOV_count - OOV_incorrect_count) / OOV_count * 100, 2)
-    print(f"OOV accuracy: {OOV_acc}% on {OOV_count} OOV words.\n")
+    OOV_acc = (OOV_count - OOV_incorrect_count) / OOV_count
+    print(f"OOV accuracy: {_as_percent(OOV_acc)}% on {OOV_count} OOV words.\n")
 
 # Input: a list of predicted segmented words, with no sentence structure
 # Look back at the input to figure out where sentence boundaries should be

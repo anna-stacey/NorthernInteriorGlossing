@@ -432,9 +432,11 @@ def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
 
                 # Check for stress in the transcription line that's missing in the seg line
                 else:
+                    # Regex b/c if you search for "example", you will get a match from "examplé" because the diacritic is considered the following character
+                    morpheme_is_in_transcription_line = re.search(morpheme + "[^" + UNICODE_STRESS + "]*", transcription_line)
                     # If we're missing the corresponding stress in the seg line...
                     # (The last condition here is ridiculous but necessary to not over-fix in some erroenous data).
-                    if (not (morpheme in transcription_line)) and (morpheme in transcription_line_unstressed) and (transcription_line_unstressed.count(morpheme) >= seg_line_unstressed.count(morpheme)):
+                    if (not (morpheme_is_in_transcription_line)) and (morpheme in transcription_line_unstressed) and (transcription_line_unstressed.count(morpheme) >= seg_line_unstressed.count(morpheme)):
                         if seg_line.count(morpheme) == 1: # Don't do anything if there's multiple possible targets.
                             # Find the stressed version of the morpheme in the transcription line
                             for transcription_word in transcription_line.split():

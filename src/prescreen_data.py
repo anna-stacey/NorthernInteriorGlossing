@@ -1,10 +1,11 @@
 # For formatting fixes that can be done irrespective of language
 # Ensuring that the glossing code doesn't need to worry about screening for these kinds of anomalies
 import click
+from os import listdir, path
 import re
 from unicodedata import normalize
 from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
-from glossed_data_utilities import NON_PERMITTED_PUNCTUATION, NON_PERMITTED_PUNCTUATION_REGEX, OUT_OF_LANGUAGE_MARKER
+from glossed_data_utilities import read_file, NON_PERMITTED_PUNCTUATION, NON_PERMITTED_PUNCTUATION_REGEX, OUT_OF_LANGUAGE_MARKER
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 NON_GLOSS_LINE_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
@@ -573,20 +574,49 @@ def compare_tags(lang_1_data, lang_2_data, segmentation_line_number, gloss_line_
     for tag in shared_tags:
         print(tag)
 
+# Current searching behaviour is that if multiple lines are specified as search targets (e.g., seg and gloss), then the same example
+# can be matched twice.
+def search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, segmentation_line_number, gloss_line_number):
+    match_count = 0
+    data = []
+    for item in (listdir(dir_to_search)):
+        # Read in every file in the dir, so we have a master data list
+        if path.isfile(dir_to_search + item):
+            data.extend(read_file(dir_to_search + item))
+
+    # Now search
+    for example in data:
+        for i, line in enumerate(example):
+            if (i == segmentation_line_number and search_seg_line) or (i == gloss_line_number and search_gloss_line):
+                # Search this line!
+                if re.search(search_term, line):
+                    # We have a match -- print it and update our count
+                    match_count += 1
+                    print()
+                    for line in example:
+                        print(line)
+
+    print(f"\n{match_count} matching examples were found.")
+
 # This code can do multiple things -- you need to tell it to do one (or more) of screen_data, print_tags, and/or compare_tags
 @click.command()
 @click.option("--do_screen_data", is_flag = True, help = "A flag that indicates we should prescreen the inputed datasets.")
 @click.option("--do_print_tags", is_flag = True, help = "A flag that indicates we should summarize the glossing tags found in the inputted datasets.")
 @click.option("--do_compare_tags", is_flag = True, help = "A flag that indicates we should compare the tags from two languages.")
+@click.option("--do_search", is_flag = True, help = "A flag that indicates whether the search function should be called.")
+@click.option("--search_seg_line", is_flag = True, type = str, help = "Should the seg line be searched?")
+@click.option("--search_gloss_line", is_flag = True, type = str, help = "Should the gloss line be searched?")
 @click.option("--train_file", required = True, type = str, help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", required = True, type = str, help = "The name of the file containing all sentences in the dev set.")
 @click.option("--test_file", required = True, type = str, help = "The name of the file containing all sentences in the test set.")
 @click.option("--train_file_to_compare", type = str, help = "The name of the file containing all sentences in the train set *of the language to be compared with*.")
 @click.option("--dev_file_to_compare", type = str, help = "The name of the file containing all sentences in the dev set *of the language to be compared with*.")
 @click.option("--test_file_to_compare", type = str, help = "The name of the file containing all sentences in the test set *of the language to be compared with*.")
+@click.option("--dir_to_search", type = str, help = "Every data file in this directory will be searched.")
+@click.option("--search_term", type = str, help = "The string we are looking for in our search.")
 @click.option("--segmentation_line_number", required = True, type = int, help = "The line that contains the segmented sentence.  Note that this starts with the first line = 1.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
 @click.option("--gloss_line_number", required = True, type = int, help = "The line that contains the glossed sentence.  Note that this starts with the first line = 1.  For example if there are four lines each and the gloss is the third line, this will be 3.")
-def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number, do_screen_data, do_print_tags, do_compare_tags, train_file_to_compare = None, dev_file_to_compare = None, test_file_to_compare = None):
+def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number, do_screen_data, do_print_tags, do_compare_tags, do_search, search_seg_line, search_gloss_line, train_file_to_compare = None, dev_file_to_compare = None, test_file_to_compare = None, dir_to_search = None, search_term = None):
     # Convert right away to prevent off-by-one errors
     segmentation_line_number = int(segmentation_line_number) - 1
     gloss_line_number = int(gloss_line_number) - 1
@@ -631,9 +661,15 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
             train_2, dev_2, test_2 = read_datasets(train_file_to_compare, dev_file_to_compare, test_file_to_compare)
             compare_tags(train + dev + test, train_2 + dev_2 + test_2, segmentation_line_number, gloss_line_number)
         else:
-            print("\nERROR: --compare_tags flag used, but one or more of the train/dev/test files to compare with were NOT given!")
+            print("\nERROR: --do_compare_tags flag used, but one or more of the train/dev/test files to compare with were NOT given!")
 
-    if not(do_screen_data) and not(do_print_tags) and not(do_compare_tags):
+    if do_search:
+        if dir_to_search and (search_seg_line or search_gloss_line) and search_term:
+            search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, segmentation_line_number, gloss_line_number)
+        else:
+            print("\nERROR: --do_search flag used, but one or more of the relevant command line args were NOT given!")
+
+    if not(do_screen_data) and not(do_print_tags) and not(do_compare_tags) and not(do_search):
         print("No tasks were requested, so this code isn't doing anything!\nRun `python src/prescreen_data.py --help` to see the possible options, including which tasks you can specify.")
 
 if __name__ == '__main__':

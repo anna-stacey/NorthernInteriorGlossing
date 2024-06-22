@@ -6,8 +6,8 @@ from unicodedata import normalize
 
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
 # Note that double colons (::) are being permitted b/c the St́át́imcets data seems to use them legitiamtely as a vowel length thing
-NON_PERMITTED_PUNCTUATION = [".", ",", "?", "\"", "“", "”", "!", "♪", ":", ";", "–"]
-NON_PERMITTED_PUNCTUATION_REGEX = "[\.,\?\"“”!♪;–]|([^:]):([^:])" # Any of these characters, but including only *single* colons, not two in a row
+NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG = [".", ",", "?", "\"", "“", "”", "!", "♪", ":", ";", "–"]
+NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX = "[\.,\?\"“”!♪;–]|([^:]):([^:])" # Any of these characters, but including only *single* colons, not two in a row
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
 
 OUT_OF_LANGUAGE_MARKER = "*"
@@ -65,7 +65,7 @@ def tidy_dataset(dataset):
         for i, line in enumerate(sentence):
             # Remove commas, periods, and question marks from the seg and transcription lines
             if i == 0 or i == 1:
-                line = re.sub(NON_PERMITTED_PUNCTUATION_REGEX, r"\1\2", line)
+                line = re.sub(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, r"\1\2", line)
 
             # Find 2+ spaces, and replace them with only one space
             line = re.sub(r"[ ]+[ ]+", " ", line)

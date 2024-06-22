@@ -1,5 +1,5 @@
 # *** Common functions for creating train/dev/tests datasets ***
-from os import getcwd, mkdir, path
+from os import mkdir, path
 from random import shuffle
 import re
 from unicodedata import normalize
@@ -352,15 +352,12 @@ def add_back_OOL_words(transcription_lines, predicted_lines):
 
     return updated_predicted_lines
 
-def create_file_of_sentences(examples, file_name, randomize_order = False):
-    output_folder = "/data/"
-
+def create_file_of_sentences(examples, file_name, directory_path, randomize_order = False):
     # Create the generated_data subdirectory, if it doesn't already exist
-    dir_path = getcwd() + output_folder
-    if not path.exists(dir_path):
-        mkdir(dir_path)
+    if not path.exists(directory_path):
+        mkdir(directory_path)
 
-    write_sentences(examples, dir_path + file_name, randomize_order)
+    write_sentences(examples, directory_path + file_name, randomize_order)
 
 # Assumes that lines do NOT end in "\n", and will add it as it prints
 def write_sentences(examples, file_path, randomize_order = False):

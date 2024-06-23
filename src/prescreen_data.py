@@ -19,6 +19,9 @@ NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_REGEX = NON_PERMITTED_PUNCTUATION_TRANSC
 NON_PERMITTED_PUNCTUATION_GLOSS = ["[", "]"]
 NON_PERMITTED_PUNCTUATION_GLOSS_REGEX = r"\[\]" # For now, only brackets are disallowed in the gloss line
 
+# Matching stress isn't *essential* for system functioning, so these checks can be turned off.
+CHECK_STRESS = True
+
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
 tab_fails = 0
@@ -133,28 +136,29 @@ def seg_screen(transcription_line, seg_line):
                 trans_seg_OOL_word_fails += 1
 
         # Stress checks
-        # First, convert to split chars/diacritics so that we don't have to handle BOTH combined- and uncombined-formatted inputs
-        transcription_word = normalize('NFD', transcription_word)
-        seg_word = normalize('NFD', seg_word)
+        if CHECK_STRESS:
+            # First, convert to split chars/diacritics so that we don't have to handle BOTH combined- and uncombined-formatted inputs
+            transcription_word = normalize('NFD', transcription_word)
+            seg_word = normalize('NFD', seg_word)
 
-        # Check the transcription line for double stress
-        if transcription_word.count(UNICODE_STRESS) > 1:
-            print(f"\n- Error: this sentence has a word with multiple stress marking in the transcription line. Word: {transcription_word}.")
-            print(transcription_line)
-            trans_double_stress_fails += 1
+            # Check the transcription line for double stress
+            if transcription_word.count(UNICODE_STRESS) > 1:
+                print(f"\n- Error: this sentence has a word with multiple stress marking in the transcription line. Word: {transcription_word}.")
+                print(transcription_line)
+                trans_double_stress_fails += 1
 
-        # Check that stress matches b/w the trans and seg lines
-        # Catches cases where a) one line has the word with stress marking, the other lacks it altogether and b) both lines have the word with stress, but in different places
-        # For now, only check words that are not otherwise modified (e.g. underlying sounds added in seg line)
-        transcription_word_unstressed = transcription_word.replace(UNICODE_STRESS, "")
-        seg_word_unsegmented = re.sub(ALL_BOUNDARIES_FOR_REGEX, "", seg_word)
-        seg_word_unsegmented_unstressed = seg_word_unsegmented.replace(UNICODE_STRESS, "")
-        # If they're the same without stress marking, whereas with stress (and no boundaries in the seg line) they're no longer the same
-        if (transcription_word_unstressed == seg_word_unsegmented_unstressed) and (transcription_word != seg_word_unsegmented):
-            print(f"\n- Error: this sentence has a word with inconsistent stress marking between the transcription and segmentation lines. Word: {transcription_word} vs. {seg_word_unsegmented}.")
-            print(transcription_line)
-            print(seg_line)
-            trans_seg_stress_fails += 1
+            # Check that stress matches b/w the trans and seg lines
+            # Catches cases where a) one line has the word with stress marking, the other lacks it altogether and b) both lines have the word with stress, but in different places
+            # For now, only check words that are not otherwise modified (e.g. underlying sounds added in seg line)
+            transcription_word_unstressed = transcription_word.replace(UNICODE_STRESS, "")
+            seg_word_unsegmented = re.sub(ALL_BOUNDARIES_FOR_REGEX, "", seg_word)
+            seg_word_unsegmented_unstressed = seg_word_unsegmented.replace(UNICODE_STRESS, "")
+            # If they're the same without stress marking, whereas with stress (and no boundaries in the seg line) they're no longer the same
+            if (transcription_word_unstressed == seg_word_unsegmented_unstressed) and (transcription_word != seg_word_unsegmented):
+                print(f"\n- Error: this sentence has a word with inconsistent stress marking between the transcription and segmentation lines. Word: {transcription_word} vs. {seg_word_unsegmented}.")
+                print(transcription_line)
+                print(seg_line)
+                trans_seg_stress_fails += 1
 
 # Tests that are relevant whether your doing segmentation OR glossing
 # (Note these are only *applied* to the seg line, but they're *relevant* for both processes)
@@ -201,15 +205,16 @@ def seg_and_gloss_screen(seg_line):
         print(seg_line)
         seg_non_permitted_punctuation_fails += 1
 
-    # Check the seg line for double stress
-    seg_words = seg_line.split()
-    for word in seg_words:
-        # First, convert to split chars/diacritics so that we don't have to handle BOTH combined- and uncombined-formatted inputs
-        word = normalize('NFD', word)
-        if word.count(UNICODE_STRESS) > 1:
-            print(f"\n- Error: this sentence has a word with multiple stress marking in the segmented line. Word: {word}.")
-            print(seg_line)
-            seg_double_stress_fails += 1
+    if CHECK_STRESS:
+        # Check the seg line for double stress
+        seg_words = seg_line.split()
+        for word in seg_words:
+            # First, convert to split chars/diacritics so that we don't have to handle BOTH combined- and uncombined-formatted inputs
+            word = normalize('NFD', word)
+            if word.count(UNICODE_STRESS) > 1:
+                print(f"\n- Error: this sentence has a word with multiple stress marking in the segmented line. Word: {word}.")
+                print(seg_line)
+                seg_double_stress_fails += 1
 
 # Check that infix boundaries are used as expected - i.e. in left/right pairs (<>) with no other boundaries in between
 # Returns a boolean - true if no such errors found, false if at least one was found
@@ -383,7 +388,9 @@ def gloss_screen(seg_line, gloss_line):
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, trans_seg_stress_fails, trans_double_stress_fails, seg_non_permitted_punctuation_fails, seg_double_stress_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails, gloss_non_permitted_punctuation_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails, gloss_non_permitted_punctuation_fails]
+    if CHECK_STRESS:
+        all_fail_counts.extend([trans_seg_stress_fails, trans_double_stress_fails, seg_double_stress_fails])
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -395,16 +402,21 @@ def print_screen_summary():
         print(f"    - {tab_fails} lines contained tab character(s).")
         print(f"    - {multi_space_fails} lines contained multiple spaces in a row.")
         print(f"    - {newline_fails} lines contained a newline character.")
+
         # Transcrption tests
         print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION}).")
-        print(f"    - There were {trans_double_stress_fails} instances of multiple stress marking in the transcription line.")
+        if CHECK_STRESS:
+            print(f"    - There were {trans_double_stress_fails} instances of multiple stress marking in the transcription line.")
+
         # Seg tests
         print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG}).")
-        print(f"    - There were {seg_double_stress_fails} instances of multiple stress marking in the segmentation line.")
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_word_fails} words were marked as out-of-language in the transcription and segmented lines but were not consistent in form between these two lines.")
-        print(f"    - {trans_seg_stress_fails} words had inconsistent stress-marking bewteen the transcription and segmented lines.")
+        if CHECK_STRESS:
+            print(f"    - There were {seg_double_stress_fails} instances of multiple stress marking in the segmentation line.")
+            print(f"    - {trans_seg_stress_fails} words had inconsistent stress-marking bewteen the transcription and segmented lines.")
+
         # Pairs of tests (one for seg, one for gloss)
         print(f"    - {seg_multi_boundary_fails} segmentation lines contained multiple boundaries in a row.")
         print(f"    - {gloss_multi_boundary_fails} gloss lines contained multiple boundaries in a row.")
@@ -414,6 +426,7 @@ def print_screen_summary():
         print(f"    - There were {gloss_infix_boundary_mismatch_fails} instances in the gloss line of an infix boundary whose partner infix boundary was absent or misplaced.")
         print(f"    - There were {seg_infix_boundary_misplacement_fails} instances in the segmentation line of an infix boundary that was inappropriately placed.")
         print(f"    - There were {gloss_infix_boundary_misplacement_fails} instances in the gloss line of an infix boundary that was inappropriately placed.")
+
         # Other glossy tests
         print(f"    - {gloss_boundary_marker_fails} lines contained a morpheme boundary in the gloss line other than the regular boundary marker (i.e., one of {NON_GLOSS_LINE_BOUNDARIES}).")
         print(f"    - {seg_gloss_num_words_fails} lines contained a different number of *words* between the segmented and gloss lines.")

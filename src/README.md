@@ -34,3 +34,7 @@ There is a parameter in the shell scripts for specifying which line number conta
 
 After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
 - ``python3 src/sigmorphon/eval.py --pred generated_data/pipeline_pred.txt --gold generated_data/pipeline_gold.txt``
+
+## Extra Programs
+You can compare two `..._pred.txt` output files with the simple ``compare_pred.py`` script:
+``python3 src/compare_pred.py --file_1=generated_data/pipeline_pred.txt --file_2=generated_data/pipeline_pred_other.txt``

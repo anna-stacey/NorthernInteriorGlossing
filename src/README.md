@@ -37,4 +37,4 @@ After running the above, run this to evaluate using the sigmorphon evaluation sy
 
 ## Extra Programs
 You can compare two `..._pred.txt` output files with the simple ``compare_pred.py`` script:
-``python3 src/compare_pred.py --file_1=generated_data/pipeline_pred.txt --file_2=generated_data/pipeline_pred_other.txt``
+``python3 src/compare_pred.py --check_gloss_line --file_1=generated_data/pipeline_pred.txt --file_2=generated_data/pipeline_gold.txt``

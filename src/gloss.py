@@ -3,6 +3,7 @@ import re
 import sklearn_crfsuite
 from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
 from os import getcwd, mkdir, path
+from unicodedata import normalize
 
 OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
@@ -408,10 +409,14 @@ def match_stem(morpheme, stem_dict):
 
     return match
 
+# Permits stress variation, and schwa vs. e variation
 def _generalize_morpheme(morpheme):
-    modified_morpheme = morpheme
-    modified_morpheme = modified_morpheme.replace(UNICODE_STRESS,"")
-    modified_morpheme = modified_morpheme.replace("ə","e")
+    # Be able to handle NFC or NFD stress
+    modified_morpheme = normalize('NFD', morpheme)
+    modified_morpheme = modified_morpheme.replace(UNICODE_STRESS, "")
+    # Once stress is removed, NFD vs NFC makes no difference!
+
+    modified_morpheme = modified_morpheme.replace("ə", "e")
 
     return modified_morpheme
 

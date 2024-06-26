@@ -37,10 +37,7 @@ def create_file_of_words(list, file_name):
         file.close()
 
 # Char removal that applies to both unsegmented and segmented lines
-def general_preprocess(sentence, is_segmented):
-    if is_segmented:
-        # Remove bracketed affixes
-        sentence = re.sub(r'\[[^\]]*\]', "", sentence)
+def general_preprocess(sentence):
     sentence = sentence.replace("\n", "")
     # Remove any double spaces that may be created from char removals
     sentence = re.sub(r'\s+', " ", sentence)
@@ -50,10 +47,10 @@ def general_preprocess(sentence, is_segmented):
     return sentence
 
 # Go from a list of sentence strings, to a list of sentences which are lists of words
-def strings_to_word_lists(dataset, is_segmented):
+def strings_to_word_lists(dataset):
     sentences_list = []
     for sentence in dataset:
-        sentence = general_preprocess(sentence, is_segmented)
+        sentence = general_preprocess(sentence)
         sentence = sentence.split(" ")
         sentences_list.append(sentence)
 
@@ -80,8 +77,8 @@ def words_to_char_lists(word_list):
 # Returns X and y formatted for fairseq
 def format_data(X, y):
     # Convert each sentence to a list of words
-    X_preprocessed = strings_to_word_lists(X, False)
-    y_preprocessed = strings_to_word_lists(y, True)
+    X_preprocessed = strings_to_word_lists(X)
+    y_preprocessed = strings_to_word_lists(y)
 
     X_preprocessed = sentence_list_to_word_list(X_preprocessed)
     y_preprocessed = sentence_list_to_word_list(y_preprocessed)

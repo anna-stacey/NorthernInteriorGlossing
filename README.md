@@ -14,11 +14,11 @@ For example, if you have a 4-line system (transcription, segmentation, gloss, tr
 
 3.  **There are never multiple consecutive spaces in the data.**
 
-4.  **The segmentation line and gloss lines do not contain multiple consecutive boundaries.**  
+4.  **The segmentation and gloss lines do not contain multiple consecutive boundaries.**  
 That is, morphemes are always connected by either a space or a single boundary character, as in `morpheme1 morpheme2-morpheme3~morpheme4`.  
 There is one exception here: infixes in the gloss line, which frequently involve the closing ">" (or "}") boundary immediately followed by any other boundary. See expectation #10 for more details.
 
-5.  **The segmentation line does not contain "hanging" boundaries.**  
+5.  **The segmentation and gloss lines do not contain "hanging" boundaries.**  
 That is, morpheme boundaries are always directly connected to a morpheme on either side (e.g., `morpheme1-morpheme2- morpheme3` is *not* permitted).  
 This has been seen in cases where a speaker revised what they were saying, or perhaps interrupted themselves, leading to an isolated prefix written as `morpheme-`.  In this case, this should be written as just `morpheme` since it's not attached to anything.  
 Again, there's an exception with infixes in the gloss line: since > isn't really indicating a boundary per se, it can occur before a space or EOL.  See expectation #10 for more details about infixes.
@@ -29,8 +29,8 @@ For example, consider this segmentation line:
 The corresponding gloss line must look like:  
 `gloss1~gloss2 gloss3=gloss4`.
 
-7.  **The segmentation and gloss lines have the same number of words.**  
-Words are presumed to be separated by spaces.
+7.  **The transcription, segmentation and gloss lines have the same number of words.**  
+Words are presumed to be separated by spaces. Clitics can be an exception to this rule and require special handling.
 
 8.  **The segmentation and gloss lines have the same number of morphemes.**  
 Morphemes can be whole words, or pieces or words separated by morpheme boundaries.  So the total number of morphemes in a line is always >= the number of words.
@@ -41,16 +41,33 @@ Morphemes can be whole words, or pieces or words separated by morpheme boundarie
 This sounds complicated, but it just expects that infixes are formatted in the typical way we've observed.  
 Essentially, a word with an infix might be segmented like `start.of.morpheme1<morpheme2>more.morpheme1-morpheme3`, and the corresponding gloss would be `gloss1<gloss2>-gloss3`.  There's really no boundary between gloss2 and gloss3 at all because they're not adjacent, but this format tells us that `gloss2` is an infix on `gloss1`, and `gloss3` regularly attaches to the end of `gloss1`.  Confusing!  But standard, and intelligble.  So with infix boundaries in the gloss line, we expect a morpheme immediately preceding <, and a morpheme boundary or space or EOL immediately following >.
 
-11. **The segmentation line does not contain punctuation.**  
-The same punctuation often seems to be included in the segmentation line as in the transcription line -- things like commas and end-of-sentence punctuation (. or ? or !).  This is understandable, but for the sake of pulling morphemes out of the segmentation line, it's problematic.  
-We have also seen (e.g. in Gitksan data) '???' used in the segmentation line for unknown morphemes.  Instead, we have changed these unknown morphemes to a) just the same as the transcription line in the segmentation line and b) UNK (= unknown) in the gloss line.
+11. **The transcription line does not contain punctuation.**  
+This certainly may be untrue for the data as published in a book, as the transcription of the data needs to be readable and will typically use standard punctuation as part of this.  However, this punctuation should be removed as part of prepping the data for the model.  This is for the simple reason that punctuation is irrelevent for segmentation/glossing and should not be included as input to the segmentation stage.  
+The exception is asterisks, but only as outlined in (14).
 
-12.  **The segmentation line has the same number of words as the transcription line.**
+
+12. **The segmentation and gloss line do not contain punctuation other than morpheme boundaries.**  
+The same punctuation often seems to be included in the segmentation line as in the transcription line -- things like commas and end-of-sentence punctuation (. or ? or !).  This is understandable, but for the sake of pulling morphemes out of the segmentation line, it's problematic.  
+We have also seen (e.g. in Gitksan data) '???' used in the segmentation line for unknown morphemes.  Instead, we have changed these unknown morphemes to a) just the same as the transcription line in the segmentation line and b) UNK (= unknown) in the gloss line.  
+Things like commas, exclamation points, question marks, quotation marks, etc. should be removed (and are rarely used in the gloss line, anyways).  The following are the exceptions, and are permitted:  
+- morpheme boundaries: - = ~ <> {}
+- periods *in the gloss line only*, where they are used in multiword glosses (e.g., bake.bread)
+- asterisks, only as outlined in (14)
+
+
+13.  **The segmentation line has the same number of words as the transcription line.**  
 Clitics can be an exception to this and require special handling.
 
-13. **Asterisks can be optionally used to mark words that are not in the target language (e.g., English words, onomatopoeia) which should be ignored by the system.  If so, the word must be consistent across the transcription/segmentation/gloss lines: it must begin with an asterisk in all three, and have an identical form in all three.**  
+14. **Asterisks can be optionally used to mark words that are not in the target language (e.g., English words, onomatopoeia) which should be ignored by the system.  If so, the word must be consistent across the transcription/segmentation/gloss lines: it must begin with an asterisk in all three, and have an identical form in all three.**  
 For example, if you use the word Vancouver but want it to be ignored, it should appear as "\*Vancouver" in the transcription, segmentation, *and* gloss lines.  Even the capitalization must be consistent.  
 The purpose of this is so that users have a way to communicate to the system to ignore certain words -- if you want to input a sentence that has, say, a person's name, you want the system to ignore it, not try to segment and gloss it!  At this stage, there is the added benefit of removing these words from training (so as not to feed the language-specific systems what is essentially garbage), and not evaluating on them (so we are more accurately evaluating on the target language).
+
+15.  **Stress is marked at most one time per word.**  
+Multiple stress markers (the acute accent) will be flagged as a mistake.  This will not actually trip up the system, but is considered an error and thus results in noisy data.
+
+16. **Stress marking is consistent (between the transcription and segmentation lines).**  
+If stress is marked on a word, then it should be marked on the same place in the segmented version of a word.  Again, this is not a necessity for system functioning, but a standard we selected to prevent conflicting practices in the datasets.  Alternative approaches include not marking any stress in the segmentation line, or marking stress in the segmentation line to reveal some additional information about where stress comes from.  Our rule was chosen based on simplicity and popularity.
+
 ## Boundary System
 The only distinction that is fundamentally important when breaking up morphemes is that of infixes vs. regular (linearly-attaching) morphemes.  This is because infixes need to be specially handled to make sure morphemes are correctly identified.  Consider a regular case:  
 `morpheme1-morpheme2-morpheme3`  

@@ -599,7 +599,7 @@ def compare_tags(lang_1_data, lang_2_data, segmentation_line_number, gloss_line_
 
 # Current searching behaviour is that if multiple lines are specified as search targets (e.g., seg and gloss), then the same example
 # can be matched twice.
-def search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, segmentation_line_number, gloss_line_number):
+def search_data(search_transcription_line, search_seg_line, search_gloss_line, dir_to_search, search_term, segmentation_line_number, gloss_line_number, transcription_line_number = 0):
     match_count = 0
     data = []
     for item in (listdir(dir_to_search)):
@@ -610,7 +610,7 @@ def search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, 
     # Now search
     for example in data:
         for i, line in enumerate(example):
-            if (i == segmentation_line_number and search_seg_line) or (i == gloss_line_number and search_gloss_line):
+            if (i == transcription_line_number and search_transcription_line) or (i == segmentation_line_number and search_seg_line) or (i == gloss_line_number and search_gloss_line):
                 # Search this line!
                 if re.search(search_term, line):
                     # We have a match -- print it and update our count
@@ -627,6 +627,7 @@ def search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, 
 @click.option("--do_print_tags", is_flag = True, help = "A flag that indicates we should summarize the glossing tags found in the inputted datasets.")
 @click.option("--do_compare_tags", is_flag = True, help = "A flag that indicates we should compare the tags from two languages.")
 @click.option("--do_search", is_flag = True, help = "A flag that indicates whether the search function should be called.")
+@click.option("--search_transcription_line", is_flag = True, type = str, help = "Should the transcription line be searched?")
 @click.option("--search_seg_line", is_flag = True, type = str, help = "Should the seg line be searched?")
 @click.option("--search_gloss_line", is_flag = True, type = str, help = "Should the gloss line be searched?")
 @click.option("--train_file", required = True, type = str, help = "The name of the file containing all sentences in the train set.")
@@ -639,7 +640,7 @@ def search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, 
 @click.option("--search_term", type = str, help = "The string we are looking for in our search.")
 @click.option("--segmentation_line_number", required = True, type = int, help = "The line that contains the segmented sentence.  Note that this starts with the first line = 1.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
 @click.option("--gloss_line_number", required = True, type = int, help = "The line that contains the glossed sentence.  Note that this starts with the first line = 1.  For example if there are four lines each and the gloss is the third line, this will be 3.")
-def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number, do_screen_data, do_print_tags, do_compare_tags, do_search, search_seg_line, search_gloss_line, train_file_to_compare = None, dev_file_to_compare = None, test_file_to_compare = None, dir_to_search = None, search_term = None):
+def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number, do_screen_data, do_print_tags, do_compare_tags, do_search, search_transcription_line, search_seg_line, search_gloss_line, train_file_to_compare = None, dev_file_to_compare = None, test_file_to_compare = None, dir_to_search = None, search_term = None):
     # Convert right away to prevent off-by-one errors
     segmentation_line_number = int(segmentation_line_number) - 1
     gloss_line_number = int(gloss_line_number) - 1
@@ -687,8 +688,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
             print("\nERROR: --do_compare_tags flag used, but one or more of the train/dev/test files to compare with were NOT given!")
 
     if do_search:
-        if dir_to_search and (search_seg_line or search_gloss_line) and search_term:
-            search_data(search_seg_line, search_gloss_line, dir_to_search, search_term, segmentation_line_number, gloss_line_number)
+        if dir_to_search and (search_transcription_line or search_seg_line or search_gloss_line) and search_term:
+            search_data(search_transcription_line, search_seg_line, search_gloss_line, dir_to_search, search_term, segmentation_line_number, gloss_line_number)
         else:
             print("\nERROR: --do_search flag used, but one or more of the relevant command line args were NOT given!")
 

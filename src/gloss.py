@@ -78,20 +78,16 @@ def morpheme_to_features(word, i):
 
 # We are removing the brackets but *leaving* the bracketed affix in
 # This is to handle the glossing style where unrealized morphemes/pieces of morphemes
-# appear in brackets.  This is a concern of the segmentation stage, not the glossing stage.
+# appear in brackets in the segmentation line (we never expect these brackets to also appear in the gloss line).
+# This is a concern of the segmentation stage, not the glossing stage.
 # So we can just remove the brackets, e.g. treat náq̓ʷ-m[in][-t]-∅-s as náq̓ʷ-min-t-∅-s
 # Let's run through why that is:
 # - If the data doesn't use bracketed affixes, this does nothing.
-# - If the data puts such affixes in brackets in the seg line but not the gloss line,
+# - If the data puts such affixes in brackets in the seg line,
 #   then the glossing process can act as if the brackets aren't even there.
-# - If the data puts such affixes in brackets in the seg line AND the gloss line,
-#   then it's just regurgitating the brackets, so we can ignore them during the glossing
-#   process and just add them back if printing the sentences.
 # - And, if the data uses brackets for parts of affixes (e.g., m[in]) above,
 #   then it also make sense to remove the brackets there so the glossing process
 #   has access to the full, regular morpheme (i.e., min).
-# This is the same as boundary types - the glossing process doesn't need to care
-# if there's a - or = etc., but if we're printing our predictions we need to maintain them.
 def ignore_brackets(sentence):
     sentence = re.sub(r'[\[\]]', "", sentence)
     return sentence 

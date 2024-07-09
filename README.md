@@ -110,6 +110,31 @@ Interestingly, for St̓át̓imcets, the gloss itself for reduplicants seems to 
 
 This isn't the case with infixing boundaries.  Consider a word like *sm'é{m'}lhats=a* (gloss: woman-CRED-EXIS).  It's clear here that *m'* is the infix, whereas *sm'é'lhats* is a normal stem (just one that happens to permit infixes).  In terms of how this translates to features, I think we are breaking this down linearly before giving it to the CRF, so we need to think about how to maintain that boundary information.
 
+
+## A Word on Brackets
+Many fieldworkers use some system of brackets to indicate material that is only present underlyingly.  However, the details of this practice vary along several parameters:
+1. What is the purpose of the brackets? What are they conveying about the bracketed material?
+2. What kind of brackets are used? e.g., [] () {}
+4. In which lines does the bracketed *content* appear?
+3. In which of the lines specified in (3) do the *brackets* appear?
+5. In the case of whole morphemes bracketed, does the morpheme boundary go in or out of the brackets? i.e., [-t] vs -[t]
+
+Information about the standards used in the datasets developed alongside this system are available in the READMEs for those repositories.  Generally, however, we standardized the data to:
+- only use [] (no other bracket types, i.e., no parentheses)
+- include the bracketed content in the segmentation and gloss lines, but *not* the transcription line
+- only include the brackets themselves in the segmentation line
+- write the morpheme boundary *outside* of the brackets
+
+An example from St̓át̓imcets is provided here (Alexander, 2016):  
+> nílh t'u7 sawenítas i smúlhatsa kástskacw  
+nílh t'u7 [s]=saw-en-ítas i smúlhats=a kás-ts=kacw  
+COP EXCL NMLZ=ask-DIR-TPle PL.DET woman=EXIS how-CAUS=2SG.SBJ  
+So they asked the women, ``How did you do it?''
+
+The way this is handled by the system is as follows.  The segmentation goes word-by-word, so the brackets cause no fuss -- it just gets the input/output pair *sawenítas* and *[s]=saw-en-ítas*.  Then, the glossing stage flat out removes all brackets from its input before going morpheme-by-morpheme, so it would get the input/output pair *s* and *NMLZ*.  That is, the glosser is entirely oblivious to the brackets.
+
+The user is therefore not entirely beholdent to these standards.  For example, if you also put the brackets in the transcription line, it would not cause any problems, it would just affect the input the segmentation model sees.  However, there are some potential problems if you deviate: for example, if you used parentheses instead of brackets, the gloss line would not remove them and so would be trying to gloss a morpheme like *(s)* rather than *s*, which it may not know what to do with.
+
 ## System Summary
 ### Segmentation
 The segmentation works by learning from pairs of unsegmented input data and segmented output data. For example, train.input contains a **list of words**, e.g. "t a o w e n m í n a s".  Then train.output contains the same list of words but with morpheme boundaries, e.g. "t a o w e n - m í n - a s".  So the model goes word-by-word and tries to learn where each word has morpheme boundaries.

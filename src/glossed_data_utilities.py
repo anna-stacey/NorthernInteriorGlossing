@@ -6,7 +6,7 @@ from unicodedata import normalize
 
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
 # Note that double colons (::) are being permitted b/c the St́át́imcets data seems to use them legitiamtely as a vowel length thing
-NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG = [".", ",", "?", "\"", "“", "”", "!", "♪", ":", ";", "–"]
+NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG = [".", ",", "?", "\"", "“", "”", "!", "♪", ":", ";", "–"] # Note this last one is not a regular hyphen!
 NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX = "[\.,\?\"“”!♪;–]|([^:]):([^:])" # Any of these characters, but including only *single* colons, not two in a row
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
 

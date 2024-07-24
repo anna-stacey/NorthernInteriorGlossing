@@ -99,6 +99,7 @@ Information about the standards used in the datasets developed alongside this sy
 - include the bracketed content in the segmentation and gloss lines, but *not* the transcription line
 - only include the brackets themselves in the segmentation line
 - write the morpheme boundary *outside* of the brackets
+These expectations are included in the list [below](#data-expectations).
 
 An example from St̓át̓imcets is provided here (Alexander, 2016):  
 > nílh t'u7 sawenítas i smúlhatsa kástskacw  
@@ -141,39 +142,52 @@ One final note is that we have seen (e.g., in Gitksan data) '???' used in the se
 For example, if you use the word Vancouver but want it to be ignored, it should appear as `*Vancouver` in the transcription, segmentation, *and* gloss lines.  Even the capitalization must be consistent.  
 The purpose of this is so that users have a way to communicate to the system to ignore certain words -- if you want to input a sentence that has, say, a person's name, you want the system to ignore it, not try to segment and gloss it!  At this stage, there is the added benefit of removing these words from training (so as not to feed the language-specific systems what is essentially garbage), and not evaluating on them (so we are more accurately evaluating on the target language).
 
+6. **Brackets for indicating underlying material are square brackets only.**  
+No parentheses, and {} will be recognized as morpheme boundaries.
+
 #### Expectations which are necessary for the system *and* are general glossing recommendations:
-6.  **The transcription, segmentation and gloss lines have the same number of words.**  
+7.  **The transcription, segmentation and gloss lines have the same number of words.**  
 Words are presumed to be separated by spaces. In some practices, clitics are an exception to this (i.e., clitics may be written as indepdenent words in the transcription line, but written as attached morphemes in the segmentation and gloss lines).  Nonetheless even these clitics must be made consistent across lines before the data can be inputted (we just changed them to be separate words in all lines in our dataset, as we believed it preferable to not alter the transcription line).
 
-7.  **The segmentation and gloss lines have the same number of morphemes.**  
+8.  **The segmentation and gloss lines have the same number of morphemes.**  
 Morphemes can be whole words, or pieces or words separated by morpheme boundaries.  So the total number of morphemes in a line is always >= the number of words.
 
-8.  **Each word has the same number of morphemes in the segmentation line as it does in the gloss line.**  
+9.  **Each word has the same number of morphemes in the segmentation line as it does in the gloss line.**  
 
-9.  **The segmentation and gloss lines do not contain multiple consecutive boundaries.**  
+10.  **The segmentation and gloss lines do not contain multiple consecutive boundaries.**  
 That is, morphemes are always connected by either a space or a single boundary character, as in `morpheme1 morpheme2-morpheme3~morpheme4`.  
 There is one exception here: infixes in the gloss line, which frequently involve the closing ">" (or "}") boundary immediately followed by any other boundary. See expectation #10 for more details.
 
-10.  **The segmentation and gloss lines do not contain "hanging" boundaries.**  
+11.  **The segmentation and gloss lines do not contain "hanging" boundaries.**  
 That is, morpheme boundaries are always directly connected to a morpheme on either side (e.g., `morpheme1-morpheme2- morpheme3` is *not* permitted).  
 This has been seen in cases where a speaker revised what they were saying, or perhaps interrupted themselves, leading to an isolated prefix written as `morpheme-`.  In this case, this should be written as just `morpheme` since it's not attached to anything.  
 Again, there's an exception with infixes in the gloss line: since > isn't really indicating a boundary per se, it can occur before a space or EOL.  See expectation #10 for more details about infixes.
 
-11.  **The same boundary types are used between the segmentation and gloss line.**  
+12.  **The same boundary types are used between the segmentation and gloss line.**  
 For example, consider this segmentation line:  
 `morpheme1~morpheme2 morpheme3=morpheme4`  
 The corresponding gloss line must look like:  
 `gloss1~gloss2 gloss3=gloss4`
 
-12.  **If used, infix boundaries appear in pairs, with only the infixing morpheme in between.  In the segmentation line, the infix (with boundaries) of course appears within another morpheme, but in the gloss line, it follows that morpheme.**  
+13.  **If used, infix boundaries appear in pairs, with only the infixing morpheme in between.  In the segmentation line, the infix (with boundaries) of course appears within another morpheme, but in the gloss line, it follows that morpheme.**  
 This sounds complicated, but it just expects that infixes are formatted in the typical way we've observed.  
 Essentially, a word with an infix might be segmented like `start.of.morpheme1<morpheme2>more.morpheme1-morpheme3`, and the corresponding gloss would be `gloss1<gloss2>-gloss3`.  There's really no boundary between gloss2 and gloss3 at all because they're not adjacent, but this format tells us that `gloss2` is an infix on `gloss1`, and `gloss3` regularly attaches to the end of `gloss1`.  Confusing!  But standard, and intelligble.  So with infix boundaries in the gloss line, we expect a morpheme immediately preceding <, and a morpheme boundary or space or EOL immediately following >.
 
+14. **Bracketed content (if any) appears in the segmentation and gloss lines, but never the transcription line.**  
+If the bracketed content also appeared in the transcription line, then the segmentation line would just be adding brackets, which is not predictable.  In such cases, the content should be left in and the brackets removed.  The addition of whole underlying morphemes in brackets to the segmentation line, however, is predictable.  Check out the brackets section of Stacey (2024) for a thorough explanation of the reasoning on this front.
+
+15. **Brackets themselves only appear in the segmentation line.**  
+Including brackets in the transcription line was unattested in our data.  Including brackets in the gloss line wouldn't convey any new information, so we just gloss bracketed morphemes as usual there.  
+If you keep brackets in the gloss line, the system will function but it will learn the brackets to be part of the gloss label, likely impacting your performance.
+
+16. **Brackets appear within morpheme boundaries.**  
+This decision is fairly arbitrary, but one style of *[-t]* vs. *-[t]* must be chosen, and we went with the latter for handling ease.  If you use the other style, the glosser will still split the morphemes at boundary points, meaning the previous morpheme will end in an opening square bracket.
+
 #### Expectations that are just glossing guidelines, and will not lead to issues with the system if not followed by your data:
-13.  **Stress is marked at most one time per word.**  
+17.  **Stress is marked at most one time per word.**  
 Multiple stress markers (the acute accent) will be flagged as a mistake.  This will not actually trip up the system, but is considered an error and thus results in noisy data.
 
-14. **Stress marking is consistent (between the transcription and segmentation lines).**  
+18. **Stress marking is consistent (between the transcription and segmentation lines).**  
 If stress is marked on a word, then it should be marked on the same place in the segmented version of a word.  Again, this is not a necessity for system functioning, but a standard we selected to prevent conflicting practices in the datasets.  Alternative approaches include not marking any stress in the segmentation line, or marking stress in the segmentation line to reveal some additional information about where stress comes from.  Our rule was chosen based on simplicity and popularity.
 
 ## References

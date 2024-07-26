@@ -390,7 +390,7 @@ def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
             transcription_line = normalize('NFD', example[0])
             seg_line = normalize('NFD', example[1])
 
-            BOUNDARIES_OR_SPACE_REGEX = "-|=|~|·|<|>| "
+            BOUNDARIES_OR_SPACE_REGEX = "-|=|~|<|>|{|}| "
             seg_morphemes = re.split(BOUNDARIES_OR_SPACE_REGEX, seg_line)
             transcription_line_unstressed = transcription_line.replace(UNICODE_STRESS, "")
             seg_line_unstressed = seg_line.replace(UNICODE_STRESS, "")

@@ -99,7 +99,10 @@ def evaluate(output, gold_output):
 def compare_boundary_count(output, gold_output):
     predicted_count = _get_boundary_count(output)
     gold_count = _get_boundary_count(gold_output)
-    print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({_as_percent(predicted_count/gold_count)}%).")
+    if gold_count > 0: # Prevent division by 0
+        print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({_as_percent(predicted_count/gold_count)}%).")
+    else:
+        print(f"\nError generating boundary count: 0 boundaries in gold data!")
 
 def _get_boundary_count(output):
     boundary_count = 0

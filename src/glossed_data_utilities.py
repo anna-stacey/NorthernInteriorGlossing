@@ -269,6 +269,10 @@ def _clitic_in_word_list(clitic, word_list):
     return found
 
 def mark_OOL_words(data, OOL_WORDS, LINES_PER_SENTENCE):
+    OOL_WORDS_CASE_INSENSITIVE = OOL_WORDS.copy()
+    for word in OOL_WORDS:
+        OOL_WORDS_CASE_INSENSITIVE.append(word.lower())
+
     for example in data:
         # Only consider full examples
         if len(example) == LINES_PER_SENTENCE:
@@ -278,14 +282,15 @@ def mark_OOL_words(data, OOL_WORDS, LINES_PER_SENTENCE):
                 # Go word-by-word through the sentence
             for word_index, (transciption_word, seg_word, gloss_word) in enumerate(zip(transcription_words, seg_words, gloss_words)):
                 # Check for any of the target words
-                if transciption_word in OOL_WORDS:
+                if transciption_word in OOL_WORDS_CASE_INSENSITIVE:
                     word = transciption_word
                     # Next check this word is identical in the seg and gloss lines, too
-                    if seg_word == word and gloss_word == word:
+                    # Do a case-insensitive check!
+                    if seg_word.lower() == word.lower() and gloss_word.lower() == word.lower():
                         # Mark the word in the transcription, segmentation, and gloss lines
                         transcription_words[word_index] = OUT_OF_LANGUAGE_MARKER + word
-                        seg_words[word_index] = OUT_OF_LANGUAGE_MARKER + word
-                        gloss_words[word_index] = OUT_OF_LANGUAGE_MARKER + word
+                        seg_words[word_index] = OUT_OF_LANGUAGE_MARKER + seg_word
+                        gloss_words[word_index] = OUT_OF_LANGUAGE_MARKER + gloss_word
 
             example[0] = " ".join(transcription_words)
             example[1] = " ".join(seg_words)

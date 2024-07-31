@@ -129,7 +129,7 @@ def seg_screen(transcription_line, seg_line):
     for transcription_word, seg_word in zip(transcription_words, seg_words):
         # Check OOL words
         if transcription_word.startswith(OUT_OF_LANGUAGE_MARKER) and seg_word.startswith(OUT_OF_LANGUAGE_MARKER):
-            if transcription_word != seg_word:
+            if transcription_word.lower() != seg_word.lower(): # Case-insensitive
                 print(f"\n- Error: this sentence has a word that is marked as out-of-language that is not identical between the transcription and segmentation lines. Word: {transcription_word} vs. {seg_word}.")
                 print(transcription_line)
                 print(seg_line)
@@ -374,7 +374,7 @@ def gloss_screen(seg_line, gloss_line):
     for seg_word, gloss_word in zip(seg_words, gloss_words):
         # Check OOL words
         if seg_word.startswith(OUT_OF_LANGUAGE_MARKER) and gloss_word.startswith(OUT_OF_LANGUAGE_MARKER):
-            if seg_word != gloss_word:
+            if seg_word.lower() != gloss_word.lower(): # Case-insensitive
                 print(f"\n- Error: this sentence has a word that is marked as out-of-language that is not identical between the segmentation and gloss lines. Word: {seg_word} vs. {gloss_word}.")
                 print(seg_line)
                 print(gloss_line)

@@ -536,11 +536,19 @@ def get_tags(all_data, segmentation_line_number, gloss_line_number):
         if gloss.isupper():
             gram_dict.update({gloss: morphemes_with_counts})
         # If there's only one morpheme form, and it's identical to the gloss!
-        elif len(morphemes_with_counts) == 1 and list(morphemes_with_counts.keys())[0] == gloss:
+        # Make this check case-insensitive
+        elif len(morphemes_with_counts) == 1 and (list(morphemes_with_counts.keys())[0]).lower() == gloss.lower():
             not_translated_dict.update({gloss: morphemes_with_counts})
         # If a gloss is sometimes used for an English word and sometimes a genuine gloss of an in-language word, separate those out intro two entries
-        elif len(morphemes_with_counts) > 1 and gloss in list(morphemes_with_counts.keys()):
-            not_translated_morpheme_with_count = {gloss: morphemes_with_counts.pop(gloss)}
+        # (Again, be case-insensitive)
+        elif len(morphemes_with_counts) > 1 and gloss.lower() in [key.lower() for key in list(morphemes_with_counts.keys())]:
+            # Find the exact key we need, case-wise
+            for key in morphemes_with_counts.keys():
+                if key.lower() == gloss.lower():
+                    matching_morpheme = key
+                    break
+            assert(matching_morpheme)
+            not_translated_morpheme_with_count = {gloss: morphemes_with_counts.pop(matching_morpheme)}
             stem_dict.update({gloss: morphemes_with_counts})
             not_translated_dict.update({gloss: not_translated_morpheme_with_count})
         else:

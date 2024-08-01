@@ -58,21 +58,26 @@ def read_file(file_path):
 
 # Takes a list of sentences, each of which is a list of transcription line, seg line, etc.
 # Returns the list in the same format, just tidied!
-def tidy_dataset(dataset):
+def tidy_dataset(dataset, MINIMAL_CHANGES_ONLY = False):
     updated_dataset = []
     for sentence in dataset:
         updated_sentence = []
         for i, line in enumerate(sentence):
-            # Remove commas, periods, and question marks from the seg and transcription lines
+            # Handle transcription and seg line punc (question marks, periods, etc.)
             if i == 0 or i == 1:
-                line = re.sub(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, r"\1\2", line)
+                if MINIMAL_CHANGES_ONLY:
+                    # Handle some very problematic punc, without removing it all!
+                    line = re.sub(r"`` ", " ", line)
+                    line = re.sub(r"[-=~][\.,\?\"“”`!♪;–]+", "", line)
+                else: # Remove it all!
+                    line = re.sub(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, r"\1\2", line)
 
             # Find 2+ spaces, and replace them with only one space
             line = re.sub(r"[ ]+[ ]+", " ", line)
-            # Find sentence-initial or -final spaces, and remove them
-            line = re.sub(r"^ ", "", line)
-            line = re.sub(r" $", "", line)
-
+            if not MINIMAL_CHANGES_ONLY:
+                # Find sentence-initial or -final spaces, and remove them
+                line = re.sub(r"^ ", "", line)
+                line = re.sub(r" $", "", line)
 
             updated_sentence.append(line)
         updated_dataset.append(updated_sentence)

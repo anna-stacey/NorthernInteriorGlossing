@@ -80,8 +80,14 @@ def tidy_dataset(dataset):
 
     return updated_dataset
 
+# Remove the usual, plus brackets (we just want the morpheme!)
+def _remove_punc(str):
+    return re.sub(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX + "|\[|\]", r"\1\2", str)
+
 # Fix the issue of clitics which are standalone in the orthographic line, but attached to a larger word in the segmentation and gloss lines
 # Solution: Make it standalone in the seg and gloss lines too (to prevent altering the orthographic line)
+# Note: This code has been modified to not be affected by rogue punctuation (via calls to _remove_punc)
+# so that you can still separate clitics in non-tidied data.
 def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_post_clitics):
     updated_data = []
     for example in data:
@@ -102,14 +108,14 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 # Does the seg word start with a clitic from our list, connected with a '='?
                 clitic_check = seg_word.partition(CLITIC_BOUNDARY)
                 # If there was indeed an equals sign, and a proclitic before it
-                if clitic_check[1] != "" and clitic_check[0] in pre_clitics.keys():
+                if clitic_check[1] != "" and _remove_punc(clitic_check[0]) in pre_clitics.keys():
                     clitic = clitic_check[0]
                     word_without_clitic = clitic_check[2]
                     # Now: does that clitic appear as its own word in the orthographic line?
                     # This check is quite strict -
                     # It will prevent problems with the wrong word being looked at, but it's also going to (at present)
                     # exclude a lot of problematic lines from being fixed. Something to think about...
-                    if len(ortho_line_word_list) > seg_word_index and ortho_line_word_list[seg_word_index].lower() == pre_clitics[clitic] and word_without_clitic != "":
+                    if len(ortho_line_word_list) > seg_word_index and _remove_punc(ortho_line_word_list[seg_word_index].lower()) == pre_clitics[_remove_punc(clitic)] and word_without_clitic != "":
                         # Confirmed: we've found a clitic to fix!
                         # Now we need to modify the seg and gloss lines
                         assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
@@ -136,14 +142,14 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 double_clitic_check = clitic_check[2].partition(CLITIC_BOUNDARY)
                 # Reassemble, around this SECOND equals sign
                 clitic_check = (clitic_check[0] + CLITIC_BOUNDARY + double_clitic_check[0], CLITIC_BOUNDARY, double_clitic_check[2])
-                if clitic_check[1] != "" and clitic_check[0] in double_pre_clitics.keys():
+                if clitic_check[1] != "" and _remove_punc(clitic_check[0]) in double_pre_clitics.keys():
                     clitic = clitic_check[0]
                     word_without_clitic = clitic_check[2]
                     # Now: does that clitic appear as its own word in the orthographic line?
                     # This check is quite strict -
                     # It will prevent problems with the wrong word being looked at, but it's also going to (at present)
                     # exclude a lot of problematic lines from being fixed. Something to think about...
-                    if len(ortho_line_word_list) > seg_word_index and ortho_line_word_list[seg_word_index] == double_pre_clitics[clitic] and word_without_clitic != "":
+                    if len(ortho_line_word_list) > seg_word_index and _remove_punc(ortho_line_word_list[seg_word_index]) == double_pre_clitics[_remove_punc(clitic)] and word_without_clitic != "":
                         # Okay, now we need to modify the seg and gloss lines
                         assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
@@ -177,12 +183,12 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 # If there was an equals sign, and a clitic after it
                 potential_clitic_original_form = clitic_check[2]
                 potential_clitic = re.sub(PUNCTUATION_TO_IGNORE, "", potential_clitic_original_form)
-                if clitic_check[1] != "" and potential_clitic in post_clitics.keys():
+                if clitic_check[1] != "" and _remove_punc(potential_clitic) in post_clitics.keys():
                     clitic = potential_clitic
                     clitic_original_form = potential_clitic_original_form
                     word_without_clitic = clitic_check[0]
                     # Now: does that clitic appear as its own word in the orthographic line?
-                    if _clitic_in_word_list(post_clitics[clitic], ortho_line_word_list) and word_without_clitic != "":
+                    if _clitic_in_word_list(post_clitics[_remove_punc(clitic)], ortho_line_word_list) and word_without_clitic != "":
                         # Okay, now we need to modify the seg and gloss lines
                         assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
@@ -216,12 +222,12 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                 potential_double_clitic_original_form = first_clitic + CLITIC_BOUNDARY + second_clitic
                 potential_double_clitic = re.sub(PUNCTUATION_TO_IGNORE, "", potential_double_clitic_original_form)
                 # Does this segmented word end in a double clitic?
-                if clitic_check[1] != "" and potential_double_clitic in double_post_clitics.keys():
+                if clitic_check[1] != "" and _remove_punc(potential_double_clitic) in double_post_clitics.keys():
                     clitic = potential_double_clitic
                     clitic_original_form = potential_double_clitic_original_form
                     word_without_clitic = clitic_check[0]
                     # Now: does that clitic appear as its own word in the orthographic line?
-                    if _clitic_in_word_list(double_post_clitics[clitic], ortho_line_word_list) and word_without_clitic != "":
+                    if _clitic_in_word_list(double_post_clitics[_remove_punc(clitic)], ortho_line_word_list) and word_without_clitic != "":
                         assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
                         # Replace this word in the list with two words, separating the clitic
@@ -263,7 +269,7 @@ def _same_clitic(clitic_1, clitic_2):
 def _clitic_in_word_list(clitic, word_list):
     found = False
     for word in word_list:
-        if _same_clitic(clitic, word):
+        if _same_clitic(clitic, _remove_punc(word)):
             found = True
 
     return found

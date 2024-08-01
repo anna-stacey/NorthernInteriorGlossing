@@ -61,7 +61,8 @@ def sentence_list_to_word_list(sentence_list):
     overall_list = []
     for sentence in sentence_list:
         for word in sentence:
-            overall_list.append(word)
+            if word: # Ignore empty words (e.g., sentene where only word is OOL)
+                overall_list.append(word)
     
     return overall_list
 

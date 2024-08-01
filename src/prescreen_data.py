@@ -21,6 +21,7 @@ NON_PERMITTED_PUNCTUATION_GLOSS_REGEX = r"\[\]" # For now, only brackets are dis
 
 # Matching stress isn't *essential* for system functioning, so these checks can be turned off.
 CHECK_STRESS = True
+CHECK_PUNC = False
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -115,7 +116,7 @@ def seg_screen(transcription_line, seg_line):
         print("Segmentation line:", seg_line)
         trans_seg_num_words_fails += 1
 
-    if re.search(NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_REGEX, transcription_line):
+    if CHECK_PUNC and re.search(NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_REGEX, transcription_line):
         print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION}).")
         print(transcription_line)
         trans_non_permitted_punctuation_fails += 1
@@ -200,7 +201,7 @@ def seg_and_gloss_screen(seg_line):
         print(seg_line)
         seg_infix_boundary_misplacement_fails += 1
 
-    if re.search(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, seg_line):
+    if CHECK_PUNC and re.search(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, seg_line):
         print(f"\n- Error: the following segmentation line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG}).")
         print(seg_line)
         seg_non_permitted_punctuation_fails += 1
@@ -380,7 +381,7 @@ def gloss_screen(seg_line, gloss_line):
                 print(gloss_line)
                 seg_gloss_OOL_word_fails += 1
 
-    if re.search(r"\[", gloss_line):
+    if CHECK_PUNC and re.search(r"\[", gloss_line):
         print(f"\n- Error: the following gloss line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION_GLOSS}).")
         print(gloss_line)
         gloss_non_permitted_punctuation_fails += 1
@@ -388,9 +389,11 @@ def gloss_screen(seg_line, gloss_line):
 # No input value -- it just reads the global fail counts
 # No return value -- just prints!
 def print_screen_summary():
-    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, trans_non_permitted_punctuation_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, seg_non_permitted_punctuation_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails, gloss_non_permitted_punctuation_fails]
+    all_fail_counts = [tab_fails, multi_space_fails, newline_fails, seg_multi_boundary_fails, seg_disconnected_morpheme_fails, seg_infix_boundary_mismatch_fails, seg_infix_boundary_misplacement_fails, trans_seg_num_words_fails, gloss_multi_boundary_fails, gloss_disconnected_morpheme_fails, gloss_infix_boundary_mismatch_fails, gloss_infix_boundary_misplacement_fails, seg_gloss_num_words_fails, seg_gloss_num_morphemes_fails, seg_gloss_word_num_morphemes_fails, gloss_boundary_marker_fails, seg_gloss_boundary_fails, trans_seg_OOL_marker_fails, trans_seg_OOL_word_fails, seg_gloss_OOL_marker_fails, seg_gloss_OOL_word_fails]
     if CHECK_STRESS:
         all_fail_counts.extend([trans_seg_stress_fails, trans_double_stress_fails, seg_double_stress_fails])
+    if CHECK_PUNC:
+        all_fail_counts.extend([trans_non_permitted_punctuation_fails, seg_non_permitted_punctuation_fails, gloss_non_permitted_punctuation_fails])
     total_fails = sum(all_fail_counts)
     print("\n --- Pre-screening summary: ---")
     print(f"{len(all_fail_counts)} different checks were run.")
@@ -404,12 +407,14 @@ def print_screen_summary():
         print(f"    - {newline_fails} lines contained a newline character.")
 
         # Transcrption tests
-        print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION}).")
+        if CHECK_PUNC:
+            print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION}).")
         if CHECK_STRESS:
             print(f"    - There were {trans_double_stress_fails} instances of multiple stress marking in the transcription line.")
 
         # Seg tests
-        print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG}).")
+        if CHECK_PUNC:
+            print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG}).")
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_word_fails} words were marked as out-of-language in the transcription and segmented lines but were not consistent in form between these two lines.")
@@ -435,7 +440,8 @@ def print_screen_summary():
         print(f"    - There were {seg_gloss_boundary_fails} instances of a different kind of morpheme boundary between the segmented and gloss lines.")
         print(f"    - {seg_gloss_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the segmented and gloss lines.")
         print(f"    - {seg_gloss_OOL_word_fails} words were marked as out-of-language in the segmented and gloss lines but were not consistent in form between these two lines.")
-        print(f"    - There were {gloss_non_permitted_punctuation_fails} instances of non-permitted punctuation in the gloss line (i.e., one of {NON_PERMITTED_PUNCTUATION_GLOSS}).")
+        if CHECK_PUNC:
+            print(f"    - There were {gloss_non_permitted_punctuation_fails} instances of non-permitted punctuation in the gloss line (i.e., one of {NON_PERMITTED_PUNCTUATION_GLOSS}).")
     print("\n")
 
 # What if we want the list organized not by gloss, but by morpheme?

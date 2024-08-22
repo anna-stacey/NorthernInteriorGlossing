@@ -20,6 +20,7 @@ UNICODE_STRESS = "\u0301"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
+    assert(file_path.endswith(".txt")) # To flag stupid .DS_Store issue
     with open(file_path) as f:
         lines = f.readlines()
 

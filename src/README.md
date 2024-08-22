@@ -38,3 +38,11 @@ After running the above, run this to evaluate using the sigmorphon evaluation sy
 ## Extra Programs
 You can compare two `..._pred.txt` output files with the simple ``compare_pred.py`` script:
 ``python3 src/compare_pred.py --check_gloss_line --file_1=generated_data/pipeline_pred.txt --file_2=generated_data/pipeline_gold.txt``
+
+## Pre-Training
+- Create a .txt that contains ALL the data, i.e., the data for pre-training combined with the data for training.
+- Run `fairseq-preprocess` on the total dataset, so that a `dict.input.txt` and `dict.output.txt` are generated.  Move this to a directory where they won't get overwritten.
+- Now you are ready to pre-train.  Note that you may want to also use a suitable dev file.  When you run `fairseq-preprocess` this time, tell it to use the big dicts by adding `--srcdict total-train/dict.input.txt --tgtdict total-train/dict.output.txt` to the command.
+- With pre-training complete, make sure you leave the models that were created as is.
+- For the regular training, change max-epoch in `train_seg.sh` to be the number of pre-training epochs + the number of regular training epochs (because the regular training is seen as a continuation of the previous epochs, not a restart)
+- Now run regular training in the exact same way as the pre-training, including with the extra command line args.

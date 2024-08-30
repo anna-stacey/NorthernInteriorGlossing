@@ -1,4 +1,5 @@
 import click
+from os import path
 import re
 from gloss import make_sentence_list_with_prediction, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
@@ -6,6 +7,8 @@ from glossed_data_utilities import add_back_OOL_words, read_file, write_sentence
 GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
+OUTPUT_CSV = "./seg_results.csv"
+DO_PRINT_RESULTS_CSV = True
 
 def _as_percent(number):
     return round(number * 100, 2)
@@ -71,6 +74,8 @@ def _evaluate_f1(output, gold_output):
     print(f"B-L recall: {_as_percent(recall)}%.")
     print(f"B-L F1 Score: {_as_percent(f1)}%.")
 
+    return [_as_percent(precision), _as_percent(recall), _as_percent(f1)]
+
 # No return value, just prints
 # Go word-by-word -- the entire thing must be right to be correct!
 def _evaluate_word_level_acc(output, gold_output):
@@ -86,12 +91,16 @@ def _evaluate_word_level_acc(output, gold_output):
     accuracy = (num_words - num_incorrect_words) / num_words
     accuracy = _as_percent(accuracy)
     print(f"\nWord-level accuracy: {accuracy}% on {num_words} words.")
+    return accuracy
 
 def evaluate(output, gold_output):
+    results = []
     assert len(output) == len(gold_output), f"\nError: There are {len(output)} predicted words, and {len(gold_output)} gold words."
     print("\n** Segmentation accuracy: **")
-    _evaluate_word_level_acc(output, gold_output)
-    _evaluate_f1(output, gold_output)
+    results.append(_evaluate_word_level_acc(output, gold_output))
+    results.extend(_evaluate_f1(output, gold_output))
+
+    return results
 
 # It may be interesting to know whether the model is under- or over-segmenting
 # i.e. inserting too few or too many boundaries
@@ -99,10 +108,13 @@ def evaluate(output, gold_output):
 def compare_boundary_count(output, gold_output):
     predicted_count = _get_boundary_count(output)
     gold_count = _get_boundary_count(gold_output)
+    predicted_portion  = _as_percent(predicted_count/gold_count)
     if gold_count > 0: # Prevent division by 0
-        print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({_as_percent(predicted_count/gold_count)}%).")
+        print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({predicted_portion}%).")
     else:
         print(f"\nError generating boundary count: 0 boundaries in gold data!")
+
+    return predicted_portion
 
 def _get_boundary_count(output):
     boundary_count = 0
@@ -126,10 +138,13 @@ def evaluate_OOV_performance(output, gold_output, train_output):
             if gold_word != output_word:
                 OOV_incorrect_count += 1
 
-    print(f"\nOOV count: {OOV_count}/{len(output)} words ({round(OOV_count / len(output) * 100, 2)}%).")
+    OOV_proportion = _as_percent(OOV_count / len(output))
+    print(f"\nOOV count: {OOV_count}/{len(output)} words ({OOV_proportion}%).")
 
-    OOV_acc = (OOV_count - OOV_incorrect_count) / OOV_count
-    print(f"OOV accuracy: {_as_percent(OOV_acc)}% on {OOV_count} OOV words.\n")
+    OOV_acc = _as_percent((OOV_count - OOV_incorrect_count) / OOV_count)
+    print(f"OOV accuracy: {OOV_acc}% on {OOV_count} OOV words.\n")
+
+    return [OOV_proportion, OOV_acc]
 
 # Input: a list of predicted segmented words, with no sentence structure
 # Look back at the input to figure out where sentence boundaries should be
@@ -159,6 +174,18 @@ def print_predictions(predictions, entire_input):
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_predictions, 1)
     write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
 
+def print_results_csv(results):
+    header = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc,"
+    if not path.isfile(OUTPUT_CSV):
+            with open(OUTPUT_CSV, "w+") as csv_file:
+                print(header, file = csv_file)
+    with open(OUTPUT_CSV, "a") as csv_file:
+        csv_file.write("\n")
+        for result in results:
+            csv_file.write(str(result) + "%,")
+    print("Wrote to", OUTPUT_CSV)
+    csv_file.close()
+
 @click.command()
 @click.option("--whole_input_file", required=True, help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
 @click.option("--output_file", required=True, help="The name of the output file.")
@@ -178,11 +205,14 @@ def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_o
     gold_output = read_lines_from_file(gold_output_file)
     
     # Compare!
-    evaluate(output, gold_output)
-    compare_boundary_count(output, gold_output)
+    results = []
+    results.extend(evaluate(output, gold_output))
+    results.append(compare_boundary_count(output, gold_output))
     if train_output_file:
         train_output = read_lines_from_file(train_output_file)
-        evaluate_OOV_performance(output, gold_output, train_output)
+        results.extend(evaluate_OOV_performance(output, gold_output, train_output))
+    if DO_PRINT_RESULTS_CSV:
+        print_results_csv(results)
 
     # Print viewable outputs
     # First read in and print out the gold

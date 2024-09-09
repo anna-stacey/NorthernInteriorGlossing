@@ -58,23 +58,24 @@ def _evaluate_f1(output, gold_output):
 
     # Calculations
     if true_pos == 0: # Avoid division by 0
-        precision = 0
-        recall = 0
-        f1 = 0
-        f1_alt = 0
+        precision = None
+        recall = None
+        f1 = None
+        f1_alt = None
+        print("\nNo boundary-level precision/recall/F1 because there are no gold boundaries.")
     else:
         precision = true_pos / (true_pos + false_pos)
         recall = true_pos / (true_pos + false_neg)
         f1 = (2 * true_pos) / ((2 * true_pos) + false_pos + false_neg)
         f1_alt = 2 *((precision * recall) / (precision + recall))
+        # Format and print results
+        assert(_as_percent(f1) == _as_percent(f1_alt))
+        print(f"\nBoundary-level precision: {_as_percent(precision)}%.")
+        print(f"B-L recall: {_as_percent(recall)}%.")
+        print(f"B-L F1 Score: {_as_percent(f1)}%.")
 
-    # Format and print results
-    assert(_as_percent(f1) == _as_percent(f1_alt))
-    print(f"\nBoundary-level precision: {_as_percent(precision)}%.")
-    print(f"B-L recall: {_as_percent(recall)}%.")
-    print(f"B-L F1 Score: {_as_percent(f1)}%.")
-
-    return [_as_percent(precision), _as_percent(recall), _as_percent(f1)]
+    results = ([_as_percent(precision), _as_percent(recall), _as_percent(f1)] if true_pos > 0 else [precision, recall, f1])
+    return results
 
 # No return value, just prints
 # Go word-by-word -- the entire thing must be right to be correct!
@@ -108,11 +109,11 @@ def evaluate(output, gold_output):
 def compare_boundary_count(output, gold_output):
     predicted_count = _get_boundary_count(output)
     gold_count = _get_boundary_count(gold_output)
-    predicted_portion  = _as_percent(predicted_count/gold_count)
-    if gold_count > 0: # Prevent division by 0
+    predicted_portion  = (None if gold_count <= 0 else _as_percent(predicted_count/gold_count))
+    if gold_count:
         print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({predicted_portion}%).")
     else:
-        print(f"\nError generating boundary count: 0 boundaries in gold data!")
+        print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold.")
 
     return predicted_portion
 
@@ -182,7 +183,10 @@ def print_results_csv(results):
     with open(OUTPUT_CSV, "a") as csv_file:
         csv_file.write("\n")
         for result in results:
-            csv_file.write(str(result) + "%,")
+            csv_file.write(str(result))
+            if result:
+                csv_file.write("%")
+            csv_file.write(",")
     print("Wrote to", OUTPUT_CSV)
     csv_file.close()
 

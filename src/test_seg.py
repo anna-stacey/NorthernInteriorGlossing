@@ -176,16 +176,20 @@ def print_predictions(predictions, entire_input):
     write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
 
 def print_results_csv(results):
-    header = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc,"
+    header = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc"
+    num_fields = header.count(",") + 1
+    num_missing_fields = num_fields - len(results)
     if not path.isfile(OUTPUT_CSV):
             with open(OUTPUT_CSV, "w+") as csv_file:
-                print(header, file = csv_file)
+                csv_file.write(header)
     with open(OUTPUT_CSV, "a") as csv_file:
         csv_file.write("\n")
         for result in results:
             csv_file.write(str(result))
             if result:
                 csv_file.write("%")
+            csv_file.write(",")
+        for i in range(num_missing_fields - 1): # -1 bc no final comma
             csv_file.write(",")
     print("Wrote to", OUTPUT_CSV)
     csv_file.close()

@@ -9,6 +9,7 @@ PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 OUTPUT_CSV = "./seg_results.csv"
 DO_PRINT_RESULTS_CSV = True
+NO_RESULT_MARKER = None
 
 def _as_percent(number):
     return round(number * 100, 2)
@@ -58,10 +59,10 @@ def _evaluate_f1(output, gold_output):
 
     # Calculations
     if true_pos == 0: # Avoid division by 0
-        precision = None
-        recall = None
-        f1 = None
-        f1_alt = None
+        precision = NO_RESULT_MARKER
+        recall = NO_RESULT_MARKER
+        f1 = NO_RESULT_MARKER
+        f1_alt = NO_RESULT_MARKER
         print("\nNo boundary-level precision/recall/F1 because there are no gold boundaries.")
     else:
         precision = true_pos / (true_pos + false_pos)
@@ -109,7 +110,7 @@ def evaluate(output, gold_output):
 def compare_boundary_count(output, gold_output):
     predicted_count = _get_boundary_count(output)
     gold_count = _get_boundary_count(gold_output)
-    predicted_portion  = (None if gold_count <= 0 else _as_percent(predicted_count/gold_count))
+    predicted_portion  = (NO_RESULT_MARKER if gold_count <= 0 else _as_percent(predicted_count/gold_count))
     if gold_count:
         print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({predicted_portion}%).")
     else:
@@ -189,8 +190,11 @@ def print_results_csv(results):
             if result:
                 csv_file.write("%")
             csv_file.write(",")
-        for i in range(num_missing_fields - 1): # -1 bc no final comma
-            csv_file.write(",")
+        for i in range(num_missing_fields):
+            if i == num_missing_fields - 1: # Last field
+                csv_file.write(str(NO_RESULT_MARKER)) # No final comma
+            else:
+                csv_file.write(str(NO_RESULT_MARKER) + ",")
     print("Wrote to", OUTPUT_CSV)
     csv_file.close()
 

@@ -58,24 +58,40 @@ def _evaluate_f1(output, gold_output):
                 false_neg += 1
 
     # Calculations
-    if true_pos == 0: # Avoid division by 0
+    # No predicted boundaries -> no precision
+    # No gold boundaries -> no recall
+    # No predicted OR gold boundaries -> no F1
+
+    # Precision
+    if true_pos or false_pos:
+        precision = _as_percent(true_pos / (true_pos + false_pos))
+        print(f"\nBoundary-level precision: {(precision)}%.")
+    else:
         precision = NO_RESULT_MARKER
+        print("\nNo boundary-level precision value due to no predicted boundaries.")
+
+    # Recall
+    if true_pos or false_neg:
+        recall = _as_percent(true_pos / (true_pos + false_neg))
+        print(f"B-L recall: {(recall)}%.")
+    else:
         recall = NO_RESULT_MARKER
+        print("\nNo boundary-level recall value due to no gold boundaries.")
+
+    # F1
+    if true_pos or false_pos or false_neg:
+        f1 = _as_percent((2 * true_pos) / ((2 * true_pos) + false_pos + false_neg))
+        print(f"B-L F1 Score: {(f1)}%.")
+    else:
         f1 = NO_RESULT_MARKER
         f1_alt = NO_RESULT_MARKER
-        print("\nNo boundary-level precision/recall/F1 because there are no gold boundaries.")
-    else:
-        precision = true_pos / (true_pos + false_pos)
-        recall = true_pos / (true_pos + false_neg)
-        f1 = (2 * true_pos) / ((2 * true_pos) + false_pos + false_neg)
-        f1_alt = 2 *((precision * recall) / (precision + recall))
-        # Format and print results
-        assert(_as_percent(f1) == _as_percent(f1_alt))
-        print(f"\nBoundary-level precision: {_as_percent(precision)}%.")
-        print(f"B-L recall: {_as_percent(recall)}%.")
-        print(f"B-L F1 Score: {_as_percent(f1)}%.")
+        print("\nNo boundary-level F1 value due to no gold boundaries OR predicted boundaries!")
+    # F1 check
+    if precision and recall:
+        f1_alt = _as_percent(2 *((precision * recall) / (precision + recall)))
+        assert((f1) == (f1_alt))
 
-    results = ([_as_percent(precision), _as_percent(recall), _as_percent(f1)] if true_pos > 0 else [precision, recall, f1])
+    results = ([precision, recall, f1])
     return results
 
 # No return value, just prints

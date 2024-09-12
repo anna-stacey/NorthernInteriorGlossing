@@ -1,5 +1,4 @@
 import click
-from numpy import isnan
 import pandas as pd
 
 EXPECTED_RESULT_NULL_MARKER = "None"
@@ -10,7 +9,7 @@ def check_results(outputted_results, expected_results):
     for index, col_name in enumerate(header):
         outputted_result = outputted_results.iloc[0][col_name]
         expected_result = expected_results[index]
-        if (outputted_result == expected_result) or (isnan(outputted_result) and expected_result == EXPECTED_RESULT_NULL_MARKER):
+        if (outputted_result == expected_result) or (pd.isnull(outputted_result) and expected_result == EXPECTED_RESULT_NULL_MARKER):
             pass
         else:
             print(f"\nIncorrect evaluation result for {col_name}.\nExpected {expected_result}, but got {outputted_result}.")

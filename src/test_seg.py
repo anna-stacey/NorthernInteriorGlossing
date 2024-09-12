@@ -187,7 +187,7 @@ def print_results_csv(results):
         csv_file.write("\n")
         for result in results:
             csv_file.write(str(result))
-            if result:
+            if type(result) == float:
                 csv_file.write("%")
             csv_file.write(",")
         for i in range(num_missing_fields):

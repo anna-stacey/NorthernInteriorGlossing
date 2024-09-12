@@ -64,7 +64,8 @@ def _evaluate_f1(output, gold_output):
 
     # Precision
     if true_pos or false_pos:
-        precision = _as_percent(true_pos / (true_pos + false_pos))
+        precision_raw = true_pos / (true_pos + false_pos)
+        precision = _as_percent(precision_raw)
         print(f"\nBoundary-level precision: {(precision)}%.")
     else:
         precision = NO_RESULT_MARKER
@@ -72,7 +73,8 @@ def _evaluate_f1(output, gold_output):
 
     # Recall
     if true_pos or false_neg:
-        recall = _as_percent(true_pos / (true_pos + false_neg))
+        recall_raw = true_pos / (true_pos + false_neg)
+        recall = _as_percent(recall_raw)
         print(f"B-L recall: {(recall)}%.")
     else:
         recall = NO_RESULT_MARKER
@@ -88,8 +90,8 @@ def _evaluate_f1(output, gold_output):
         print("\nNo boundary-level F1 value due to no gold boundaries OR predicted boundaries!")
     # F1 check
     if precision and recall:
-        f1_alt = _as_percent(2 *((precision * recall) / (precision + recall)))
-        assert((f1) == (f1_alt))
+        f1_alt = _as_percent(2 *((precision_raw * recall_raw) / (precision_raw + recall_raw)))
+        assert f1 == f1_alt, f"{f1}, {f1_alt}"
 
     results = ([precision, recall, f1])
     return results

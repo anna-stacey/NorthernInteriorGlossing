@@ -36,6 +36,14 @@ OUTPUT_5=./src/test_data/test_fairseq_5.output
 GOLD_OUTPUT_5=./src/test_data/test_3.output
 EXPECTED_RESULTS_5="0.00%,25.00%,25.00%,25.00%,100.00%,None,None"
 
+# Gold boundaries, predicted boundaries, 0% correct
+# TP: i, FP: ii, FN: iii
+WHOLE_INPUT_6=./src/test_data/test_3.txt
+INPUT_6=./src/test_data/test_1.input
+OUTPUT_6=./src/test_data/test_fairseq_6.output
+GOLD_OUTPUT_6=./src/test_data/test_3.output
+EXPECTED_RESULTS_6="0.00%,33.33%,25.00%,28.57%,75.00%,None,None"
+
 echo "Segmentation Test 1:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 > /dev/null
 python3 src/test_eval.py --results_csv=$RESULTS_CSV --expected_results=$EXPECTED_RESULTS_1
@@ -55,3 +63,7 @@ python3 src/test_eval.py --results_csv=$RESULTS_CSV --expected_results=$EXPECTED
 echo "Segmentation Test 5:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_5 --output_file=$OUTPUT_5 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_5 > /dev/null
 python3 src/test_eval.py --results_csv=$RESULTS_CSV --expected_results=$EXPECTED_RESULTS_5
+
+echo "Segmentation Test 6:"
+python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_6 --output_file=$OUTPUT_6 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_6 > /dev/null
+python3 src/test_eval.py --results_csv=$RESULTS_CSV --expected_results=$EXPECTED_RESULTS_6

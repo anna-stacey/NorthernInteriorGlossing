@@ -12,7 +12,7 @@ DO_PRINT_RESULTS_CSV = True
 NO_RESULT_MARKER = None
 
 def _as_percent(number):
-    return round(number * 100, 2)
+    return '{:.2f}'.format(round(number * 100, 2))
 
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
@@ -205,7 +205,7 @@ def print_results_csv(results):
         csv_file.write("\n")
         for result in results:
             csv_file.write(str(result))
-            if type(result) == float:
+            if type(result) == str:
                 csv_file.write("%")
             csv_file.write(",")
         for i in range(num_missing_fields):

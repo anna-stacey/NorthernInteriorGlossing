@@ -8,6 +8,7 @@ GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 OUTPUT_CSV = "./seg_results.csv"
+OUTPUT_CSV_HEADER = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc"
 DO_PRINT_RESULTS_CSV = True
 NO_RESULT_MARKER = None
 
@@ -194,14 +195,13 @@ def print_predictions(predictions, entire_input):
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_predictions, 1)
     write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
 
-def print_results_csv(results):
-    header = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc"
+def print_results_csv(results, header, output_file_name):
     num_fields = header.count(",") + 1
     num_missing_fields = num_fields - len(results)
-    if not path.isfile(OUTPUT_CSV):
-            with open(OUTPUT_CSV, "w+") as csv_file:
+    if not path.isfile(output_file_name):
+            with open(output_file_name, "w+") as csv_file:
                 csv_file.write(header)
-    with open(OUTPUT_CSV, "a") as csv_file:
+    with open(output_file_name, "a") as csv_file:
         csv_file.write("\n")
         for result in results:
             csv_file.write(str(result))
@@ -213,7 +213,7 @@ def print_results_csv(results):
                 csv_file.write(str(NO_RESULT_MARKER)) # No final comma
             else:
                 csv_file.write(str(NO_RESULT_MARKER) + ",")
-    print("Wrote to", OUTPUT_CSV)
+    print("Wrote to", output_file_name)
     csv_file.close()
 
 @click.command()
@@ -242,7 +242,7 @@ def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_o
         train_output = read_lines_from_file(train_output_file)
         results.extend(evaluate_OOV_performance(output, gold_output, train_output))
     if DO_PRINT_RESULTS_CSV:
-        print_results_csv(results)
+        print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV)
 
     # Print viewable outputs
     # First read in and print out the gold

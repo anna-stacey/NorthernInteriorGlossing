@@ -480,16 +480,18 @@ def print_results_csv(results, header, output_file_name, no_result_marker):
                 csv_file.write(header)
     with open(output_file_name, "a") as csv_file:
         csv_file.write("\n")
-        for result in results:
+        # Print the results for each field
+        for i, result in enumerate(results):
             csv_file.write(str(result))
             if type(result) == str:
                 csv_file.write("%")
-            csv_file.write(",")
+            if i < num_fields - 1: # Not the last field
+                csv_file.write(",")
+        # Print a flag for any missing results
         for i in range(num_missing_fields):
-            if i == num_missing_fields - 1: # Last field
-                csv_file.write(str(no_result_marker)) # No final comma
-            else:
-                csv_file.write(str(no_result_marker) + ",")
+            csv_file.write(str(no_result_marker))
+            if i < num_missing_fields - 1: # Not the last field
+                csv_file.write(",")
     print("Wrote to", output_file_name)
     csv_file.close()
 

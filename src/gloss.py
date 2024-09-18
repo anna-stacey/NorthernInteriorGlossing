@@ -1,13 +1,16 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
+from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
 from os import getcwd, mkdir, path
 from unicodedata import normalize
 
 OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
+OUTPUT_CSV = "./gloss_results.csv"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc"
+NO_RESULTS_MARKER = None
 
 LEFT_INFIX_BOUNDARY = "<"
 RIGHT_INFIX_BOUNDARY = ">"
@@ -699,6 +702,9 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Evaluate system
     # Run our own evaluation
     pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+
+    results = []
+    print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
     # Reassemble the predicted morphemes into string lines

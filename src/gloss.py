@@ -9,7 +9,7 @@ OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
 OUTPUT_CSV = "./gloss_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc"
 NO_RESULTS_MARKER = None
 
 LEFT_INFIX_BOUNDARY = "<"
@@ -445,7 +445,7 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
     print(f"In the test set, {unknown_stem_count}/{total_stem_count} total stems, or {as_percent(unknown_stem_count/total_stem_count)}%, were not in the stem dictionary.")
     return pred_dev_y
 
-# No return value
+# Returns the two accuracy values (as percents)
 def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
     # Divide up the predictions and gold labels into stems and grams
     # We know which are stems at this point - they're labelled stem in the interim set
@@ -482,8 +482,12 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         y_grams_sentence = []
 
     # Now each list has one entry per sentence, which is itself a list of morphemes
-    print(f"Accuracy for stems: {as_percent(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems))}%.")
-    print(f"Accuracy for grams: {as_percent(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams))}%.")
+    stem_acc = as_percent(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems))
+    gram_acc = as_percent(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams))
+    print(f"Accuracy for stems: {stem_acc}%.")
+    print(f"Accuracy for grams: {gram_acc}%.")
+
+    return stem_acc, gram_acc
 
 # Trains and returns the dictionary and the CRF!
 # As well as train_y formatted without stems, which is needed for the CRF to tune hyperparameters
@@ -499,7 +503,6 @@ def train_system(train_X, train_y):
 # No return value
 # Uses crf for bound morphemes, then dictionary for stems
 def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
-
     # Run the CRF model for bound morphemes
     interim_pred_y = run_crf(crf, X, y)
 
@@ -509,15 +512,17 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     # Evaluate the overall result
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
+    morpheme_acc = as_percent(get_morpheme_level_accuracy(y, pred_y))
+    word_acc = as_percent(get_word_level_accuracy(y, pred_y))
     print("\n** Glossing accuracy: **")
-    print(f"Morpheme-level accuracy: {as_percent(get_morpheme_level_accuracy(y, pred_y))}%.\n")
-    print(f"Word-level accuracy: {as_percent(get_word_level_accuracy(y, pred_y))}%.\n")
+    print(f"Morpheme-level accuracy: {morpheme_acc}%.\n")
+    print(f"Word-level accuracy: {word_acc}%.\n")
 
     # Results - print by-stem and by-gram accuracy
     interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
-    get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
+    stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
 
-    return pred_y
+    return pred_y, [morpheme_acc, word_acc, stem_acc, gram_acc]
 
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses
@@ -701,9 +706,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
 
     # Evaluate system
     # Run our own evaluation
-    pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+    pred_y, results = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
 
-    results = []
     print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
     # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions

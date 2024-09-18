@@ -2,7 +2,7 @@ import click
 from os import path
 import re
 from gloss import make_sentence_list_with_prediction, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
-from glossed_data_utilities import add_back_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
+from glossed_data_utilities import add_back_OOL_words, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
@@ -195,27 +195,6 @@ def print_predictions(predictions, entire_input):
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_predictions, 1)
     write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
 
-def print_results_csv(results, header, output_file_name):
-    num_fields = header.count(",") + 1
-    num_missing_fields = num_fields - len(results)
-    if not path.isfile(output_file_name):
-            with open(output_file_name, "w+") as csv_file:
-                csv_file.write(header)
-    with open(output_file_name, "a") as csv_file:
-        csv_file.write("\n")
-        for result in results:
-            csv_file.write(str(result))
-            if type(result) == str:
-                csv_file.write("%")
-            csv_file.write(",")
-        for i in range(num_missing_fields):
-            if i == num_missing_fields - 1: # Last field
-                csv_file.write(str(NO_RESULT_MARKER)) # No final comma
-            else:
-                csv_file.write(str(NO_RESULT_MARKER) + ",")
-    print("Wrote to", output_file_name)
-    csv_file.close()
-
 @click.command()
 @click.option("--whole_input_file", required=True, help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
 @click.option("--output_file", required=True, help="The name of the output file.")
@@ -242,7 +221,7 @@ def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_o
         train_output = read_lines_from_file(train_output_file)
         results.extend(evaluate_OOV_performance(output, gold_output, train_output))
     if DO_PRINT_RESULTS_CSV:
-        print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV)
+        print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULT_MARKER)
 
     # Print viewable outputs
     # First read in and print out the gold

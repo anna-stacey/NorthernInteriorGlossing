@@ -471,3 +471,24 @@ def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
         updated_examples.append(updated_example)
 
     return updated_examples
+
+def print_results_csv(results, header, output_file_name, no_result_marker):
+    num_fields = header.count(",") + 1
+    num_missing_fields = num_fields - len(results)
+    if not path.isfile(output_file_name):
+            with open(output_file_name, "w+") as csv_file:
+                csv_file.write(header)
+    with open(output_file_name, "a") as csv_file:
+        csv_file.write("\n")
+        for result in results:
+            csv_file.write(str(result))
+            if type(result) == str:
+                csv_file.write("%")
+            csv_file.write(",")
+        for i in range(num_missing_fields):
+            if i == num_missing_fields - 1: # Last field
+                csv_file.write(str(no_result_marker)) # No final comma
+            else:
+                csv_file.write(str(no_result_marker) + ",")
+    print("Wrote to", output_file_name)
+    csv_file.close()

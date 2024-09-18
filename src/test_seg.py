@@ -2,7 +2,7 @@ import click
 from os import path
 import re
 from gloss import make_sentence_list_with_prediction, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
-from glossed_data_utilities import add_back_OOL_words, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
+from glossed_data_utilities import add_back_OOL_words, as_percent, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
@@ -11,9 +11,6 @@ OUTPUT_CSV = "./seg_results.csv"
 OUTPUT_CSV_HEADER = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc"
 DO_PRINT_RESULTS_CSV = True
 NO_RESULT_MARKER = None
-
-def _as_percent(number):
-    return '{:.2f}'.format(round(number * 100, 2))
 
 # Returns a list of lines in the file, "\n" within the line removed
 def read_lines_from_file(file_path):
@@ -66,7 +63,7 @@ def _evaluate_f1(output, gold_output):
     # Precision
     if true_pos or false_pos:
         precision_raw = true_pos / (true_pos + false_pos)
-        precision = _as_percent(precision_raw)
+        precision = as_percent(precision_raw)
         print(f"\nBoundary-level precision: {(precision)}%.")
     else:
         precision = NO_RESULT_MARKER
@@ -75,7 +72,7 @@ def _evaluate_f1(output, gold_output):
     # Recall
     if true_pos or false_neg:
         recall_raw = true_pos / (true_pos + false_neg)
-        recall = _as_percent(recall_raw)
+        recall = as_percent(recall_raw)
         print(f"B-L recall: {(recall)}%.")
     else:
         recall = NO_RESULT_MARKER
@@ -83,7 +80,7 @@ def _evaluate_f1(output, gold_output):
 
     # F1
     if true_pos or false_pos or false_neg:
-        f1 = _as_percent((2 * true_pos) / ((2 * true_pos) + false_pos + false_neg))
+        f1 = as_percent((2 * true_pos) / ((2 * true_pos) + false_pos + false_neg))
         print(f"B-L F1 Score: {(f1)}%.")
     else:
         f1 = NO_RESULT_MARKER
@@ -91,7 +88,7 @@ def _evaluate_f1(output, gold_output):
         print("\nNo boundary-level F1 value due to no gold boundaries OR predicted boundaries!")
     # F1 check
     if precision and recall:
-        f1_alt = _as_percent(2 *((precision_raw * recall_raw) / (precision_raw + recall_raw)))
+        f1_alt = as_percent(2 *((precision_raw * recall_raw) / (precision_raw + recall_raw)))
         assert f1 == f1_alt, f"{f1}, {f1_alt}"
 
     results = ([precision, recall, f1])
@@ -110,7 +107,7 @@ def _evaluate_word_level_acc(output, gold_output):
 
     assert(num_words > 0)
     accuracy = (num_words - num_incorrect_words) / num_words
-    accuracy = _as_percent(accuracy)
+    accuracy = as_percent(accuracy)
     print(f"\nWord-level accuracy: {accuracy}% on {num_words} words.")
     return accuracy
 
@@ -129,7 +126,7 @@ def evaluate(output, gold_output):
 def compare_boundary_count(output, gold_output):
     predicted_count = _get_boundary_count(output)
     gold_count = _get_boundary_count(gold_output)
-    predicted_portion  = (NO_RESULT_MARKER if gold_count <= 0 else _as_percent(predicted_count/gold_count))
+    predicted_portion  = (NO_RESULT_MARKER if gold_count <= 0 else as_percent(predicted_count/gold_count))
     if gold_count:
         print(f"\nBoundary count: {predicted_count} predicted vs. {gold_count} in gold ({predicted_portion}%).")
     else:
@@ -159,10 +156,10 @@ def evaluate_OOV_performance(output, gold_output, train_output):
             if gold_word != output_word:
                 OOV_incorrect_count += 1
 
-    OOV_proportion = _as_percent(OOV_count / len(output))
+    OOV_proportion = as_percent(OOV_count / len(output))
     print(f"\nOOV count: {OOV_count}/{len(output)} words ({OOV_proportion}%).")
 
-    OOV_acc = _as_percent((OOV_count - OOV_incorrect_count) / OOV_count)
+    OOV_acc = as_percent((OOV_count - OOV_incorrect_count) / OOV_count)
     print(f"OOV accuracy: {OOV_acc}% on {OOV_count} OOV words.\n")
 
     return [OOV_proportion, OOV_acc]

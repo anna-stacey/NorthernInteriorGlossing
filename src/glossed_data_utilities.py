@@ -492,3 +492,6 @@ def print_results_csv(results, header, output_file_name, no_result_marker):
                 csv_file.write(str(no_result_marker) + ",")
     print("Wrote to", output_file_name)
     csv_file.close()
+
+def as_percent(number):
+    return '{:.2f}'.format(round(number * 100, 2))

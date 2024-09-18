@@ -1,7 +1,7 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
+from glossed_data_utilities import add_back_OOL_words, as_percent, handle_OOL_words, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
 from os import getcwd, mkdir, path
 from unicodedata import normalize
 
@@ -342,7 +342,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                         best_alg = alg
                         best_min_freq = min_freq
 
-    best_accuracy_percent = round(best_accuracy * 100, 2)
+    best_accuracy_percent = as_percent(best_accuracy)
     if best_alg == 'lbfgs' or best_alg == 'l2sgd':
         print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm with a c2 of {best_c2}, and with a minimum feature frequency of {best_min_freq + 1}.")
     else:
@@ -442,7 +442,7 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
         pred_dev_y.append(pred_glossed_sentence)
     
     total_stem_count = known_stem_count + unknown_stem_count
-    print(f"In the test set, {unknown_stem_count}/{total_stem_count} total stems, or {round(unknown_stem_count/total_stem_count * 100, 2)}%, were not in the stem dictionary.")
+    print(f"In the test set, {unknown_stem_count}/{total_stem_count} total stems, or {as_percent(unknown_stem_count/total_stem_count)}%, were not in the stem dictionary.")
     return pred_dev_y
 
 # No return value
@@ -482,8 +482,8 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         y_grams_sentence = []
 
     # Now each list has one entry per sentence, which is itself a list of morphemes
-    print(f"Accuracy for stems: {round(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems) * 100, 2)}%.")
-    print(f"Accuracy for grams: {round(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams) * 100, 2)}%.")
+    print(f"Accuracy for stems: {as_percent(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems))}%.")
+    print(f"Accuracy for grams: {as_percent(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams))}%.")
 
 # Trains and returns the dictionary and the CRF!
 # As well as train_y formatted without stems, which is needed for the CRF to tune hyperparameters
@@ -510,8 +510,8 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
     print("\n** Glossing accuracy: **")
-    print(f"Morpheme-level accuracy: {round(get_morpheme_level_accuracy(y, pred_y) * 100, 2)}%.\n")
-    print(f"Word-level accuracy: {round(get_word_level_accuracy(y, pred_y) * 100, 2)}%.\n")
+    print(f"Morpheme-level accuracy: {as_percent(get_morpheme_level_accuracy(y, pred_y))}%.\n")
+    print(f"Word-level accuracy: {as_percent(get_word_level_accuracy(y, pred_y))}%.\n")
 
     # Results - print by-stem and by-gram accuracy
     interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)

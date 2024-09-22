@@ -500,9 +500,9 @@ def train_system(train_X, train_y):
     
     return train_y_no_stems, stem_dict, crf
 
-# No return value
-# Uses crf for bound morphemes, then dictionary for stems
-def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
+# Returns the glossed output pre- and post stem glossing,
+# plus the gold output, all with boundaries re-added
+def run_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     # Run the CRF model for bound morphemes
     interim_pred_y = run_crf(crf, X, y)
 
@@ -512,6 +512,13 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     # Evaluate the overall result
     y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
+    interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
+
+    return y, pred_y, interim_pred_y
+
+# Returns scores (as percents)
+def evaluate_system(y, pred_y, interim_pred_y):
+    # Evaluate the overall result
     morpheme_acc = as_percent(get_morpheme_level_accuracy(y, pred_y))
     word_acc = as_percent(get_word_level_accuracy(y, pred_y))
     print("\n** Glossing accuracy: **")
@@ -519,10 +526,9 @@ def evaluate_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     print(f"Word-level accuracy: {word_acc}%.\n")
 
     # Results - print by-stem and by-gram accuracy
-    interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
     stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
 
-    return pred_y, [morpheme_acc, word_acc, stem_acc, gram_acc]
+    return [morpheme_acc, word_acc, stem_acc, gram_acc]
 
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses
@@ -706,7 +712,8 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
 
     # Evaluate system
     # Run our own evaluation
-    pred_y, results = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+    test_y, pred_y, interim_pred_y = run_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
+    results = evaluate_system(test_y, pred_y, interim_pred_y)
 
     print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
     # Prepare for the sigmorphon evaluation

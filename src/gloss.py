@@ -724,7 +724,7 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     test_with_predictions = make_sentence_list_with_prediction(original_test, pred_y_to_print, gloss_line_number)
     write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME)
     # And create a file of the gold version, formatted the same way to permit comparison
-    write_output_file(test, GOLD_OUTPUT_FILE_NAME)
+    write_output_file(original_test, GOLD_OUTPUT_FILE_NAME)
 
 if __name__ == '__main__':
     main()

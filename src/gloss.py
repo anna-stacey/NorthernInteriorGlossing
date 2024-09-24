@@ -1,16 +1,13 @@
 import click
 import re
 import sklearn_crfsuite
-from glossed_data_utilities import add_back_OOL_words, as_percent, handle_OOL_words, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
+from glossed_data_utilities import add_back_OOL_words, as_percent, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
 from os import getcwd, mkdir, path
 from unicodedata import normalize
 
 OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
-OUTPUT_CSV = "./gloss_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc"
-NO_RESULTS_MARKER = None
 
 LEFT_INFIX_BOUNDARY = "<"
 RIGHT_INFIX_BOUNDARY = ">"
@@ -163,7 +160,7 @@ def sentence_to_features(segmentation_line):
 
 
 # Returns a list of glosses (one for each morpheme in the sentence)
-def sentence_to_glosses(gloss_line):
+def sentence_to_glosses(gloss_line, keep_word_boundaries = False):
     gloss_line = ignore_brackets(gloss_line)
     # Recall that infix boundaries aren't so complex to handle in the gloss line (just gloss1<gloss2>-gloss3)
     # We can just replace them with regular boundaries here, so they'll get handled by the re.split line
@@ -171,7 +168,15 @@ def sentence_to_glosses(gloss_line):
     gloss_line = re.sub(r"[" + RIGHT_INFIX_BOUNDARY + "\\" + RIGHT_REDUP_INFIX_BOUNDARY + "]", "", gloss_line)
 
     # Break apart line morpheme-by-morpheme
-    gloss_line = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + "\s" + r"]", gloss_line)
+    if keep_word_boundaries: # Maintain word-level sub-lists of morphemes
+        gloss_line = gloss_line.split()
+        updated_gloss_line = []
+        for word in gloss_line:
+            word = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + r"]", word)
+            updated_gloss_line.append(word)
+        gloss_line = updated_gloss_line
+    else: # Just split the line into a list of morphemes, with no word structure maintained
+        gloss_line = re.split(r"[" + re.escape("".join(NON_INFIXING_BOUNDARIES)) + "\s" + r"]", gloss_line)
 
     return gloss_line
 
@@ -192,78 +197,6 @@ def format_X_and_y(X, y):
     remove_OOL_from_X_or_y(y, is_X = False)
 
     return X, y
-
-# Returns the accuracy value (for each morpheme)
-# Expects a list of sentences as lists of morphemes
-def get_simple_morpheme_level_accuracy(y, predicted_y):
-    assert len(y) == len(predicted_y), f"Mismatch between length of gold glosses ({len(y)}) and length of predicted glosses ({len(predicted_y)})."
-    total = 0
-    wrong = 0
-    for gold_label_line, predicted_label_line in zip(y, predicted_y):
-        for gold_label, predicted_label in zip(gold_label_line, predicted_label_line):
-            total += 1
-            if gold_label != predicted_label:
-                wrong += 1
-    
-    assert(total > 0)
-    accuracy = (total - wrong) / total
-    return accuracy
-
-# Returns the accuracy value - this version includes going word-by-word
-# Expects a list of sentences as lists of words as lists of morphemes
-def get_morpheme_level_accuracy(y, predicted_y):
-    assert(len(y) == len(predicted_y))
-    total = 0
-    wrong = 0
-
-    for gold_label_line, predicted_label_line in zip(y, predicted_y):
-        # There must be the same number of words in the gold and the predicted lines
-        # (The number of words is not impacted by the segmentation task)
-        assert(len(gold_label_line) == len(predicted_label_line))
-        wrong_per_sentence = 0
-        for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
-            # The number of morphemes can vary in the gold word vs the predicted word
-            # So this zip may end up skipping some morphemes if one word contains more
-            for gold_label, predicted_label in zip(gold_word, predicted_word):
-                total += 1
-                if gold_label != predicted_label:
-                    wrong += 1
-                    wrong_per_sentence +=1
-
-    assert(total > 0)
-    accuracy = (total - wrong) / total
-    return accuracy
-
-# Returns the accuracy value
-# Expects a list of sentences as lists of words as lists of morphemes
-# Operates at the word-level, i.e., a word must have all its morphemes
-# glossed correctly to be considered correct
-def get_word_level_accuracy(y, predicted_y):
-    assert(len(y) == len(predicted_y))
-    total = 0
-    wrong = 0
-
-    for gold_label_line, predicted_label_line in zip(y, predicted_y):
-        # There must be the same number of words in the gold and the predicted lines
-        # (The number of words is not impacted by the segmentation task)
-        assert(len(gold_label_line) == len(predicted_label_line))
-
-        for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
-            total += 1
-            is_correct = True
-            # The number of morphemes can vary in the gold word vs the predicted word
-            # So this zip may end up skipping some morphemes if one word contains more
-            for gold_label, predicted_label in zip(gold_word, predicted_word):
-                if gold_label != predicted_label:
-                    is_correct = False
-
-            # Was any morpheme in the word wrong?  If so, mark the whole word wrong.
-            if not is_correct:
-                wrong += 1
-
-    assert(total > 0)
-    accuracy = (total - wrong) / total
-    return accuracy
 
 # Returns the prediction list
 def run_crf(model, X, y):
@@ -445,50 +378,6 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
     print(f"In the test set, {unknown_stem_count}/{total_stem_count} total stems, or {as_percent(unknown_stem_count/total_stem_count)}%, were not in the stem dictionary.")
     return pred_dev_y
 
-# Returns the two accuracy values (as percents)
-def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
-    # Divide up the predictions and gold labels into stems and grams
-    # We know which are stems at this point - they're labelled stem in the interim set
-    pred_y_stems = []
-    pred_y_grams = []
-    y_stems = []
-    y_grams = []
-    # We need to build up the lists sentence-by-sentence, bc of the way evaluation works
-    pred_y_stems_sentence = []
-    pred_y_grams_sentence = []
-    y_stems_sentence = []
-    y_grams_sentence = []
-    # Go sentence by sentence
-    for sentence_without_stems, sentence_with_stems, gold_sentence in zip(interim_pred_y, pred_y, y):
-        # Word by word
-        for word_without_stems, word_with_stems, gold_word in zip(sentence_without_stems, sentence_with_stems, gold_sentence):
-            # Morpheme by morpheme
-            for gloss_without_stems, gloss_with_stems, gold_gloss in zip(word_without_stems, word_with_stems, gold_word):
-                if gloss_without_stems == 'STEM': # It's a stem
-                    pred_y_stems_sentence.append(gloss_with_stems)
-                    y_stems_sentence.append(gold_gloss)
-                else: # It's a gram
-                    pred_y_grams_sentence.append(gloss_without_stems)
-                    y_grams_sentence.append(gold_gloss)
-    
-        # End of sentence reached; add it to our lists and reset
-        pred_y_stems.append(pred_y_stems_sentence)
-        pred_y_grams.append(pred_y_grams_sentence)
-        y_stems.append(y_stems_sentence)
-        y_grams.append(y_grams_sentence)
-        pred_y_stems_sentence = []
-        pred_y_grams_sentence = []
-        y_stems_sentence = []
-        y_grams_sentence = []
-
-    # Now each list has one entry per sentence, which is itself a list of morphemes
-    stem_acc = as_percent(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems))
-    gram_acc = as_percent(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams))
-    print(f"Accuracy for stems: {stem_acc}%.")
-    print(f"Accuracy for grams: {gram_acc}%.")
-
-    return stem_acc, gram_acc
-
 # Trains and returns the dictionary and the CRF!
 # As well as train_y formatted without stems, which is needed for the CRF to tune hyperparameters
 def train_system(train_X, train_y):
@@ -502,7 +391,7 @@ def train_system(train_X, train_y):
 
 # Returns the glossed output pre- and post stem glossing,
 # plus the gold output, all with boundaries re-added
-def run_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
+def run_system(X, y, X_with_boundaries, crf, stem_dict):
     # Run the CRF model for bound morphemes
     interim_pred_y = run_crf(crf, X, y)
 
@@ -510,25 +399,9 @@ def run_system(X, y, X_with_boundaries, y_with_boundaries, crf, stem_dict):
     pred_y = gloss_stems(X, interim_pred_y, stem_dict)
 
     # Evaluate the overall result
-    y = add_word_boundaries_to_gloss(y, y_with_boundaries)
     pred_y = add_word_boundaries_to_gloss(pred_y, X_with_boundaries)
-    interim_pred_y = add_word_boundaries_to_gloss(interim_pred_y, X_with_boundaries)
 
-    return y, pred_y, interim_pred_y
-
-# Returns scores (as percents)
-def evaluate_system(y, pred_y, interim_pred_y):
-    # Evaluate the overall result
-    morpheme_acc = as_percent(get_morpheme_level_accuracy(y, pred_y))
-    word_acc = as_percent(get_word_level_accuracy(y, pred_y))
-    print("\n** Glossing accuracy: **")
-    print(f"Morpheme-level accuracy: {morpheme_acc}%.\n")
-    print(f"Word-level accuracy: {word_acc}%.\n")
-
-    # Results - print by-stem and by-gram accuracy
-    stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
-
-    return [morpheme_acc, word_acc, stem_acc, gram_acc]
+    return pred_y
 
 # Inputs:
 #   - gloss: a list of sentences, which are lists of glosses
@@ -710,13 +583,9 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     # Hyper-parameter tuning
     #test_crf(train_X, train_y_no_stems, dev_X, dev_y)
 
-    # Evaluate system
-    # Run our own evaluation
-    test_y, pred_y, interim_pred_y = run_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
-    results = evaluate_system(test_y, pred_y, interim_pred_y)
+    # Generate the output
+    pred_y = run_system(test_X, test_y, test_X_with_boundaries, crf, stem_dict)
 
-    print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
-    # Prepare for the sigmorphon evaluation
     # Assemble output file of predictions
     # Reassemble the predicted morphemes into string lines
     pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y))

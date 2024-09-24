@@ -1,5 +1,5 @@
 import click
-from gloss import extract_X_and_y, sentence_to_glosses
+from gloss import add_word_boundaries_to_gloss, deal_with_stems, extract_X_and_y, sentence_to_features, sentence_to_glosses
 from glossed_data_utilities import as_percent, handle_OOL_words, print_results_csv, read_file
 
 OUTPUT_CSV = "./gloss_results.csv"
@@ -16,9 +16,7 @@ def evaluate_system(y, pred_y, interim_pred_y):
     print(f"Word-level accuracy: {word_acc}%.\n")
 
     # Results - print by-stem and by-gram accuracy
-    #stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
-    stem_acc = None
-    gram_acc = None
+    stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
 
     return [morpheme_acc, word_acc, stem_acc, gram_acc]
 
@@ -159,8 +157,13 @@ def main(test_file, output_file, segmentation_line_number, gloss_line_number):
     # Get the sentence as a list of words, where each word is a list of morphemes
     test_y = [sentence_to_glosses(gloss_line, keep_word_boundaries = True) for gloss_line in test_y]
     pred_y = [sentence_to_glosses(gloss_line, keep_word_boundaries = True) for gloss_line in pred_y]
+
     # Evaluate system
-    results = evaluate_system(test_y, pred_y, None)
+    # For stem/gram eval, we need a version of the predictions where all the stems are identified (in this case, by being glossed as just "STEM")
+    pred_y_no_stems = [deal_with_stems((sentence_to_features(example[segmentation_line_number])), (sentence_to_glosses(example[gloss_line_number])))[0] for example in predictions]
+    # Calling deal_with_stems returns a pred_y without word boundaries, so add them back now to keep our results in a consistent format
+    pred_y_no_stems = add_word_boundaries_to_gloss(pred_y_no_stems, test_X)
+    results = evaluate_system(test_y, pred_y, pred_y_no_stems)
 
     # print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
 

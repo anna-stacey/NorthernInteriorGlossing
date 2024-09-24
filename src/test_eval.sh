@@ -57,6 +57,16 @@ GOLD_8=./src/test_data/test_1.txt
 OUTPUT_8=./src/test_data/test_1.txt
 EXPECTED_RESULTS_8="100.00%,100.00%,None,100.00%"
 
+# All stems, all wrong
+GOLD_9=./src/test_data/test_1.txt
+OUTPUT_9=./src/test_data/test_9_pred.txt
+EXPECTED_RESULTS_9="0.00%,0.00%,0.00%,None"
+
+# All stems, all correct
+GOLD_10=./src/test_data/test_10.txt
+OUTPUT_10=./src/test_data/test_10.txt
+EXPECTED_RESULTS_10="100.00%,100.00%,100.00%,None"
+
 echo "Segmentation Test 1:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 > /dev/null
 python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_1
@@ -88,3 +98,11 @@ python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EX
 echo "Gloss Test 2:"
 python3 src/eval_gloss.py --test_file=$GOLD_8 --output_file=$OUTPUT_8 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_8
+
+echo "Gloss Test 3:"
+python3 src/eval_gloss.py --test_file=$GOLD_9 --output_file=$OUTPUT_9 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_9
+
+echo "Gloss Test 4:"
+python3 src/eval_gloss.py --test_file=$GOLD_10 --output_file=$OUTPUT_10 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_10

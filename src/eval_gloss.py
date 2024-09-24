@@ -9,11 +9,9 @@ NO_RESULTS_MARKER = None
 # Returns scores (as percents)
 def evaluate_system(y, pred_y, interim_pred_y):
     # Evaluate the overall result
-    morpheme_acc = as_percent(get_morpheme_level_accuracy(y, pred_y))
-    word_acc = as_percent(get_word_level_accuracy(y, pred_y))
     print("\n** Glossing accuracy: **")
-    print(f"Morpheme-level accuracy: {morpheme_acc}%.\n")
-    print(f"Word-level accuracy: {word_acc}%.\n")
+    morpheme_acc = get_morpheme_level_accuracy(y, pred_y)
+    word_acc = get_word_level_accuracy(y, pred_y)
 
     # Results - print by-stem and by-gram accuracy
     stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
@@ -41,8 +39,8 @@ def get_morpheme_level_accuracy(y, predicted_y):
                     wrong += 1
                     wrong_per_sentence +=1
 
-    assert(total > 0)
-    accuracy = (total - wrong) / total
+    accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
+    print(f"Morpheme-level accuracy: {accuracy}%.\n" if not(accuracy == NO_RESULTS_MARKER) else "No morpheme-level accuracy because there are no morphemes!")
     return accuracy
 
 # Returns the accuracy value
@@ -72,8 +70,8 @@ def get_word_level_accuracy(y, predicted_y):
             if not is_correct:
                 wrong += 1
 
-    assert(total > 0)
-    accuracy = (total - wrong) / total
+    accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
+    print(f"Word-level accuracy: {accuracy}%.\n" if not(accuracy == NO_RESULTS_MARKER) else "No word-level accuracy because there are no words!")
     return accuracy
 
 # Returns the two accuracy values (as percents)
@@ -113,10 +111,10 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         y_grams_sentence = []
 
     # Now each list has one entry per sentence, which is itself a list of morphemes
-    stem_acc = as_percent(get_simple_morpheme_level_accuracy(y_stems, pred_y_stems))
-    gram_acc = as_percent(get_simple_morpheme_level_accuracy(y_grams, pred_y_grams))
-    print(f"Accuracy for stems: {stem_acc}%.")
-    print(f"Accuracy for grams: {gram_acc}%.")
+    stem_acc = get_simple_morpheme_level_accuracy(y_stems, pred_y_stems)
+    gram_acc = get_simple_morpheme_level_accuracy(y_grams, pred_y_grams)
+    print(f"Accuracy for stems: {stem_acc}%." if not(stem_acc == NO_RESULTS_MARKER) else "No stem accuracy because there are no stems!")
+    print(f"Accuracy for grams: {gram_acc}%." if not(gram_acc == NO_RESULTS_MARKER) else "No gram accuracy because there are no grams!")
 
     return stem_acc, gram_acc
 
@@ -131,9 +129,8 @@ def get_simple_morpheme_level_accuracy(y, predicted_y):
             total += 1
             if gold_label != predicted_label:
                 wrong += 1
-    
-    assert(total > 0)
-    accuracy = (total - wrong) / total
+
+    accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
     return accuracy
 
 @click.command()

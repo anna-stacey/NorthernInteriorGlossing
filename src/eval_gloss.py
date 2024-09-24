@@ -165,7 +165,7 @@ def main(test_file, output_file, segmentation_line_number, gloss_line_number):
     pred_y_no_stems = add_word_boundaries_to_gloss(pred_y_no_stems, test_X)
     results = evaluate_system(test_y, pred_y, pred_y_no_stems)
 
-    # print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
+    print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
 
 if __name__ == '__main__':
     main()

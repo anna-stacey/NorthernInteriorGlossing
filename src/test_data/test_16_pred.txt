@@ -1,4 +1,4 @@
 jkasdn ajskd klasjdklsa akjs
 j-kasdn a-jskd k-lasjdklsa a-kjs
-GLOSS-gloss GLOSS-gloss GLOSS-GLOSS gloss-gloss
+GLOSS-gloss WRONG-gloss GLOSS-GLOSS wrong-WRONG
 translation

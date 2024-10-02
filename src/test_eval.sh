@@ -83,6 +83,24 @@ GOLD_13=./src/test_data/test_10.txt
 OUTPUT_13=./src/test_data/test_13_pred.txt
 EXPECTED_RESULTS_13="75.00%,75.00%,75.00%,None"
 
+# Gold all stems, predicted mixed stems/grams, partly correct
+# 2 correct stems, 1 incorrect stem, 1 incorrect gram
+GOLD_14=./src/test_data/test_10.txt
+OUTPUT_14=./src/test_data/test_14_pred.txt
+EXPECTED_RESULTS_14="50.00%,50.00%,66.67%,0.00%"
+
+# Moving into multi-morphemic words
+# Mixed stems/grams, all correct
+GOLD_15=./src/test_data/test_3.txt
+OUTPUT_15=./src/test_data/test_3.txt
+EXPECTED_RESULTS_15="100.00%,100.00%,100.00%,100.00%"
+
+# Mixed stems/grams, partly correct
+# 2 correct stems, 1 incorrect stem, 3 correct grams, 2 incorrect grams
+GOLD_16=./src/test_data/test_3.txt
+OUTPUT_16=./src/test_data/test_16_pred.txt
+EXPECTED_RESULTS_16="62.50%,50.00%,66.67%,60.00%"
+
 echo "Segmentation Test 1:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 > /dev/null
 python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_1
@@ -134,3 +152,15 @@ python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EX
 echo "Gloss Test 7:"
 python3 src/eval_gloss.py --test_file=$GOLD_13 --output_file=$OUTPUT_13 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_13
+
+echo "Gloss Test 8:"
+python3 src/eval_gloss.py --test_file=$GOLD_14 --output_file=$OUTPUT_14 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_14
+
+echo "Gloss Test 9:"
+python3 src/eval_gloss.py --test_file=$GOLD_15 --output_file=$OUTPUT_15 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_15
+
+echo "Gloss Test 10:"
+python3 src/eval_gloss.py --test_file=$GOLD_16 --output_file=$OUTPUT_16 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_16

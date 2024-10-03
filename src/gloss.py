@@ -5,9 +5,7 @@ from glossed_data_utilities import add_back_OOL_words, as_percent, handle_OOL_wo
 from os import getcwd, mkdir, path
 from unicodedata import normalize
 
-OUTPUT_FOLDER = "/generated_data/"
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
-PRED_OUTPUT_FILE_NAME = "gloss_pred.txt"
 
 LEFT_INFIX_BOUNDARY = "<"
 RIGHT_INFIX_BOUNDARY = ">"
@@ -480,17 +478,17 @@ def reassemble_predicted_words(input_seg_line_list, pred_gloss_line_list):
 
 # Takes a list of sentences, where each sentence contains the transcription line, segmentation line, etc.
 # No return value, just creates and writes to an output file
-def write_output_file(sentence_list, file_name):
+def write_output_file(sentence_list, output_folder, output_file_name):
     # Create the output subdirectory, if it doesn't already exist
-    dir_path = getcwd() + OUTPUT_FOLDER
+    dir_path = getcwd() + output_folder
     if not path.exists(dir_path):
         mkdir(dir_path)
 
     # And create the output file!
-    write_sentences(sentence_list, dir_path + "/" + file_name)
+    write_sentences(sentence_list, dir_path + "/" + output_file_name)
 
 # More complex version of write_simple_output_file, that formats in sigmorphon style
-def write_sigmorphon_output_file(sentence_list, file_name, segmentation_line_number, gloss_line_number, is_open_track):
+def write_sigmorphon_output_file(sentence_list, output_folder, file_name, segmentation_line_number, gloss_line_number, is_open_track):
     ORTHOG_LINE_MARKER = "\\t "
     SEG_LINE_MARKER = "\\m "
     GLOSS_LINE_MARKER = "\\g "
@@ -518,7 +516,7 @@ def write_sigmorphon_output_file(sentence_list, file_name, segmentation_line_num
 
         sentence_list_to_print.append(new_sentence)
 
-    write_output_file(sentence_list_to_print, file_name)
+    write_output_file(sentence_list_to_print, output_folder, file_name)
 
 # Input: X or y, a list of sentences, where each sentence is a list of morphemes
 # Output: X or y with any OOL morpheme removed
@@ -542,12 +540,14 @@ def _is_y_token_OOL(y_token):
     return y_token == OUT_OF_LANGUAGE_LABEL
 
 @click.command()
-@click.option("--train_file", help = "The name of the file containing all sentences in the train set.")
-@click.option("--dev_file", help = "The name of the file containing all sentences in the dev set.")
-@click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
-@click.option("--segmentation_line_number", help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
-@click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
-def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_number):
+@click.option("--train_file", required = True, help = "The name of the file containing all sentences in the train set.")
+@click.option("--dev_file", required = True, help = "The name of the file containing all sentences in the dev set.")
+@click.option("--test_file", required = True, help = "The name of the file containing all sentences in the test set.")
+@click.option("--output_folder", required = True, help = "The name of the folder where output files should be written to.")
+@click.option("--output_file", required = True, help = "The name of the file where the predictions will be written to.")
+@click.option("--segmentation_line_number", required = True, help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
+@click.option("--gloss_line_number", required = True, help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
+def main(train_file, dev_file, test_file, output_folder, output_file, segmentation_line_number, gloss_line_number):
     # Convert right away to prevent off-by-one errors
     segmentation_line_number = int(segmentation_line_number) - 1
     gloss_line_number = int(gloss_line_number) - 1
@@ -591,9 +591,9 @@ def main(train_file, dev_file, test_file, segmentation_line_number, gloss_line_n
     pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y))
     # Take the original test set, and substitute in our predicted gloss lines
     test_with_predictions = make_sentence_list_with_prediction(original_test, pred_y_to_print, gloss_line_number)
-    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME)
+    write_output_file(test_with_predictions, output_folder, output_file)
     # And create a file of the gold version, formatted the same way to permit comparison
-    write_output_file(original_test, GOLD_OUTPUT_FILE_NAME)
+    write_output_file(original_test, output_folder, GOLD_OUTPUT_FILE_NAME)
 
 if __name__ == '__main__':
     main()

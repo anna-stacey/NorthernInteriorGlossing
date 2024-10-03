@@ -6,7 +6,7 @@ from test_seg import evaluate
 from preprocess_seg import sentence_list_to_word_list
 
 OUTPUT_CSV = "./pipeline_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc,Word Acc (incl. boundaries)"
 NO_RESULTS_MARKER = None
 
 @click.command()
@@ -44,7 +44,7 @@ def main(test_file, output_file, segmentation_line_number, gloss_line_number):
     test_y_word_list = sentence_list_to_word_list([line.split() for line in test_y_sentences])
     pred_y_reassembled = reassemble_predicted_words([line.split() for line in pred_X], pred_y)
     pred_y_word_list = sentence_list_to_word_list(pred_y_reassembled)
-    evaluate(pred_y_word_list, test_y_word_list)
+    results.append(evaluate(pred_y_word_list, test_y_word_list)[0]) # Omit the boundary-focussed results
 
     print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
 

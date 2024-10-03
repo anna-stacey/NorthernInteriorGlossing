@@ -1,6 +1,6 @@
 import click
 import re
-from gloss import evaluate_system, extract_X_and_y, format_X_and_y, make_sentence_list_with_prediction, read_datasets, reassemble_predicted_words, train_system, write_output_file, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
+from gloss import extract_X_and_y, format_X_and_y, make_sentence_list_with_prediction, read_datasets, reassemble_predicted_words, run_system, train_system, write_output_file, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file
 from preprocess_seg import sentence_list_to_word_list
 from prescreen_data import DOUBLE_BOUNDARY_REGEX
@@ -59,7 +59,7 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
     # First, let's read in the original train and test sets
     train, throwaway, test = read_datasets(gloss_train_file, gloss_dev_file, gloss_test_file)
     # Before preparing the test set for glossing, we can first use it to make the gold output file
-    write_output_file(test, GOLD_OUTPUT_FILE_NAME)
+    write_output_file(test, "generated_data/", GOLD_OUTPUT_FILE_NAME)
 
     # Next, get the predicted seg lines.  These will be our input.
     seg_output = read_file(seg_pred_file)
@@ -78,7 +78,7 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
 
     # Keep versions with boundaries (but no OOL tokens!) for word-by-word evaluation
     test_without_OOL = handle_OOL_words([test])[0]
-    test_X_with_boundaries, test_y_with_boundaries  = extract_X_and_y(test_without_OOL, segmentation_line_number, gloss_line_number)
+    test_X_with_boundaries, throwaway  = extract_X_and_y(test_without_OOL, segmentation_line_number, gloss_line_number)
 
     # Create the model
     train_X, train_y = extract_X_and_y(train, segmentation_line_number, gloss_line_number)
@@ -87,21 +87,15 @@ def main(seg_pred_file, gloss_train_file, gloss_dev_file, gloss_test_file, segme
 
     # Now we can format the input and output for glossing
     test_X, test_y = format_X_and_y(test_X, test_y)
-    pred_y = evaluate_system(test_X, test_y, test_X_with_boundaries, test_y_with_boundaries, crf, stem_dict)
-
-    # Run the word-by-word eval from the segmentation stage (unlike the glossing one, it checks boundary type)
-    test_y_word_list = sentence_list_to_word_list([line.split(" ") for line in test_y_with_boundaries])
-    pred_y_reassembled = reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y)
-    pred_y_word_list = sentence_list_to_word_list(pred_y_reassembled)
-    evaluate(pred_y_word_list, test_y_word_list)
+    pred_y = run_system(test_X, test_y, test_X_with_boundaries, crf, stem_dict)
 
     # Create the predictions output file
     # Add back OOl words to our predicted gloss lines (using untouched transcription lines)
-    pred_y_to_print = add_back_OOL_words(list(sentence[0] for sentence in seg_output), pred_y_reassembled)
+    pred_y_to_print = add_back_OOL_words(list(sentence[0] for sentence in seg_output), reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y))
     # Now we can just take the printed output from the seg step, and add in our new gloss line predictions
     test_with_predictions = make_sentence_list_with_prediction(seg_output, pred_y_to_print, gloss_line_number)
     # Write!
-    write_output_file(test_with_predictions, PRED_OUTPUT_FILE_NAME)
+    write_output_file(test_with_predictions, "generated_data/", PRED_OUTPUT_FILE_NAME)
 
 
 main()

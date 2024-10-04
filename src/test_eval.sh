@@ -113,6 +113,18 @@ GOLD_18=./src/test_data/test_3.txt
 OUTPUT_18=./src/test_data/test_18_pred.txt
 EXPECTED_RESULTS_18="75.00%,50.00%,50.00%,80.00%,0.00%"
 
+# Mixed stems/grams
+# 2/4 morphemes correct, 1/3 stems correct, 1/3 grams correct
+GOLD_19=./src/test_data/test_11.txt
+OUTPUT_19=./src/test_data/test_19_pred.txt
+EXPECTED_RESULTS_19="50.00%,50.00%,33.33%,33.33%,50.00%"
+
+# Mixed stems/grams
+# 4/7 morphemes correct, 3/5 stems correct, 1/2 grams correct
+GOLD_20=./src/test_data/test_20.txt
+OUTPUT_20=./src/test_data/test_20_pred.txt
+EXPECTED_RESULTS_20="57.14%,50.00%,60.00%,50.00%,50.00%"
+
 echo "Segmentation Test 1:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 > /dev/null
 python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_1
@@ -184,3 +196,11 @@ python3 src/test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=
 echo "Pipeline Test 2:"
 python3 src/eval_pipeline.py --test_file=$GOLD_18 --output_file=$OUTPUT_18 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_18
+
+echo "Pipeline Test 3:"
+python3 src/eval_pipeline.py --test_file=$GOLD_19 --output_file=$OUTPUT_19 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_19
+
+echo "Pipeline Test 4:"
+python3 src/eval_pipeline.py --test_file=$GOLD_20 --output_file=$OUTPUT_20 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_20

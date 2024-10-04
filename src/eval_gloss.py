@@ -28,7 +28,7 @@ def get_morpheme_level_accuracy(y, predicted_y):
     for gold_label_line, predicted_label_line in zip(y, predicted_y):
         # There must be the same number of words in the gold and the predicted lines
         # (The number of words is not impacted by the segmentation task)
-        assert(len(gold_label_line) == len(predicted_label_line))
+        assert len(gold_label_line) == len(predicted_label_line), f"Length mismatch! The gold line has {len(gold_label_line)} words, while the predicted line has {len(predicted_label_line)} words.\nGold line: {gold_label_line}\nPredicted line: {predicted_label_line}"
         wrong_per_sentence = 0
         for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
             # The number of morphemes can vary in the gold word vs the predicted word
@@ -84,9 +84,13 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
     y_grams = []
     # We need to build up the lists sentence-by-sentence, bc of the way evaluation works
     pred_y_stems_sentence = []
+    pred_y_stems_word = []
     pred_y_grams_sentence = []
+    pred_y_grams_word = []
     y_stems_sentence = []
+    y_stems_word = []
     y_grams_sentence = []
+    y_grams_word = []
     # Go sentence by sentence
     for sentence_without_stems, sentence_with_stems, gold_sentence in zip(interim_pred_y, pred_y, y):
         # Word by word
@@ -94,12 +98,22 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
             # Morpheme by morpheme
             for gloss_without_stems, gloss_with_stems, gold_gloss in zip(word_without_stems, word_with_stems, gold_word):
                 if gloss_without_stems == 'STEM': # It's a stem
-                    pred_y_stems_sentence.append(gloss_with_stems)
-                    y_stems_sentence.append(gold_gloss)
+                    pred_y_stems_word.append(gloss_with_stems)
+                    y_stems_word.append(gold_gloss)
                 else: # It's a gram
-                    pred_y_grams_sentence.append(gloss_without_stems)
-                    y_grams_sentence.append(gold_gloss)
-    
+                    pred_y_grams_word.append(gloss_without_stems)
+                    y_grams_word.append(gold_gloss)
+
+            # End of word reached; and it to our sentence and reset
+            pred_y_stems_sentence.append(pred_y_stems_word)
+            pred_y_grams_sentence.append(pred_y_grams_word)
+            y_stems_sentence.append(y_stems_word)
+            y_grams_sentence.append(y_grams_word)
+            pred_y_stems_word = []
+            pred_y_grams_word = []
+            y_stems_word = []
+            y_grams_word = []
+
         # End of sentence reached; add it to our lists and reset
         pred_y_stems.append(pred_y_stems_sentence)
         pred_y_grams.append(pred_y_grams_sentence)
@@ -111,27 +125,12 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         y_grams_sentence = []
 
     # Now each list has one entry per sentence, which is itself a list of morphemes
-    stem_acc = get_simple_morpheme_level_accuracy(y_stems, pred_y_stems)
-    gram_acc = get_simple_morpheme_level_accuracy(y_grams, pred_y_grams)
+    stem_acc = get_morpheme_level_accuracy(y_stems, pred_y_stems)
+    gram_acc = get_morpheme_level_accuracy(y_grams, pred_y_grams)
     print(f"Accuracy for stems: {stem_acc}%." if not(stem_acc == NO_RESULTS_MARKER) else "No stem accuracy because there are no stems!")
     print(f"Accuracy for grams: {gram_acc}%." if not(gram_acc == NO_RESULTS_MARKER) else "No gram accuracy because there are no grams!")
 
     return stem_acc, gram_acc
-
-# Returns the accuracy value (for each morpheme)
-# Expects a list of sentences as lists of morphemes
-def get_simple_morpheme_level_accuracy(y, predicted_y):
-    assert len(y) == len(predicted_y), f"Mismatch between length of gold glosses ({len(y)}) and length of predicted glosses ({len(predicted_y)})."
-    total = 0
-    wrong = 0
-    for gold_label_line, predicted_label_line in zip(y, predicted_y):
-        for gold_label, predicted_label in zip(gold_label_line, predicted_label_line):
-            total += 1
-            if gold_label != predicted_label:
-                wrong += 1
-
-    accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
-    return accuracy
 
 @click.command()
 @click.option("--test_file", help = "The name of the file containing all sentences in the test set.")

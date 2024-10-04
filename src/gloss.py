@@ -253,7 +253,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                         # Create a crf model with these parameters
                         crf = create_crf(train_X, train_y, max_iter, alg, min_freq, c2)
                         # And see how the model does on the dev set
-                        result = get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
+                        result = _get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
                         print(f"With {max_iter} (max.) iterations, the {alg} algorithm using a c2 of {c2}, and {min_freq + 1} minimum feature frequency: {result}")
                         if result > best_accuracy:
                             best_accuracy = result
@@ -265,7 +265,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                     # Create a crf model with these parameters
                     crf = create_crf(train_X, train_y, max_iter, alg, min_freq, -1)
                     # And see how the model does on the dev set
-                    result = get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
+                    result = _get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
                     print(f"With {max_iter} (max.) iterations, the {alg} algorithm, and {min_freq + 1} minimum feature frequency: {result}")
                     if result > best_accuracy:
                         best_accuracy = result
@@ -278,6 +278,24 @@ def test_crf(train_X, train_y, dev_X, dev_y):
         print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm with a c2 of {best_c2}, and with a minimum feature frequency of {best_min_freq + 1}.")
     else:
         print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm and with a minimum feature frequency of {best_min_freq + 1}.")
+
+# Returns the accuracy value (for each morpheme)
+# Expects a list of sentences as lists of morphemes
+# This is a very simple check which should only be used for dev purposes.
+# The actual evaluation checks are in the evaluation script.
+def _get_simple_morpheme_level_accuracy(y, predicted_y):
+    assert len(y) == len(predicted_y), f"Mismatch between length of gold glosses ({len(y)}) and length of predicted glosses ({len(predicted_y)})."
+    total = 0
+    wrong = 0
+    for gold_label_line, predicted_label_line in zip(y, predicted_y):
+        assert(len(gold_label_line) == len(predicted_label_line))
+        for gold_label, predicted_label in zip(gold_label_line, predicted_label_line):
+            total += 1
+            if gold_label != predicted_label:
+                wrong += 1
+
+    accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
+    return accuracy
 
 # Create dictionary, and replace their glosses with "STEM" for input to the CRF
 # Returns the stem-less version and the stem dictionary created

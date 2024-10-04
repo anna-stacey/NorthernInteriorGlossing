@@ -294,7 +294,7 @@ def _get_simple_morpheme_level_accuracy(y, predicted_y):
             if gold_label != predicted_label:
                 wrong += 1
 
-    accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
+    accuracy = as_percent((total - wrong) / total) if total > 0 else 0
     return accuracy
 
 # Create dictionary, and replace their glosses with "STEM" for input to the CRF

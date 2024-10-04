@@ -1,5 +1,6 @@
 SEG_RESULTS_CSV=./seg_results.csv
 GLOSS_RESULTS_CSV=./gloss_results.csv
+PIPELINE_RESULTS_CSV=./pipeline_results.csv
 SEG_LINE_NUMBER=2
 GLOSS_LINE_NUMBER=3
 
@@ -101,6 +102,17 @@ GOLD_16=./src/test_data/test_3.txt
 OUTPUT_16=./src/test_data/test_16_pred.txt
 EXPECTED_RESULTS_16="62.50%,50.00%,66.67%,60.00%"
 
+# Mixed stems/grams, glosses correct but seg mistakes, (incl. boundary-only mistakes)
+GOLD_17=./src/test_data/test_3.txt
+OUTPUT_17=./src/test_data/test_17_pred.txt
+EXPECTED_RESULTS_17="100.00%,100.00%,100.00%,100.00%,50.00%"
+
+# Mixed stems/grams, glosses correct but seg mistakes, (incl. boundary-only mistakes)
+# 6/8 morphemes correct, 2/4 stems correct, 4/5 grams correct
+GOLD_18=./src/test_data/test_3.txt
+OUTPUT_18=./src/test_data/test_18_pred.txt
+EXPECTED_RESULTS_18="75.00%,50.00%,50.00%,80.00%,0.00%"
+
 echo "Segmentation Test 1:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 > /dev/null
 python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_1
@@ -164,3 +176,11 @@ python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EX
 echo "Gloss Test 10:"
 python3 src/eval_gloss.py --test_file=$GOLD_16 --output_file=$OUTPUT_16 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_16
+
+echo "Pipeline Test 1:"
+python3 src/eval_pipeline.py --test_file=$GOLD_17 --output_file=$OUTPUT_17 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_17
+
+echo "Pipeline Test 2:"
+python3 src/eval_pipeline.py --test_file=$GOLD_18 --output_file=$OUTPUT_18 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
+python3 src/test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_18

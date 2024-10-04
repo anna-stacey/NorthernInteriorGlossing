@@ -1,13 +1,37 @@
 import click
 from eval_gloss import evaluate_system
 from gloss import add_word_boundaries_to_gloss, deal_with_stems, extract_X_and_y, sentence_to_features, sentence_to_glosses, reassemble_predicted_words
-from glossed_data_utilities import handle_OOL_words, print_results_csv, read_file
+from glossed_data_utilities import as_percent, handle_OOL_words, print_results_csv, read_file
 from test_seg import evaluate
 from preprocess_seg import sentence_list_to_word_list
 
 OUTPUT_CSV = "./pipeline_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc,Word Acc (incl. boundaries)"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc,Word Acc (incl. boundaries),Bag o' Words"
 NO_RESULTS_MARKER = None
+
+# Expects a list of sentences as lists of words as lists of morphemes
+def bag_of_words(y, pred_y):
+    assert(len(y) == len(pred_y))
+    total_morphemes = 0
+    wrong_morphemes = 0
+
+    for gold_label_line, predicted_label_line in zip(y, pred_y):
+        # There must be the same number of words in the gold and the predicted lines
+        # (The number of words is not impacted by the segmentation task)
+        assert len(gold_label_line) == len(predicted_label_line), f"Length mismatch! The gold line has {len(gold_label_line)} words, while the predicted line has {len(predicted_label_line)} words.\nGold line: {gold_label_line}\nPredicted line: {predicted_label_line}"
+        for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
+            # The number of morphemes can vary in the gold word vs the predicted word
+            # So this check simply checks every *gold* morpheme
+            for i, gold_label in enumerate(gold_word):
+                total_morphemes += 1
+                if not (gold_label in predicted_word):
+                    wrong_morphemes += 1
+                else:
+                    predicted_word.remove(gold_label) # Prevent duplicate matches
+
+    accuracy = as_percent((total_morphemes - wrong_morphemes) / total_morphemes) if total_morphemes > 0 else NO_RESULTS_MARKER
+    print(f"Bag o' words morpheme-level accuracy: {accuracy}%.\n" if not(accuracy == NO_RESULTS_MARKER) else "No bag o' words morpheme-level accuracy because there are no morphemes!")
+    return accuracy
 
 @click.command()
 @click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
@@ -46,6 +70,7 @@ def main(test_file, output_file, segmentation_line_number, gloss_line_number):
     pred_y_word_list = sentence_list_to_word_list(pred_y_reassembled)
     results.append(evaluate(pred_y_word_list, test_y_word_list)[0]) # Omit the boundary-focussed results
 
+    results.append(bag_of_words(test_y, pred_y))
     print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
 
 if __name__ == '__main__':

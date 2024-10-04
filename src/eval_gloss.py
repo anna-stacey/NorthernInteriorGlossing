@@ -32,10 +32,10 @@ def get_morpheme_level_accuracy(y, predicted_y):
         wrong_per_sentence = 0
         for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
             # The number of morphemes can vary in the gold word vs the predicted word
-            # So this zip may end up skipping some morphemes if one word contains more
-            for gold_label, predicted_label in zip(gold_word, predicted_word):
+            # So this check simply checks every *gold* morpheme
+            for i, gold_label in enumerate(gold_word):
                 total += 1
-                if gold_label != predicted_label:
+                if i >= len(predicted_word) or gold_label != predicted_word[i]:
                     wrong += 1
                     wrong_per_sentence +=1
 
@@ -61,7 +61,7 @@ def get_word_level_accuracy(y, predicted_y):
             total += 1
             is_correct = True
             # The number of morphemes can vary in the gold word vs the predicted word
-            # So this zip may end up skipping some morphemes if one word contains more
+            # So this check simply checks every *gold* morpheme
             for i, gold_label in enumerate(gold_word):
                 if i >= len(predicted_word) or gold_label != predicted_word[i]:
                     is_correct = False

@@ -96,7 +96,10 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
         # Word by word
         for word_without_stems, word_with_stems, gold_word in zip(sentence_without_stems, sentence_with_stems, gold_sentence):
             # Morpheme by morpheme
-            for gloss_without_stems, gloss_with_stems, gold_gloss in zip(word_without_stems, word_with_stems, gold_word):
+            # This check is looking at what is *predicted* to be a stem or gram,
+            # so we want to check every predicted morpheme, even if there's no corresponding gold morpheme!
+            for i, (gloss_without_stems, gloss_with_stems) in enumerate(zip(word_without_stems, word_with_stems)):
+                gold_gloss = gold_word[i] if i < len(gold_word) else ""
                 if gloss_without_stems == 'STEM': # It's a stem
                     pred_y_stems_word.append(gloss_with_stems)
                     y_stems_word.append(gold_gloss)

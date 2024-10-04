@@ -190,5 +190,69 @@ Multiple stress markers (the acute accent) will be flagged as a mistake.  This w
 18. **Stress marking is consistent (between the transcription and segmentation lines).**  
 If stress is marked on a word, then it should be marked on the same place in the segmented version of a word.  Again, this is not a necessity for system functioning, but a standard we selected to prevent conflicting practices in the datasets.  Alternative approaches include not marking any stress in the segmentation line, or marking stress in the segmentation line to reveal some additional information about where stress comes from.  Our rule was chosen based on simplicity and popularity.
 
+## Evaluation
+
+### Glossing
+##### Morpheme-level accuracy:  
+Breaks down each sentence into words.  Within each word, it goes through the gold morphemes left-to-right and checks whether the predicted output has the correct morpheme in the same order.  
+> Example:  
+gold: *morpheme1-morpheme2*  
+predicted: *morpheme2-morpheme1*  
+score: 0/2 morphemes correct  
+
+This process is straightforward for the glossing output, where there is always the same number of morphemes in the gold and predicted words, but has some quirks for the pipeline output, where that correspondence is not guaranteed.  In particular, if a sentence has some morphemes correct but the correspondence between gold and predicted morphemes is off due to the wrong number of predicted morphemes, the score will be greatly reduced.  
+> Example:  
+gold: *morpheme1-morpheme2-morpheme3*  
+predicted: *morpheme2-morpheme3*  
+score: 0/3 morphemes correct  
+
+Also, if there are extra predicted morphemes at the end of a word, these will not affect its score as we are only checking gold morphemes.  
+> Example:  
+gold: *morpheme1-morpheme2*  
+predicted: *morpheme1-morpheme2-morpheme3*  
+score: 2/2 morphemes correct
+
+##### Word-level accuracy:
+This check work similarly to the morpheme-level accuracy, but it marks each word as correct if *all* the morphemes within it are correct, and as incorrect otherwise.  
+> Example:  
+gold: *morpheme1-morpheme2*  
+predicted: *morpheme1-morpheme3*  
+score: 0/1 words correct (because it has only 1/2 morphemes correct)
+
+Like the previous check, it checks all gold morphemes, meaning a word can still be marked as correct if it has erroneous morphemes added to its end.
+> Example:  
+gold: *morpheme1-morpheme2*  
+predicted: *morpheme1-morpheme2-morpheme3*  
+score: 1/1 words correct
+
+##### Stem and gram accuracy
+These checks are morpheme-level accuracy checks that separate out the results for stems and for grams.
+The 'predicted' version of these checks is concerned with the morphemes that the system *predicts* are stems or grams, regardless of their actual status (in the gold).  So if a morpheme is stem, but the system erroneously categorizes it as a gram, its result is being included in the **gram accuracy**.  
+> Example:  
+gold: *GRAM1-stem1*  
+predicted: *GRAM1-GRAM2*  
+stem score: N/A (no stems)  
+gram score: 1/2 gram morphemes correct  
+
+This also means that, unlike the general morpheme-level accuracy check, it is checking the accuracy of every *predicted* morpheme, regardless of whether it has a gold counterpart.  And it will ignore gold morphemes that do not have a predicted counterpart.
+> Example:  
+gold: *GRAM1-stem1*  
+predicted: *GRAM1-GRAM2-GRAM3*  
+stem score: N/A (no stems)
+gram score: 1/3 gram morphemes correct  
+
+> Example:  
+gold: *GRAM1-stem1-GRAM3*  
+predicted: *GRAM1-GRAM2*  
+stem score: N/A (no stems)
+gram score: 1/2 gram morphemes correct  
+
+And of course, these checks are still at the mercy of broken correspondences between morphemes in the gold and predicted words.
+> Example:  
+gold: *GRAM1-stem1*  
+predicted: *GRAM1-GRAM2-stem1*  
+stem score: 0/1 stem morphemes correct
+gram score: 1/2 gram morphemes correct  
+
 ## References
 Alexander, Qwa7yán’ak Carl, Elliott Callahan, Henry Davis, John Lyon, and Lisa Matthewson. 2016. *Sqwéqwel’ Múta7 Sptakwlh: St’át’imcets Narratives.* Pacific Northwest Languages and Literature Press.

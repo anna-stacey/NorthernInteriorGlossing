@@ -94,12 +94,12 @@ def _remove_punc(str):
 # Solution: Make it standalone in the seg and gloss lines too (to prevent altering the orthographic line)
 # Note: This code has been modified to not be affected by rogue punctuation (via calls to _remove_punc)
 # so that you can still separate clitics in non-tidied data.
-def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_post_clitics):
+def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_post_clitics, seg_line_number = 1, gloss_line_number = 2):
     updated_data = []
     for example in data:
         ortho_line = example[0]
-        seg_line = example[1]
-        gloss_line = example[2]
+        seg_line = example[seg_line_number]
+        gloss_line = example[gloss_line_number]
         # Grab all the words in the orthography line, so we can look for clitics as words there
         # Remove punctuation so it doesn't get in the way of looking for the particular clitic
         ortho_line_word_list = (re.sub(PUNCTUATION_TO_IGNORE, "", ortho_line)).split()
@@ -259,7 +259,10 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
         # Reassemble the modified lines
         seg_line = " ".join(seg_line_word_list)
         gloss_line = " ".join(gloss_line_word_list)
-        updated_data.append([ortho_line, seg_line, gloss_line, example[3]])
+        updated_example = example
+        updated_example[seg_line_number] = seg_line
+        updated_example[gloss_line_number] = gloss_line
+        updated_data.append(updated_example)
 
     return updated_data
 

@@ -5,7 +5,7 @@ from os import listdir, path
 import re
 from unicodedata import normalize
 from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
-from glossed_data_utilities import read_file, NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG, NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, OUT_OF_LANGUAGE_MARKER
+from glossed_data_utilities import read_file, NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_STRING, OUT_OF_LANGUAGE_MARKER, NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_STRING
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 NON_GLOSS_LINE_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
@@ -14,14 +14,15 @@ DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + ALL_BOUNDARIES_FOR_REGEX
 GLOSS_DOUBLE_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + ALL_BOUNDARIES_FOR_REGEX # To permit an exception - see data expectations in README for reasoning
 DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + r"(\s|$)"
 GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + r"(\s|$)" # To permit an exception - see data expectations in README for reasoning
-NON_PERMITTED_PUNCUTATION_TRANSCRIPTION = NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG + ["=", "-", "∅"]
-NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_REGEX = NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX.replace("]", "=\-∅]", 1)
+NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_ONLY = ["=", "\-", "∅"]
+NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_REGEX = NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX.replace("]", "".join(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_ONLY) + "]", 1)
+NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_STRING = ",".join(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_ONLY) +  NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_STRING
 NON_PERMITTED_PUNCTUATION_GLOSS = ["[", "]"]
 NON_PERMITTED_PUNCTUATION_GLOSS_REGEX = r"\[\]" # For now, only brackets are disallowed in the gloss line
 
 # Matching stress isn't *essential* for system functioning, so these checks can be turned off.
 CHECK_STRESS = True
-CHECK_PUNC = False
+CHECK_PUNC = True
 
 # Maintaining global test fail counts, so they can be tracked cumulatively across the train, dev, and test files
 # General formatting tests
@@ -116,8 +117,8 @@ def seg_screen(transcription_line, seg_line):
         print("Segmentation line:", seg_line)
         trans_seg_num_words_fails += 1
 
-    if CHECK_PUNC and re.search(NON_PERMITTED_PUNCUTATION_TRANSCRIPTION_REGEX, transcription_line):
-        print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION}).")
+    if CHECK_PUNC and re.search(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_REGEX, transcription_line):
+        print(f"\n- Error: the following transcription line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_STRING}).")
         print(transcription_line)
         trans_non_permitted_punctuation_fails += 1
 
@@ -202,7 +203,7 @@ def seg_and_gloss_screen(seg_line):
         seg_infix_boundary_misplacement_fails += 1
 
     if CHECK_PUNC and re.search(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, seg_line):
-        print(f"\n- Error: the following segmentation line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG}).")
+        print(f"\n- Error: the following segmentation line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_STRING}).")
         print(seg_line)
         seg_non_permitted_punctuation_fails += 1
 
@@ -408,13 +409,13 @@ def print_screen_summary():
 
         # Transcrption tests
         if CHECK_PUNC:
-            print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCUTATION_TRANSCRIPTION}).")
+            print(f"    - There were {trans_non_permitted_punctuation_fails} instances of non-permitted punctuation in the transcription line (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_STRING}).")
         if CHECK_STRESS:
             print(f"    - There were {trans_double_stress_fails} instances of multiple stress marking in the transcription line.")
 
         # Seg tests
         if CHECK_PUNC:
-            print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG}).")
+            print(f"    - There were {seg_non_permitted_punctuation_fails} instances of non-permitted punctuation in the segmentation line (i.e., one of {NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_STRING}).")
         print(f"    - {trans_seg_num_words_fails} lines contained a different number of *words* between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the transcription and segmented lines.")
         print(f"    - {trans_seg_OOL_word_fails} words were marked as out-of-language in the transcription and segmented lines but were not consistent in form between these two lines.")

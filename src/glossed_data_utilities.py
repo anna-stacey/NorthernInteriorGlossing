@@ -59,13 +59,13 @@ def read_file(file_path):
 
 # Takes a list of sentences, each of which is a list of transcription line, seg line, etc.
 # Returns the list in the same format, just tidied!
-def tidy_dataset(dataset, MINIMAL_CHANGES_ONLY = False):
+def tidy_dataset(dataset, seg_line_number = 1, MINIMAL_CHANGES_ONLY = False):
     updated_dataset = []
     for sentence in dataset:
         updated_sentence = []
         for i, line in enumerate(sentence):
             # Handle transcription and seg line punc (question marks, periods, etc.)
-            if i == 0 or i == 1:
+            if i == 0 or i == seg_line_number:
                 if MINIMAL_CHANGES_ONLY:
                     # Handle some very problematic punc, without removing it all!
                     line = re.sub(r"`` ", " ", line)

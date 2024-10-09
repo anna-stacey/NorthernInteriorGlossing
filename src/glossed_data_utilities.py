@@ -17,12 +17,22 @@ CLITIC_BOUNDARY = "="
 NUMBER_OF_LINES = 4
 UNICODE_STRESS = "\u0301"
 
-def punctuation_list_to_regex(punctuation_list):
-    # Match anything in the punctuation list, and single (but not double) colons, and double apostrophes (tick-style)
-    return "[" + "".join(punctuation_list) + "]" + "|([^:]):([^:]|$)|\'\'"
+def punctuation_list_to_regex(punctuation_list, add_transcription_seg_line_extras = True):
+    # Match anything in the punctuation list
+    regex = "[" + "".join(punctuation_list) + "]"
+    if add_transcription_seg_line_extras:
+        # ...and single (but not double) colons, and double apostrophes (tick-style)
+        regex += "|([^:]):([^:]|$)|\'\'"
 
-def punctuation_list_to_string(punctuation_list):
-    return ",".join(punctuation_list) + "," + "single colons (:) (double are permitted)," + "or double straight apostrophes (single are permitted)"
+    return regex
+
+def punctuation_list_to_string(punctuation_list, add_transcription_seg_line_extras = True):
+    regex = ", ".join(punctuation_list)
+    regex = regex.replace("\\", "") # Get rid of escape characters
+    if add_transcription_seg_line_extras:
+        regex += ", " + "single colons (:) (double are permitted)," + "or double straight apostrophes (single are permitted)"
+
+    return regex
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):

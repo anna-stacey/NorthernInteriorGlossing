@@ -16,8 +16,7 @@ DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX + r"(\s|$)"
 GLOSS_DISCONNECTED_BOUNDARY_REGEX = ALL_BOUNDARIES_FOR_REGEX_SANS_CLOSERS + r"(\s|$)" # To permit an exception - see data expectations in README for reasoning
 NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_ONLY = ["=", "\-", "∅"]
 NON_PERMITTED_PUNCTUATION_TRANSCRIPTION = NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG + NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_ONLY
-NON_PERMITTED_PUNCTUATION_GLOSS = ["[", "]"]
-NON_PERMITTED_PUNCTUATION_GLOSS_REGEX = r"\[\]" # For now, only brackets are disallowed in the gloss line
+NON_PERMITTED_PUNCTUATION_GLOSS = ["\[", "\]"] # For now, only brackets are disallowed in the gloss line
 
 # Matching stress isn't *essential* for system functioning, so these checks can be turned off.
 CHECK_STRESS = True
@@ -381,8 +380,8 @@ def gloss_screen(seg_line, gloss_line):
                 print(gloss_line)
                 seg_gloss_OOL_word_fails += 1
 
-    if CHECK_PUNC and re.search(r"\[", gloss_line):
-        print(f"\n- Error: the following gloss line contains non-permitted punctuation (i.e., one of {NON_PERMITTED_PUNCTUATION_GLOSS}).")
+    if CHECK_PUNC and re.search(punctuation_list_to_regex(NON_PERMITTED_PUNCTUATION_GLOSS, add_transcription_seg_line_extras = False), gloss_line):
+        print(f"\n- Error: the following gloss line contains non-permitted punctuation (i.e., one of {punctuation_list_to_string(NON_PERMITTED_PUNCTUATION_GLOSS, add_transcription_seg_line_extras = False)}).")
         print(gloss_line)
         gloss_non_permitted_punctuation_fails += 1
 
@@ -441,7 +440,7 @@ def print_screen_summary():
         print(f"    - {seg_gloss_OOL_marker_fails} lines contained a different number of words marked with the out-of-language marker between the segmented and gloss lines.")
         print(f"    - {seg_gloss_OOL_word_fails} words were marked as out-of-language in the segmented and gloss lines but were not consistent in form between these two lines.")
         if CHECK_PUNC:
-            print(f"    - There were {gloss_non_permitted_punctuation_fails} instances of non-permitted punctuation in the gloss line (i.e., one of {NON_PERMITTED_PUNCTUATION_GLOSS}).")
+            print(f"    - There were {gloss_non_permitted_punctuation_fails} instances of non-permitted punctuation in the gloss line (i.e., one of {punctuation_list_to_string(NON_PERMITTED_PUNCTUATION_GLOSS, add_transcription_seg_line_extras = False)}).")
     print("\n")
 
 # What if we want the list organized not by gloss, but by morpheme?

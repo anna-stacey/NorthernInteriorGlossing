@@ -7,8 +7,6 @@ from unicodedata import normalize
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
 # Note that double colons (::) are being permitted b/c the St́át́imcets data seems to use them legitiamtely as a vowel length thing
 NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG = ["\.", ",", "\?", "\"", "“", "”", "`", "!", "♪", ";", "–"] # Note this last one is *not* a regular hyphen!
-NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX = "[" + "".join(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG) + "]" + "|([^:]):([^:]|$)|\'\'" # Any of these characters, but including only *single* colons, not two in a row
-NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_STRING = ",".join(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG) + "," + "single colons (:) (double are permitted)," + "or double straight apostrophes (single are permitted)"
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
 
 OUT_OF_LANGUAGE_MARKER = "*"
@@ -18,6 +16,13 @@ DOUBLE_OOL_MARKER_REGEX = "\*[\*]+"
 CLITIC_BOUNDARY = "="
 NUMBER_OF_LINES = 4
 UNICODE_STRESS = "\u0301"
+
+def punctuation_list_to_regex(punctuation_list):
+    # Match anything in the punctuation list, and single (but not double) colons, and double apostrophes (tick-style)
+    return "[" + "".join(punctuation_list) + "]" + "|([^:]):([^:]|$)|\'\'"
+
+def punctuation_list_to_string(punctuation_list):
+    return ",".join(punctuation_list) + "," + "single colons (:) (double are permitted)," + "or double straight apostrophes (single are permitted)"
 
 # Returns a list of examples (where each example is a list containing the transcription, seg, etc. lines)
 def read_file(file_path):
@@ -72,7 +77,7 @@ def tidy_dataset(dataset, seg_line_number = 1, MINIMAL_CHANGES_ONLY = False):
                     line = re.sub(r"`` ", " ", line)
                     line = re.sub(r"[-=~][\.,\?\"“”`!♪;–]+", "", line)
                 else: # Remove it all!
-                    line = re.sub(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX, r"\1\2", line)
+                    line = re.sub(punctuation_list_to_regex(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG), r"\1\2", line)
 
             # Find 2+ spaces, and replace them with only one space
             line = re.sub(r"[ ]+[ ]+", " ", line)
@@ -89,7 +94,7 @@ def tidy_dataset(dataset, seg_line_number = 1, MINIMAL_CHANGES_ONLY = False):
 
 # Remove the usual, plus brackets (we just want the morpheme!)
 def _remove_punc(str):
-    return re.sub(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG_REGEX + "|\[|\]", r"\1\2", str)
+    return re.sub(punctuation_list_to_regex(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG) + "|\[|\]", r"\1\2", str)
 
 # Fix the issue of clitics which are standalone in the orthographic line, but attached to a larger word in the segmentation and gloss lines
 # Solution: Make it standalone in the seg and gloss lines too (to prevent altering the orthographic line)

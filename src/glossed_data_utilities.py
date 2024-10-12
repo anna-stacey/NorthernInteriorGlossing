@@ -413,18 +413,18 @@ def write_sentences(examples, file_path, randomize_order = False):
 
 # Problem: a word has stress marked in one of the transcription or segmented lines, but not the other
 # Sol'n: add stress in the right spot to the word in the other line!
-def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
+def fix_inconsistent_stress(examples, num_lines = 4, transcription_line_number = 0, seg_line_number = 1, maintain_NFC_unicode = False):
     updated_examples = []
 
     for example in examples:
         updated_example = example
 
         # Only look at proper 4-line glossed lines
-        if len(example) == NUMBER_OF_LINES:
+        if len(example) == num_lines:
 
             # Convert to split chars/diacritics so we don't have to handle both input styles
-            transcription_line = normalize('NFD', example[0])
-            seg_line = normalize('NFD', example[1])
+            transcription_line = normalize('NFD', example[transcription_line_number])
+            seg_line = normalize('NFD', example[seg_line_number])
 
             BOUNDARIES_OR_SPACE_REGEX = "-|=|~|<|>|{|}| "
             seg_morphemes = re.split(BOUNDARIES_OR_SPACE_REGEX, seg_line)
@@ -485,7 +485,8 @@ def fix_inconsistent_stress(examples, maintain_NFC_unicode = False):
             if maintain_NFC_unicode:
                 transcription_line = normalize('NFC', transcription_line)
                 seg_line = normalize('NFC', seg_line)
-            updated_example = [transcription_line, seg_line, example[2], example[3]]
+            updated_example[transcription_line_number] = transcription_line
+            updated_example[seg_line_number] = seg_line
 
         updated_examples.append(updated_example)
 

@@ -465,12 +465,17 @@ def fix_inconsistent_stress(examples, num_lines = 4, transcription_line_number =
 
                 # Check for stress in the transcription line that's missing in the seg line
                 else:
-                    # Regex b/c if you search for "example", you will get a match from "examplé" because the diacritic is considered the following character
-                    # Okay this line is kind of cursed but the sub() are just to temporarily replace [] with \[\] to prevent them from being interpreted as regex argh
-                    morpheme_is_in_transcription_line = re.search((re.sub(r"(\[|\])", r"\\\1", morpheme)) + "[^" + UNICODE_STRESS + "]*", re.sub(r"(\[|\])", r"\\\1", transcription_line))
+                    # Does the morpheme only appear in the transcription line *with stress*?
+                    # First check: do we find the unstressed version in the transcription line?
+                    # Have to use regex because we want to search for "example" without getting a match from "examplé" because the diacritic is considered the following character
+                    # And we have to do some temporary bracket replacement stuff to prevent them from being read as regex chars
+                    morpheme_with_brackets_fixed = (re.sub(r"(\[|\])", r"\\\1", morpheme))
+                    transcription_line_with_brackets_fixed = re.sub(r"(\[|\])", r"\\\1", transcription_line)
+                    # Regex: Do we find the unstressed morpheme in the transcription line (followed by either a) a char that is NOT the stress marker or b) nothing)?
+                    morpheme_is_in_transcription_line_with_stress = re.search(morpheme_with_brackets_fixed + "([^" + UNICODE_STRESS + "]|$)", transcription_line_with_brackets_fixed)
                     # If we're missing the corresponding stress in the seg line...
                     # (The last condition here is ridiculous but necessary to not over-fix in some erroenous data).
-                    if (not (morpheme_is_in_transcription_line)) and (morpheme in transcription_line_unstressed) and (transcription_line_unstressed.count(morpheme) >= seg_line_unstressed.count(morpheme)):
+                    if (not (morpheme_is_in_transcription_line_with_stress)) and (morpheme in transcription_line_unstressed) and (transcription_line_unstressed.count(morpheme) >= seg_line_unstressed.count(morpheme)):
                         if seg_line.count(morpheme) == 1: # Don't do anything if there's multiple possible targets.
                             # Find the stressed version of the morpheme in the transcription line
                             for transcription_word in transcription_line.split():

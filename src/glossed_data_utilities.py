@@ -435,8 +435,11 @@ def fix_inconsistent_stress(examples, num_lines = 4, transcription_line_number =
                 # Check for stress in the seg line that's missing in the transcription line
                 if UNICODE_STRESS in morpheme:
                     morpheme_unstressed = morpheme.replace(UNICODE_STRESS, "")
+                    # Have to use regex because we want to search for "example" without getting a match from "examplé" because the diacritic is considered the following character
+                    # Regex: Do we find the unstressed morpheme in the transcription line (followed by either a) a char that is NOT the stress marker or b) nothing)?
+                    unstressed_morpheme_is_in_transcription_line_with_stress = re.search(_prepare_string_brackets_for_regex(morpheme_unstressed) + "([^" + UNICODE_STRESS + "]|$)", _prepare_string_brackets_for_regex(transcription_line))
                     # If we're missing the corresponding stress in the transcription line...
-                    if (transcription_line.count(morpheme) < seg_line.count(morpheme)) and (morpheme_unstressed in transcription_line):
+                    if (transcription_line.count(morpheme) < seg_line.count(morpheme)) and unstressed_morpheme_is_in_transcription_line_with_stress:
                         # ...then add the stress to the transcription line!
                         if transcription_line.count(morpheme_unstressed) == 1: # Easy case -- only one possible target for changing
                             transcription_line = transcription_line.replace(morpheme_unstressed, morpheme, 1)
@@ -468,11 +471,8 @@ def fix_inconsistent_stress(examples, num_lines = 4, transcription_line_number =
                     # Does the morpheme only appear in the transcription line *with stress*?
                     # First check: do we find the unstressed version in the transcription line?
                     # Have to use regex because we want to search for "example" without getting a match from "examplé" because the diacritic is considered the following character
-                    # And we have to do some temporary bracket replacement stuff to prevent them from being read as regex chars
-                    morpheme_with_brackets_fixed = (re.sub(r"(\[|\])", r"\\\1", morpheme))
-                    transcription_line_with_brackets_fixed = re.sub(r"(\[|\])", r"\\\1", transcription_line)
                     # Regex: Do we find the unstressed morpheme in the transcription line (followed by either a) a char that is NOT the stress marker or b) nothing)?
-                    morpheme_is_in_transcription_line_with_stress = re.search(morpheme_with_brackets_fixed + "([^" + UNICODE_STRESS + "]|$)", transcription_line_with_brackets_fixed)
+                    morpheme_is_in_transcription_line_with_stress = re.search(_prepare_string_brackets_for_regex(morpheme) + "([^" + UNICODE_STRESS + "]|$)", _prepare_string_brackets_for_regex(transcription_line))
                     # If we're missing the corresponding stress in the seg line...
                     # (The last condition here is ridiculous but necessary to not over-fix in some erroenous data).
                     if (not (morpheme_is_in_transcription_line_with_stress)) and (morpheme in transcription_line_unstressed) and (transcription_line_unstressed.count(morpheme) >= seg_line_unstressed.count(morpheme)):
@@ -496,6 +496,10 @@ def fix_inconsistent_stress(examples, num_lines = 4, transcription_line_number =
         updated_examples.append(updated_example)
 
     return updated_examples
+
+# Temporary bracket replacement stuff to prevent them from being read as regex chars
+def _prepare_string_brackets_for_regex(string):
+     return re.sub(r"(\[|\])", r"\\\1", string)
 
 def print_results_csv(results, header, output_file_name, no_result_marker):
     num_fields = header.count(",") + 1

@@ -8,15 +8,15 @@ FF=1024
 EMBED=512
 BATCH=128
 INTERVAL=4
+SEED=$1
 
 SRC=input
 TRG=output
-SET=$1 #?
 
 DATE=$(date +%Y-%m-%d-%H-%M-%S)
 echo $DATE
 
-SAVEDIR=models
+SAVEDIR=models_seed$SEED
 DATADIR=data-bin
 
 [[ ! -d $SAVEDIR ]] &&
@@ -26,7 +26,7 @@ fairseq-train $DATADIR \
   --source-lang $SRC \
   --target-lang $TRG \
   --save-dir $SAVEDIR \
-  --seed 0 \
+  --seed $SEED \
   --arch transformer \
   --encoder-layers $LAYERS \
   --decoder-layers $LAYERS \

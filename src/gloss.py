@@ -498,12 +498,12 @@ def reassemble_predicted_words(input_seg_line_list, pred_gloss_line_list):
 # No return value, just creates and writes to an output file
 def write_output_file(sentence_list, output_folder, output_file_name):
     # Create the output subdirectory, if it doesn't already exist
-    dir_path = getcwd() + output_folder
+    dir_path = getcwd() + "/" + output_folder
     if not path.exists(dir_path):
         mkdir(dir_path)
 
     # And create the output file!
-    write_sentences(sentence_list, dir_path + "/" + output_file_name)
+    write_sentences(sentence_list, dir_path + output_file_name)
 
 # More complex version of write_simple_output_file, that formats in sigmorphon style
 def write_sigmorphon_output_file(sentence_list, output_folder, file_name, segmentation_line_number, gloss_line_number, is_open_track):

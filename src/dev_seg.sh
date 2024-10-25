@@ -9,7 +9,7 @@ SEED_COUNT=9 # Starts at 0 so you'll use n + 1 models (e.g. if this is 9, you'll
 EPOCHS_TO_USE=_best # You can set this to "_best" or a number
 # No separating colon before the first model name
 MODELS="models_seed0/checkpoint"$EPOCHS_TO_USE".pt"
-for i in $(seq 1 $SEED_COUNT); do MODELS=$MODELS":models_seed"$i"/checkpoint"$EPOCHS_TO_USE".pt"; done
+for i in $(seq 1 1 $SEED_COUNT); do MODELS=$MODELS":models_seed"$i"/checkpoint"$EPOCHS_TO_USE".pt"; done
 echo "Using model(s): "$MODELS
 
 # To run on the unsegmenting baseline, set output_file=$INPUT and don't use the fairseq flag

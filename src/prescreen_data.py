@@ -329,7 +329,6 @@ def gloss_screen(seg_line, gloss_line):
 
     # These two functions I'm using from gloss.py are probably needlessly complicated and should be simplified
     seg_morphemes = sentence_to_morphemes(seg_line, keep_word_boundaries = False)
-    # Might modify gloss_line btw...
     gloss_morphemes = sentence_to_glosses(gloss_line)
 
     if len(seg_morphemes) != len(gloss_morphemes):

@@ -158,6 +158,7 @@ def sentence_to_features(segmentation_line):
 
 
 # Returns a list of glosses (one for each morpheme in the sentence)
+# This won't modify the input parameter btw ha ha
 def sentence_to_glosses(gloss_line, keep_word_boundaries = False):
     gloss_line = ignore_brackets(gloss_line)
     # Recall that infix boundaries aren't so complex to handle in the gloss line (just gloss1<gloss2>-gloss3)

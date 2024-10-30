@@ -91,14 +91,14 @@ def ignore_brackets(sentence):
     return sentence 
 
 # Given a segmentation line, return a list of its morphemes
-# The as_words parameter specfies whether you want the returned morpheme list
+# The keep_word_boundaries parameter specfies whether you want the returned morpheme list
 # to be divided into word sub-lists
 # For example:
-# as_words = False, then it returns [w1m1, w1m2, w2m1, w2m2]
-# as_words = True, then it returns [[w1m1, w1m2], [w2m1, w2m2]]
-def sentence_to_morphemes(seg_line, as_words):
+# keep_word_boundaries = False, then it returns [w1m1, w1m2, w2m1, w2m2]
+# keep_word_boundaries = True, then it returns [[w1m1, w1m2], [w2m1, w2m2]]
+def sentence_to_morphemes(seg_line, keep_word_boundaries = False):
     morpheme_list = []
-    if as_words:
+    if keep_word_boundaries:
         word_list = []
 
     seg_line = ignore_brackets(seg_line)
@@ -135,11 +135,11 @@ def sentence_to_morphemes(seg_line, as_words):
         while "" in morpheme_list:
             morpheme_list.remove("")
 
-        if as_words and morpheme_list: # Only if non-empty (again, to avoid empty morphemes)
+        if keep_word_boundaries and morpheme_list: # Only if non-empty (again, to avoid empty morphemes)
             word_list.append(morpheme_list)
             morpheme_list = []
 
-    if as_words:
+    if keep_word_boundaries:
         return word_list
     else:
         return morpheme_list
@@ -148,7 +148,7 @@ def sentence_to_morphemes(seg_line, as_words):
 # Returns a list of features for each morpheme for each word in the given sentence
 def sentence_to_features(segmentation_line):
     # Get a list of words, which are in turn lists of morphemes
-    preprocessed_sentence = sentence_to_morphemes(segmentation_line, as_words = True)
+    preprocessed_sentence = sentence_to_morphemes(segmentation_line, keep_word_boundaries = True)
     featureVectorList = []
     for word in preprocessed_sentence:
         for i in range(len(word)):

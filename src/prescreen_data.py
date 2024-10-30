@@ -328,7 +328,7 @@ def gloss_screen(seg_line, gloss_line):
         seg_gloss_num_words_fails += 1
 
     # These two functions I'm using from gloss.py are probably needlessly complicated and should be simplified
-    seg_morphemes = sentence_to_morphemes(seg_line, as_words = False)
+    seg_morphemes = sentence_to_morphemes(seg_line, keep_word_boundaries = False)
     # Might modify gloss_line btw...
     gloss_morphemes = sentence_to_glosses(gloss_line)
 
@@ -343,8 +343,8 @@ def gloss_screen(seg_line, gloss_line):
         seg_gloss_num_morphemes_fails += 1
 
     # A slightly more nuanced morpheme alignment check
-    seg_morphemes_by_word = sentence_to_morphemes(seg_line, as_words = True)
-    gloss_morphemes_by_word = sentence_to_morphemes(gloss_line, as_words = True)
+    seg_morphemes_by_word = sentence_to_morphemes(seg_line, keep_word_boundaries = True)
+    gloss_morphemes_by_word = sentence_to_glosses(gloss_line, keep_word_boundaries = True)
     for i, (seg_word_with_morphemes, gloss_word_with_morphemes) in enumerate(zip(seg_morphemes_by_word, gloss_morphemes_by_word)):
         if len(seg_word_with_morphemes) != len(gloss_word_with_morphemes):
             print(f"\n- Error: the following line contains a mismatch between the number of *morphemes* in a word between the segmented and gloss lines.  The word {seg_morphemes_by_word[i]} at position {i} has {len(seg_word_with_morphemes)} morphemes in the segmented line, whereas in the gloss line it has {len(gloss_word_with_morphemes)} morphemes ({gloss_word_with_morphemes}).")
@@ -508,7 +508,7 @@ def get_tags(all_data, segmentation_line_number, gloss_line_number):
     for sentence in all_data:
         seg_line = sentence[segmentation_line_number]
         gloss_line = sentence[gloss_line_number]
-        morphemes = sentence_to_morphemes(seg_line, as_words = False)
+        morphemes = sentence_to_morphemes(seg_line, keep_word_boundaries = False)
         glosses = sentence_to_glosses(gloss_line)
         assert(len(morphemes) == len(glosses))
         for morpheme, gloss in zip(morphemes, glosses):

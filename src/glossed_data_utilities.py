@@ -7,6 +7,7 @@ from unicodedata import normalize
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
 # Note that double colons (::) are being permitted b/c the St́át́imcets data seems to use them legitiamtely as a vowel length thing
 NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG = ["\.", ",", "\?", "\"", "“", "”", "`", "!", "♪", ";", "–"] # Note this last one is *not* a regular hyphen!
+NON_PERMITTED_PUNCTUATION_GLOSS = ["\[", "\]"] # For now, only brackets are disallowed in the gloss line
 PUNCTUATION_TO_IGNORE = "\.|,|\?|!|:"
 
 OUT_OF_LANGUAGE_MARKER = "*"
@@ -75,7 +76,7 @@ def read_file(file_path):
 
 # Takes a list of sentences, each of which is a list of transcription line, seg line, etc.
 # Returns the list in the same format, just tidied!
-def tidy_dataset(dataset, seg_line_number = 1, MINIMAL_CHANGES_ONLY = False):
+def tidy_dataset(dataset, seg_line_number = 1, gloss_line_number = 2, MINIMAL_CHANGES_ONLY = False):
     updated_dataset = []
     for sentence in dataset:
         updated_sentence = []
@@ -88,7 +89,8 @@ def tidy_dataset(dataset, seg_line_number = 1, MINIMAL_CHANGES_ONLY = False):
                     line = re.sub(r"[-=~][\.,\?\"“”`!♪;–]+", "", line)
                 else: # Remove it all!
                     line = re.sub(punctuation_list_to_regex(NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG), r"\1\2", line)
-
+            elif i == gloss_line_number:
+                line = re.sub(punctuation_list_to_regex(NON_PERMITTED_PUNCTUATION_GLOSS), "", line)
             # Find 2+ spaces, and replace them with only one space
             line = re.sub(r"[ ]+[ ]+", " ", line)
             if not MINIMAL_CHANGES_ONLY:
@@ -401,6 +403,7 @@ def write_sentences(examples, file_path, randomize_order = False):
     if randomize_order:
         shuffle(examples_to_write)
 
+    print("\nWriting sentences to", file_path)
     with open(file_path, "w") as file:
         for i, example in enumerate(examples_to_write):
             if len(example) > 0:

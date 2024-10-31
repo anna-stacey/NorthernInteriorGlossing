@@ -74,7 +74,7 @@ def morpheme_to_features(word, i):
 
     return features
 
-# We are removing the brackets but *leaving* the bracketed affix in
+# Removes the brackets but *leaves* the bracketed affix in.
 # This is to handle the glossing style where unrealized morphemes/pieces of morphemes
 # appear in brackets in the segmentation line (we never expect these brackets to also appear in the gloss line).
 # This is a concern of the segmentation stage, not the glossing stage.
@@ -83,7 +83,7 @@ def morpheme_to_features(word, i):
 # - If the data doesn't use bracketed affixes, this does nothing.
 # - If the data puts such affixes in brackets in the seg line,
 #   then the glossing process can act as if the brackets aren't even there.
-# - And, if the data uses brackets for parts of affixes (e.g., m[in]) above,
+# - And, if the data uses brackets for *parts* of affixes (e.g., m[in]) above,
 #   then it also make sense to remove the brackets there so the glossing process
 #   has access to the full, regular morpheme (i.e., min).
 def ignore_brackets(sentence):
@@ -96,12 +96,13 @@ def ignore_brackets(sentence):
 # For example:
 # keep_word_boundaries = False, then it returns [w1m1, w1m2, w2m1, w2m2]
 # keep_word_boundaries = True, then it returns [[w1m1, w1m2], [w2m1, w2m2]]
-def sentence_to_morphemes(seg_line, keep_word_boundaries = False):
+def sentence_to_morphemes(seg_line, do_ignore_brackets, keep_word_boundaries = False):
     morpheme_list = []
     if keep_word_boundaries:
         word_list = []
 
-    seg_line = ignore_brackets(seg_line)
+    if do_ignore_brackets:
+        seg_line = ignore_brackets(seg_line)
 
     for word in seg_line.split(" "):
         # Grab the morphemes from this current word
@@ -144,18 +145,16 @@ def sentence_to_morphemes(seg_line, keep_word_boundaries = False):
     else:
         return morpheme_list
 
-
 # Returns a list of features for each morpheme for each word in the given sentence
 def sentence_to_features(segmentation_line):
     # Get a list of words, which are in turn lists of morphemes
-    preprocessed_sentence = sentence_to_morphemes(segmentation_line, keep_word_boundaries = True)
+    preprocessed_sentence = sentence_to_morphemes(segmentation_line, do_ignore_brackets = True, keep_word_boundaries = True)
     featureVectorList = []
     for word in preprocessed_sentence:
         for i in range(len(word)):
             featureVectorList.append(morpheme_to_features(word, i))
 
     return featureVectorList
-
 
 # Returns a list of glosses (one for each morpheme in the sentence)
 # This won't modify the input parameter btw ha ha

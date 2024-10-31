@@ -328,11 +328,12 @@ def gloss_screen(seg_line, gloss_line):
         seg_gloss_num_words_fails += 1
 
     # These two functions I'm using from gloss.py are probably needlessly complicated and should be simplified
-    seg_morphemes = sentence_to_morphemes(seg_line, keep_word_boundaries = False)
-    gloss_morphemes = sentence_to_glosses(gloss_line)
+    # The value of do_ignore_brackets shouldn't actually matter
+    seg_morpheme_count = len(sentence_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = False))
+    gloss_morpheme_count = len(sentence_to_glosses(gloss_line))
 
-    if len(seg_morphemes) != len(gloss_morphemes):
-        print(f"\n- Error: the following line contains a mismatch between the number of *morphemes* in the segmented and gloss lines.  The segmented line has {len(seg_morphemes)} morphemes, whereas the gloss line has {len(gloss_morphemes)} morphemes.")
+    if seg_morpheme_count != gloss_morpheme_count:
+        print(f"\n- Error: the following line contains a mismatch between the number of *morphemes* in the segmented and gloss lines.  The segmented line has {seg_morpheme_count} morphemes, whereas the gloss line has {gloss_morpheme_count} morphemes.")
         print("Segmentation line:", seg_line)
         print("Gloss line:", gloss_line)
         # Uncomment this for more help identifying these problems!
@@ -342,7 +343,8 @@ def gloss_screen(seg_line, gloss_line):
         seg_gloss_num_morphemes_fails += 1
 
     # A slightly more nuanced morpheme alignment check
-    seg_morphemes_by_word = sentence_to_morphemes(seg_line, keep_word_boundaries = True)
+    # Again, the value of do_ignore_brackets shouldn't really matter since we're just concerned with the count here
+    seg_morphemes_by_word = sentence_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = True)
     gloss_morphemes_by_word = sentence_to_glosses(gloss_line, keep_word_boundaries = True)
     for i, (seg_word_with_morphemes, gloss_word_with_morphemes) in enumerate(zip(seg_morphemes_by_word, gloss_morphemes_by_word)):
         if len(seg_word_with_morphemes) != len(gloss_word_with_morphemes):
@@ -507,7 +509,7 @@ def get_tags(all_data, segmentation_line_number, gloss_line_number):
     for sentence in all_data:
         seg_line = sentence[segmentation_line_number]
         gloss_line = sentence[gloss_line_number]
-        morphemes = sentence_to_morphemes(seg_line, keep_word_boundaries = False)
+        morphemes = sentence_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = False)
         glosses = sentence_to_glosses(gloss_line)
         assert(len(morphemes) == len(glosses))
         for morpheme, gloss in zip(morphemes, glosses):

@@ -4,7 +4,7 @@ import click
 from os import listdir, path
 import re
 from unicodedata import normalize
-from gloss import read_datasets, sentence_to_glosses, sentence_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
+from gloss import read_datasets, sentence_to_glosses, seg_line_to_morphemes, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, ALL_BOUNDARIES_FOR_REGEX, UNICODE_STRESS
 from glossed_data_utilities import read_file, punctuation_list_to_regex, punctuation_list_to_string, NON_PERMITTED_PUNCTUATION_GLOSS, NON_PERMITTED_PUNCTUATION_TRANSCRIPTION_SEG, OUT_OF_LANGUAGE_MARKER
 
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
@@ -329,7 +329,7 @@ def gloss_screen(seg_line, gloss_line):
 
     # These two functions I'm using from gloss.py are probably needlessly complicated and should be simplified
     # The value of do_ignore_brackets shouldn't actually matter
-    seg_morpheme_count = len(sentence_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = False))
+    seg_morpheme_count = len(seg_line_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = False))
     gloss_morpheme_count = len(sentence_to_glosses(gloss_line))
 
     if seg_morpheme_count != gloss_morpheme_count:
@@ -344,7 +344,7 @@ def gloss_screen(seg_line, gloss_line):
 
     # A slightly more nuanced morpheme alignment check
     # Again, the value of do_ignore_brackets shouldn't really matter since we're just concerned with the count here
-    seg_morphemes_by_word = sentence_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = True)
+    seg_morphemes_by_word = seg_line_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = True)
     gloss_morphemes_by_word = sentence_to_glosses(gloss_line, keep_word_boundaries = True)
     for i, (seg_word_with_morphemes, gloss_word_with_morphemes) in enumerate(zip(seg_morphemes_by_word, gloss_morphemes_by_word)):
         if len(seg_word_with_morphemes) != len(gloss_word_with_morphemes):
@@ -509,7 +509,7 @@ def get_tags(all_data, segmentation_line_number, gloss_line_number):
     for sentence in all_data:
         seg_line = sentence[segmentation_line_number]
         gloss_line = sentence[gloss_line_number]
-        morphemes = sentence_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = False)
+        morphemes = seg_line_to_morphemes(seg_line, do_ignore_brackets = True, keep_word_boundaries = False)
         glosses = sentence_to_glosses(gloss_line)
         assert(len(morphemes) == len(glosses))
         for morpheme, gloss in zip(morphemes, glosses):

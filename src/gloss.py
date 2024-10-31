@@ -96,7 +96,7 @@ def ignore_brackets(sentence):
 # For example:
 # keep_word_boundaries = False, then it returns [w1m1, w1m2, w2m1, w2m2]
 # keep_word_boundaries = True, then it returns [[w1m1, w1m2], [w2m1, w2m2]]
-def sentence_to_morphemes(seg_line, do_ignore_brackets, keep_word_boundaries = False):
+def seg_line_to_morphemes(seg_line, do_ignore_brackets, keep_word_boundaries = False):
     morpheme_list = []
     if keep_word_boundaries:
         word_list = []
@@ -148,7 +148,7 @@ def sentence_to_morphemes(seg_line, do_ignore_brackets, keep_word_boundaries = F
 # Returns a list of features for each morpheme for each word in the given sentence
 def sentence_to_features(segmentation_line):
     # Get a list of words, which are in turn lists of morphemes
-    preprocessed_sentence = sentence_to_morphemes(segmentation_line, do_ignore_brackets = True, keep_word_boundaries = True)
+    preprocessed_sentence = seg_line_to_morphemes(segmentation_line, do_ignore_brackets = True, keep_word_boundaries = True)
     featureVectorList = []
     for word in preprocessed_sentence:
         for i in range(len(word)):

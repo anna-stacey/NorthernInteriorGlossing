@@ -158,7 +158,7 @@ def sentence_to_features(segmentation_line):
 
 # Returns a list of glosses (one for each morpheme in the sentence)
 # This won't modify the input parameter btw ha ha
-def sentence_to_glosses(gloss_line, keep_word_boundaries = False):
+def gloss_line_to_morphemes(gloss_line, keep_word_boundaries = False):
     gloss_line = ignore_brackets(gloss_line)
     # Recall that infix boundaries aren't so complex to handle in the gloss line (just gloss1<gloss2>-gloss3)
     # We can just replace them with regular boundaries here, so they'll get handled by the re.split line
@@ -188,7 +188,7 @@ def format_X_and_y(X, y):
     X = [sentence_to_features(segmentation_line) for segmentation_line in X]
 
     # Get a list of the training labels - i.e. the gloss for each morpheme
-    y = [sentence_to_glosses(gloss_line) for gloss_line in y]
+    y = [gloss_line_to_morphemes(gloss_line) for gloss_line in y]
 
     # Now that we've used them for features like morpheme_1, we can remove OOL tokens altogether
     remove_OOL_from_X_or_y(X, is_X = True)

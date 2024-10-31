@@ -146,7 +146,7 @@ def seg_line_to_morphemes(seg_line, do_ignore_brackets, keep_word_boundaries = F
         return morpheme_list
 
 # Returns a list of features for each morpheme for each word in the given sentence
-def sentence_to_features(segmentation_line):
+def seg_line_to_features(segmentation_line):
     # Get a list of words, which are in turn lists of morphemes
     preprocessed_sentence = seg_line_to_morphemes(segmentation_line, do_ignore_brackets = True, keep_word_boundaries = True)
     featureVectorList = []
@@ -185,7 +185,7 @@ def format_X_and_y(X, y):
     # Meanwhile, the gold-standard label for each morpheme is the corresponding entry in the gloss line
 
     # Get a list of training feature vectors (in the form of a list of lists by sentence)
-    X = [sentence_to_features(segmentation_line) for segmentation_line in X]
+    X = [seg_line_to_features(segmentation_line) for segmentation_line in X]
 
     # Get a list of the training labels - i.e. the gloss for each morpheme
     y = [gloss_line_to_morphemes(gloss_line) for gloss_line in y]

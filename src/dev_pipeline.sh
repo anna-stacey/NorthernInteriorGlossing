@@ -5,8 +5,8 @@ GLOSS_DEV_SET=data/dev.txt
 GLOSS_TEST_SET=data/dev.txt
 OUTPUT_FOLDER="generated_data/"
 OUTPUT_FILE="pipeline_pred.txt"
-SEG_LINE_NUMBER=2
-GLOSS_LINE_NUMBER=3 # 3 for St̓át̓imcets, 4 for Gitksan
+SEG_LINE_NUMBER=2 # 2 for all else, 3 for Secwepemctsín
+GLOSS_LINE_NUMBER=3 # 3 for Nɬeʔkepmxcín and St̓át̓imcets, 4 for Gitksan and Secwepemctsín
 
 # The seg predictions used come from running the segmenter first
 # Now, run the glosser on those predictions

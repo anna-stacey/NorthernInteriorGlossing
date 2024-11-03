@@ -36,8 +36,8 @@ fairseq-train $DATADIR \
   --decoder-ffn-embed-dim $FF \
   --encoder-attention-heads $HEADS \
   --decoder-attention-heads $HEADS \
-  --dropout 0.5 \
-  --attention-dropout 0.3 \
+  --dropout 0.2 \
+  --attention-dropout 0.2 \
   --relu-dropout 0.0 \
   --weight-decay 0.0 \
   --criterion label_smoothed_cross_entropy --label-smoothing 0.2  \
@@ -50,6 +50,6 @@ fairseq-train $DATADIR \
   --update-freq $INTERVAL \
   --max-epoch 75 \
   --ddp-backend=no_c10d \
-  --save-interval-updates 1000 --keep-interval-updates 1 \
   --log-format json --log-interval 20\
   --no-epoch-checkpoints
+  ## --save-interval 10 to save checkpoint files at 10, 20, 30, etc. epochs

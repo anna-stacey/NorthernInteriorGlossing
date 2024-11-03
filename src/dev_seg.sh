@@ -1,9 +1,9 @@
 #!/bin/bash
 
 WHOLE_INPUT=data/dev.txt
-INPUT=generated_data/dev.input
-OUTPUT=generated_data/dev_fairseq.output
-GOLD_OUTPUT=generated_data/dev.output
+INPUT=generated_data/test.input
+OUTPUT=generated_data/test_fairseq.output
+GOLD_OUTPUT=generated_data/test.output
 TRAIN_OUTPUT=generated_data/train.output
 SEED_COUNT=9 # Starts at 0 so you'll use n + 1 models (e.g. if this is 9, you'll get an ensemble run from 10 models)
 EPOCHS_TO_USE=_best # You can set this to "_best" or a number

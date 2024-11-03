@@ -1,7 +1,8 @@
 import click
 from os import path
 import re
-from gloss import make_sentence_list_with_prediction, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY
+from gloss import make_sentence_list_with_prediction
+from glossed_data_handling_utilities import  REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, as_percent, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
 
 GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"

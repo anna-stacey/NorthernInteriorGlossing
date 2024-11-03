@@ -1,10 +1,9 @@
 import click
 import re
-from gloss import extract_X_and_y, format_X_and_y, make_sentence_list_with_prediction, read_datasets, reassemble_predicted_words, run_system, train_system, write_output_file, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY
+from gloss import extract_X_and_y, format_X_and_y, make_sentence_list_with_prediction, read_datasets, reassemble_predicted_words, run_system, train_system, write_output_file
+from glossed_data_handling_utilities import REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY
 from glossed_data_utilities import add_back_OOL_words, handle_OOL_words, read_file
-from preprocess_seg import sentence_list_to_word_list
 from prescreen_data import DOUBLE_BOUNDARY_REGEX
-from test_seg import evaluate
 
 GOLD_OUTPUT_FILE_NAME = "pipeline_gold.txt"
 PRED_OUTPUT_FILE_NAME = "pipeline_pred.txt"

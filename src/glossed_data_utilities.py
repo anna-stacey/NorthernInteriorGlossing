@@ -3,6 +3,7 @@ from os import mkdir, path
 from random import shuffle
 import re
 from unicodedata import normalize
+from glossed_data_handling_utilities import CLITIC_BOUNDARY
 
 # Applies to the transcription and seg line.  Obviously periods are used a lot in the gloss line.
 # Note that double colons (::) are being permitted b/c the St́át́imcets data seems to use them legitiamtely as a vowel length thing
@@ -14,7 +15,6 @@ OUT_OF_LANGUAGE_MARKER = "*"
 OUT_OF_LANGUAGE_LABEL = "OOL"
 DOUBLE_OOL_MARKER_REGEX = "\*[\*]+"
 
-CLITIC_BOUNDARY = "="
 NUMBER_OF_LINES = 4
 UNICODE_STRESS = "\u0301"
 
@@ -429,6 +429,7 @@ def fix_inconsistent_stress(examples, num_lines = 4, transcription_line_number =
             transcription_line = normalize('NFD', example[transcription_line_number])
             seg_line = normalize('NFD', example[seg_line_number])
 
+            # This is wrong -- won't split infixes properly
             BOUNDARIES_OR_SPACE_REGEX = "-|=|~|<|>|{|}| "
             seg_morphemes = re.split(BOUNDARIES_OR_SPACE_REGEX, seg_line)
             transcription_line_unstressed = transcription_line.replace(UNICODE_STRESS, "")

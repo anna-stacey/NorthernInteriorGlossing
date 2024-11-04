@@ -48,7 +48,7 @@ fairseq-train $DATADIR \
   --warmup-init-lr 1e-7 --lr 0.0005 --stop-min-lr 1e-9 \
   --max-tokens $BATCH \
   --update-freq $INTERVAL \
-  --max-epoch 75 \
+  --max-epoch 40 \
   --ddp-backend=no_c10d \
   --log-format json --log-interval 20\
   --no-epoch-checkpoints

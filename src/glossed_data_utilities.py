@@ -139,7 +139,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     # This check is quite strict -
                     # It will prevent problems with the wrong word being looked at, but it's also going to (at present)
                     # exclude a lot of problematic lines from being fixed. Something to think about...
-                    if len(ortho_line_word_list) > seg_word_index and _remove_punc(ortho_line_word_list[seg_word_index].lower()) == pre_clitics[_remove_punc(clitic)] and word_without_clitic != "":
+                    if len(ortho_line_word_list) > seg_word_index and _remove_punc(ortho_line_word_list[seg_word_index].lower()) in pre_clitics[_remove_punc(clitic)] and word_without_clitic != "":
                         # Confirmed: we've found a clitic to fix!
                         # Now we need to modify the seg and gloss lines
                         assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
@@ -173,7 +173,7 @@ def handle_clitics(data, pre_clitics, double_pre_clitics, post_clitics, double_p
                     # This check is quite strict -
                     # It will prevent problems with the wrong word being looked at, but it's also going to (at present)
                     # exclude a lot of problematic lines from being fixed. Something to think about...
-                    if len(ortho_line_word_list) > seg_word_index and _remove_punc(ortho_line_word_list[seg_word_index]) == double_pre_clitics[_remove_punc(clitic)] and word_without_clitic != "":
+                    if len(ortho_line_word_list) > seg_word_index and _remove_punc(ortho_line_word_list[seg_word_index]) in double_pre_clitics[_remove_punc(clitic)] and word_without_clitic != "":
                         # Okay, now we need to modify the seg and gloss lines
                         assert len(seg_line_word_list) == len(gloss_line_word_list), f"Error: There are {len(seg_line_word_list)} words in the seg line, but {len(gloss_line_word_list)} words in the gloss line! \nSeg line word list: {seg_line_word_list}"
 
@@ -293,11 +293,12 @@ def _same_clitic(clitic_1, clitic_2):
 
     return clitic_1 == clitic_2
 
-def _clitic_in_word_list(clitic, word_list):
+def _clitic_in_word_list(clitic_forms, word_list):
     found = False
-    for word in word_list:
-        if _same_clitic(clitic, _remove_punc(word)):
-            found = True
+    for clitic_form in clitic_forms:
+        for word in word_list:
+            if _same_clitic(clitic_form, _remove_punc(word)):
+                found = True
 
     return found
 

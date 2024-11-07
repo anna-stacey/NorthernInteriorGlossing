@@ -388,17 +388,31 @@ def make_sentence_list_with_prediction(sentence_list, prediction_line_list, line
 # i.e., go from ["dog", "s"] to "dog-s"
 def reassemble_predicted_words(input_seg_line_list, pred_gloss_line_list):
     assert(len(input_seg_line_list) == len(pred_gloss_line_list))
+    infix_closing_boundaries = [RIGHT_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY]
     new_gloss_line_list = []
+
     for seg_line, gloss_line in zip(input_seg_line_list, pred_gloss_line_list):
         assert(len(seg_line) == len(gloss_line))
         gloss_line_as_list_of_words = []
         for seg_word, gloss_word in zip(seg_line, gloss_line):
             # Put the gloss morphemes together into a word, connected by the boundaries from the input
             boundaries = re.findall(ALL_BOUNDARIES_FOR_REGEX, seg_word)
+            # Check that we have the right number of boundaries for the number of gloss morphemes
+            # The # of boundaries (excl. infix closers) should be one less than the # of gloss morphemes
+            assert (len(boundaries) - boundaries.count(RIGHT_INFIX_BOUNDARY) - boundaries.count(RIGHT_REDUP_INFIX_BOUNDARY)) == (len(gloss_word) - 1), str(gloss_word) + " in " + str(gloss_line) + "\n# of boundaries: " + str(len(boundaries)) + "\n# of gloss morphemes: " + str(len(gloss_word))
             combined_gloss_word = gloss_word[0]
-            for i in range(1,len(gloss_word)):
-                combined_gloss_word += boundaries[i - 1]
-                combined_gloss_word += gloss_word[i]
+            boundary_index = 0
+            for gloss_morpheme_index in range(1, len(gloss_word)):
+                combined_gloss_word += boundaries[boundary_index]
+                boundary_index += 1
+                combined_gloss_word += gloss_word[gloss_morpheme_index]
+                # If this morpheme is an infix, add the closing infix boundary now
+                if boundary_index < len(boundaries) and boundaries[boundary_index] in infix_closing_boundaries:
+                    combined_gloss_word += boundaries[boundary_index]
+                    boundary_index += 1
+
+            # We should have used all boundaries
+            assert boundary_index == len(boundaries), str(gloss_line) + "\nBoundary index: " + str(boundary_index) + "\n# of boundaries: " + str(len(boundaries))
 
             gloss_line_as_list_of_words.append(combined_gloss_word)
 

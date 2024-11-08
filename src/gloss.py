@@ -303,7 +303,7 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
         pred_dev_y.append(pred_glossed_sentence)
     
     total_stem_count = known_stem_count + unknown_stem_count
-    print(f"In the test set, {unknown_stem_count}/{total_stem_count} total stems, or {as_percent(unknown_stem_count/total_stem_count)}%, were not in the stem dictionary.")
+    print(f"In the test set, {as_percent(unknown_stem_count/total_stem_count)}% ({unknown_stem_count}/{total_stem_count}) of stems were not in the stem dictionary.")
     return pred_dev_y
 
 # Trains and returns the dictionary and the CRF!

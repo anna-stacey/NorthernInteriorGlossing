@@ -254,5 +254,26 @@ predicted: *GRAM1-GRAM2-stem1*
 stem score: 0/1 stem morphemes correct
 gram score: 1/2 gram morphemes correct  
 
+### Pipeline
+##### Bag o' Words
+The idea with this check is to look for the right glosses, while being forgiving about ECF from earlier in the word.  To do this, we don't care about the order/alignment of the glosses, just that they're present.  
+For each word, we go through its gold glosses one-by-one.  We check if each is present *somewhere* in the set of predicted glosses for this word.  Notably, if it is, we *remove* it, so that each predicted morpheme can only be counted once.  This probably isn't super impactful, as its unlikely the same gloss appears multiple times in one word.  
+This score is reported at the morpheme level.  So the bag o' words score is the number of gold morphemes that were correctly predicted *somewhere* in the word (excluding duplicates), divided by the total number of gold morphemes.  
+This score is basically a more forgiving version of the morpheme-level accuracy, so it must be greater than or equal to that score.
+> Example:  
+gold: *morpheme1-morpheme2*  
+predicted: *morpheme2-morpheme1*  
+score: 2/2 morphemes correct  
+
+> Example:  
+gold: *morpheme1-morpheme2-morpheme3*  
+predicted: *morpheme2-morpheme3*  
+score: 2/3 morphemes correct  
+
+> Example:  
+gold: *morpheme1-morpheme-1-morpheme2*  
+predicted: *morpheme2-morpheme1-morpheme3*  
+score: 2/3 morphemes correct  
+
 ## References
 Alexander, Qwa7yán’ak Carl, Elliott Callahan, Henry Davis, John Lyon, and Lisa Matthewson. 2016. *Sqwéqwel’ Múta7 Sptakwlh: St’át’imcets Narratives.* Pacific Northwest Languages and Literature Press.

@@ -192,6 +192,28 @@ If stress is marked on a word, then it should be marked on the same place in the
 
 ## Evaluation
 
+### Segmentation
+##### Word-level accuracy:
+For each word, checks whether the segmented output *exactly matches* the gold output word.  This means inserting boundaries of the correct type in the correct location, and not inserting any incorrect boundaries.  
+> Example:  
+gold: *morpheme1-morpheme2*  
+predicted: *morpheme1-morpheme2*  
+score: 1/1 word correct   
+predicted: *morpheme1=morpheme2*  
+score: 0/1 word correct  
+predicted: *morpheme1-morph-eme2*  
+score: 0/1 word correct
+
+It also goes beyond just boundaries to the morphemes themselves: performing any necessary normalization changes, while otherwise maintaining the input form.
+> Example:
+gold: *qeʔním[-t]-∅-ne*  
+predicted: *qeʔním[-t]-∅-ne*  
+score: 1/1 word corrrect  
+predicted: *qeʔním-ne*  
+score: 0/1 word corrrect  
+predicted: *qeʔním[-t]-∅-ene*  
+score: 0/1 word corrrect  
+
 ### Glossing
 ##### Morpheme-level accuracy:  
 Breaks down each sentence into words.  Within each word, it goes through the gold morphemes left-to-right and checks whether the predicted output has the correct morpheme in the same order.  

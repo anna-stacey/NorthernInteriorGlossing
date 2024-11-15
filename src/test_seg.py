@@ -3,10 +3,11 @@ from os import path
 import re
 from gloss import make_sentence_list_with_prediction
 from glossed_data_handling_utilities import  REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY
-from glossed_data_utilities import add_back_OOL_words, as_percent, print_results_csv, read_file, write_sentences, OUT_OF_LANGUAGE_MARKER
+from glossed_data_utilities import add_back_OOL_words, as_percent, print_results_csv, read_file, create_file_of_sentences, OUT_OF_LANGUAGE_MARKER
 
-GOLD_OUTPUT_FILE_NAME = "generated_data/seg_gold.txt"
-PRED_OUTPUT_FILE_NAME = "generated_data/seg_pred.txt"
+OUTPUT_DIR = "generated_data/"
+GOLD_OUTPUT_FILE_NAME = "seg_gold.txt"
+PRED_OUTPUT_FILE_NAME = "seg_pred.txt"
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 OUTPUT_CSV = "./seg_results.csv"
 OUTPUT_CSV_HEADER = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc"
@@ -191,7 +192,7 @@ def print_predictions(predictions, entire_input):
     formatted_predictions = reassemble_predicted_line((sentence[0] for sentence in entire_input), predictions)
     formatted_predictions = add_back_OOL_words((sentence[0] for sentence in entire_input), formatted_predictions)
     sentences_with_predictions = make_sentence_list_with_prediction(entire_input, formatted_predictions, 1)
-    write_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME)
+    create_file_of_sentences(sentences_with_predictions, PRED_OUTPUT_FILE_NAME, OUTPUT_DIR)
 
 @click.command()
 @click.option("--whole_input_file", required=True, help="The name of the input file (i.e., with the transcription, seg, gloss, etc.).")
@@ -225,7 +226,7 @@ def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_o
     # First read in and print out the gold
     # (note this is not just the input to the segmenter, but the ENTIRE input file (4-lines))
     entire_input = read_file(whole_input_file)
-    write_sentences(entire_input, GOLD_OUTPUT_FILE_NAME)
+    create_file_of_sentences(entire_input, GOLD_OUTPUT_FILE_NAME, OUTPUT_DIR)
     # Now format and print a version with our predictions
     print_predictions(output, entire_input)
 

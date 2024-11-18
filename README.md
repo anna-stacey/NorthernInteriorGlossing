@@ -214,6 +214,97 @@ score: 0/1 word corrrect
 predicted: *qeʔním[-t]-∅-ene*  
 score: 0/1 word corrrect  
 
+##### Out-of-Vocabulary (OOV) Accuracy
+We also report a subset of the word-level accuracy, which considers only those words that are OOV (i.e., not seen in training).  This gives a sense of how well the model is applying patterns it learns to 'new' words.
+
+##### Boundary-Level Precision, Recall and F1 (ROUGH DRAFT - CODE BEING EDITED)
+This metric is focussed on the insertion of boundaries.  Although it is inevitably affected by normalization/other changes to the text when they affect the index of the boundaries within the word, such changes are not as central to this metric as they are to the word-level accuracy.  
+Here, we look at each boundary that the system is meant to insert into the transcribed words.  Each boundary has an intended position in the word (counting from the leftmost edge of the word, e.g., there are boundaries at positions, 7, 10, and 12 in *qeʔním[-t]-∅-ne*, with the first position being 0), as well as an intended type (the boundary symbol used, e.g, all hyphens in *qeʔním[-t]-∅-ne*).  So for each gold boundary, we ask: did the model successfully put in a boundary of this type at this position?  To explicitly outline how this is determined:
+- Go through every predicted boundary, and determine:
+    - Is there a gold boundary at this position and of this type?
+        - If yes, that's a **true positive**, because the model inserted a correct boundary!
+        - If no, that's a **false positive**, because the model inserted an incorrect boundary.
+- For every position where there isn't a predicted boundary, check if there is one in the gold.
+    - If yes, that's a **false negative**, because the model failed to insert a correct boundary!
+    - If not, that's a **true negative**, because the model successfully did not insert a boundary where there isn't meant to be one.  We don't need to count these, because they are not used in our calculations.
+> Example:  
+gold: *s-qyéytn*  
+predicted: *s-qyéytn*  
+true positives: 1  
+false positives: 0  
+false negatives: 0  
+precision: 100%  
+recall: 100%  
+F1: 100%  
+predicted: *sqyéytn*  
+true positives: 0  
+false positives: 0  
+false negatives: 1  
+precision: N/A  
+recall: 0%  
+F1: N/A  
+predicted: *s-qyéy-tn*  
+true positives: 1  
+false positives: 1  
+false negatives: 0  
+precision: 50%  
+recall: 100%  
+F1: 67%
+
+Furthermore, what about the case where we predict a boundary, and there is a boundary there in the gold output, but it's of a different type?
+- That's both a **false positive** (because an incorrect boundary was inserted) and a **false negative** (because a correct boundary was not outputted).
+> Example:
+gold: *s-qyéytn*  
+predicted: *s=qyéytn*  
+true positives: 0  
+false positives: 1  
+false negatives: 1  
+precision: 0%  
+recall: 0%  
+F1: 0%  
+
+This is a bit odd, because it means that, as illustrated by the examples of predicting *sqyéytn* vs. *s=qyéytn*, predicting a boundary in the right place but of the wrong type results in a worse score than just failing to predict the boundary altogether.  **Option: run a version of these metrics that is indifferent to boundary type, as well.**
+
+Like other word-level evaluations, this metric is susceptible to ECF since we evaluate from left-to-right in the word.  Thus, mistakes earlier in the word result in lower scores than equivalent mistakes later in the word.
+> Example:  
+gold: *kʷukʷ-s-cút-s*  
+predicted: *kʷukʷs-cút-s*  
+true positives: 0  
+false positives: 2  
+false negatives: 3  
+precision:  0%
+recall: 0%  
+F1: 0%  
+> Example:  
+predicted: *kʷukʷ-s-cúts*  
+true positives: 2  
+false positives: 0  
+false negatives: 1  
+precision: 100%  
+recall: 67%  
+F1: 80%  
+
+Finally, as mentioned, these counts can also be affected by normalization or other changes to the wordform itself.  For example, if the model either misses a correct normalization or performs an unnecessary normalization (in a way that affects the *number* of characters), this will throw off the position of boundaries in the rest of the word.
+> Example:  
+input: *kʷukʷscúc*  
+gold output: *kʷukʷ-s-cút-s*  
+predicted output: *kʷukʷ-s-cú-s*  
+true positives: 2  
+false positives: 1  
+false negatives: 1  
+precision: 67%  
+recall: 67%  
+F1: 67%  
+
+We use the **precision** metric to evaluate what portion of the predicted boundaries were correct (ignoring for now additional correct boundaries that the model failed to predict):
+> precision = true positives / (true positives + false positives)
+
+We use the **recall** metric to evaluate how many of the correct boundaries the system managed to predict (ignoring for now additional incorrect boundary predictions made by the model):
+> recall = true positives / (true positives + false negatives)
+
+In order to consider all of these factors (i.e., getting all the right boundaries without predicting lots of wrong boundaries), we combine the precision and recall into the **F1 score**, the harmonic mean of precision and recall:
+> F1 = (2 * precision * recall) / (precision + recall)
+
 ### Glossing
 ##### Morpheme-level accuracy:  
 Breaks down each sentence into words.  Within each word, it goes through the gold morphemes left-to-right and checks whether the predicted output has the correct morpheme in the same order.  
@@ -277,11 +368,23 @@ stem score: 0/1 stem morphemes correct
 gram score: 1/2 gram morphemes correct  
 
 ### Pipeline
+At the pipeline stage, we repeat the glossing stage checks, with some caveats.  Since the alignment between morphemes is no longer guaranteed, the morpheme-level score (and by extension, the word-level score, since it is just a summary of the morpheme-level score for all the morphemes in a given word) can suffer from ECF as it goes from left-to-right through a word's morphemes.  
+We also use the word-level accuracy metric from the segmentation stage, which differs from the glossing word-level score in that it takes boundary *type* into consideration.
+> Example:  
+gold: morpheme1-morpheme2  
+predicted: morpheme1~morpheme2
+glossing word-level accuracy: 1/1 words
+segmentation word-level accuracy: 0/1 words
+
+Thus, we can compare these two scores to see how many words were incorrect only in boundary type.
+
+Overall, the segmentation stage word-level accuracy is the more sensible metric here, simply asking: did we correctly segment (insert boundaries of the right type in the right spots, performing normalization where needed but otherwise maintaining the input form) *and* gloss (provide the correct label for every morpheme) the entire word?
+
 ##### Bag o' Words
-The idea with this check is to look for the right glosses, while being forgiving about ECF from earlier in the word.  To do this, we don't care about the order/alignment of the glosses, just that they're present.  
+As mentioned, the glossing stage morpheme-level score doesn't work so well at the pipeline stage, because of the impact of ECF from earlier in the word.  But a morpheme-level evaluation is nice for providing a more fine-grained view than a word-level one.  We therefore use this metric as a kind of morpheme-level accuracy more suited to the pipeline: we don't care about the order/alignment of the glosses, just that they're present.  This score is basically a more forgiving version of the other morpheme-level accuracy, so it must be greater than or equal to that score.  
 For each word, we go through its gold glosses one-by-one.  We check if each is present *somewhere* in the set of predicted glosses for this word.  Notably, if it is, we *remove* it, so that each predicted morpheme can only be counted once.  This probably isn't super impactful, as its unlikely the same gloss appears multiple times in one word.  
 This score is reported at the morpheme level.  So the bag o' words score is the number of gold morphemes that were correctly predicted *somewhere* in the word (excluding duplicates), divided by the total number of gold morphemes.  
-This score is basically a more forgiving version of the morpheme-level accuracy, so it must be greater than or equal to that score.
+
 > Example:  
 gold: *morpheme1-morpheme2*  
 predicted: *morpheme2-morpheme1*  

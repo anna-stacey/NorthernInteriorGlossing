@@ -15,11 +15,11 @@ def check_results(outputted_results, expected_results):
             print(f"\nIncorrect evaluation result for {col_name}.\nExpected {expected_result}, but got {outputted_result}.")
 
 @click.command()
-@click.option("--results_csv", required=True, help="The path to the CSV where the eval results are being printed.")
-@click.option("--expected_results", required=True, help="A string representing the row of eval results we expect for the test data.")
+@click.option("--results_csv", required = True, help = "The path to the CSV where the eval results are being printed.")
+@click.option("--expected_results", required = True, help = "A string representing the row of eval results we expect for the test data.")
 def main(results_csv, expected_results):
     print("*** Checking evaluation results... ***")
-    current_results = (pd.read_csv(results_csv)).tail(1)
+    current_results = (pd.read_csv(results_csv, keep_default_na = False)).tail(1)
     check_results(current_results, expected_results.split(","))
     print("*** Finished check for incorrect evaluation. ***\n\n")
 

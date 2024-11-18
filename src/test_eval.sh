@@ -48,6 +48,19 @@ OUTPUT_6=./src/test_data/test_fairseq_6.output
 GOLD_OUTPUT_6=./src/test_data/test_3.output
 EXPECTED_RESULTS_6="0.00%,33.33%,25.00%,28.57%,75.00%,None,None"
 
+# Gold boundaries and predicted boundaries
+# Specially looking at diff. boundary types and words with mulitple boundaries
+# P.S. This numbering system is terrible to update.  Switching to animals.
+WHOLE_INPUT_TIGER=./src/test_data/test_21.txt
+INPUT_TIGER=./src/test_data/test_1.input
+OUTPUT_TIGER=./src/test_data/test_fairseq_21.output
+GOLD_OUTPUT_TIGER=./src/test_data/test_21.output
+# If we do the skip boundaries approach
+# And be boundary-type *insensitive*
+# And assume each infix boundary counts separately
+# TP: iiiiiii, FP: ii, FN: iiii
+EXPECTED_RESULTS_TIGER="0.00%,77.78%,63.64%,70.00%,81.82%,None,None"
+
 # Gold all grams, predicted all grams, all wrong
 GOLD_7=./src/test_data/test_1.txt
 OUTPUT_7=./src/test_data/test_7_pred.txt
@@ -148,6 +161,10 @@ python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPE
 echo "Segmentation Test 6:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_6 --output_file=$OUTPUT_6 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_6 > /dev/null
 python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_6
+
+echo "Segmentation Test 7:"
+python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_TIGER --output_file=$OUTPUT_TIGER --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_TIGER > /dev/null
+python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_TIGER
 
 echo "Gloss Test 1:"
 python3 src/eval_gloss.py --test_file=$GOLD_7 --output_file=$OUTPUT_7 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null

@@ -38,24 +38,66 @@ def format_fairseq_output(output):
 
     return formatted_output
 
-# No return value, just prints
-def _evaluate_f1(output, gold_output):
+# Gets the boundary-level precision, recall, and F1.
+# Prints them all, or a message letting you know if there was an issue with the calculations.
+# Returns the three values in a list
+def _evaluate_f1(predicted_output, gold_output):
+    is_type_sensitive = False
     true_pos = 0
     false_pos = 0
     false_neg = 0
 
-    for output_seg_word, gold_seg_word in zip(output, gold_output):
-        # Is a true positive a boundary that is in exactly the right position? Recalling that there may be normalization processes.
-        # Or should we look at the sequence of boundaries inserted, and check that they're in the right order?
-        # Trying the former approach, but it will call a lot of almost-correct boundaries false positives...
-        for char_index, char in enumerate(output_seg_word):
-            if char in ALL_BOUNDARIES:
-                if char_index < len(gold_seg_word) and gold_seg_word[char_index] == char:
+    # Go word by word,
+    # then character by character.
+    # Because of normalization, the gold and pred words may not have the same number of letters.
+    # And obviously, they may not match in where they've put boundaries.
+    # We want to look for boundaries between each pair of letters.
+    # Rather than just proceeding with a single index which compares the character at pos x in both
+    # the predicted and gold output, we will have a count for each word which means we can skip boundaries
+    # even when they do not match in the predicted vs. gold.
+    # For example, consider:
+    # gold: *kʷukʷ-s-cút-s*
+    # predicted: *kʷukʷs-cút-s*
+    # Starting with kʷ being at index 0 in both words, we first come to a discrepancy at index 3,
+    # where the gold has a boundary and the predicted has a letter.
+    # This boundary should be counted as usual (i.e., a gold boundary that the prediction missed).
+    # However, we will next move *only* the gold count forward, so that the next comparison
+    # is at index 4 in the gold (s) but index 3 in the predicted (s).
+    # Therefore, the second boundary is fairly evaluated as being correct.
+    for pred_seg_word, gold_seg_word in zip(predicted_output, gold_output):
+        pred_seg_word = pred_seg_word.replace(" ", "") # Go from w o r d -> word
+        gold_seg_word = gold_seg_word.replace(" ", "")
+
+        # We should index fully through each word, because when one ends, the other may have remaining boundaries
+        # that must be included in our counts (hence the 'or' below).
+        gold_word_index = 0
+        pred_word_index = 0
+        while gold_word_index < len(gold_seg_word) or pred_word_index < len(pred_seg_word):
+            gold_char = gold_seg_word[gold_word_index] if (gold_word_index < len(gold_seg_word)) else None
+            pred_char = pred_seg_word[pred_word_index] if (pred_word_index < len(pred_seg_word)) else None
+            # Either a true positive or a false negative
+            if gold_char in ALL_BOUNDARIES:
+                # True positive
+                # Depending on value of bool, will check for either an exact boundary match *or* any boundary
+                if (is_type_sensitive and gold_char == pred_char) or (not(is_type_sensitive) and pred_char in ALL_BOUNDARIES):
                     true_pos += 1
+                    # Increment both counts
+                    gold_word_index += 1
+                    pred_word_index += 1
+                # False Negative
                 else:
-                    false_pos += 1
-            elif char_index < len(gold_seg_word) and gold_seg_word[char_index] in ALL_BOUNDARIES:
-                false_neg += 1
+                    false_neg += 1
+                    # Increment only over the boundary
+                    gold_word_index += 1
+            # False positive
+            elif pred_char in ALL_BOUNDARIES:
+                false_pos += 1
+                # Increment only over the boundary
+                pred_word_index += 1
+            else:
+                # Neither was a boundary, so just increment both counts
+                gold_word_index += 1
+                pred_word_index += 1
 
     # Calculations
     # No predicted boundaries -> no precision

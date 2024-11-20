@@ -2,12 +2,13 @@ import click
 import re
 import sklearn_crfsuite
 from glossed_data_utilities import add_back_OOL_words, as_percent, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
-from glossed_data_handling_utilities import gloss_line_to_morphemes, ignore_brackets, seg_line_to_morphemes, REGULAR_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, NON_INFIXING_BOUNDARIES
+from glossed_data_handling_utilities import gloss_line_to_morphemes, ignore_brackets, seg_line_to_morphemes, REGULAR_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, NON_INFIXING_BOUNDARIES, LANG_LABEL_SYMBOLS
 from os import getcwd, mkdir, path
 from unicodedata import normalize
 
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
+LANG_IS_LABELED = False
 
 # Quick note: we are *always* removing brackets when glossing.
 # This is to handle the glossing style where unrealized morphemes/pieces of morphemes
@@ -42,9 +43,19 @@ def morpheme_to_features(word, i):
     ACUTE_ACCENT = "\u0301"
 
     morpheme = word[i]
-    word_str = ""
-    for each_morpheme in word:
-        word_str += each_morpheme
+    # Determine language label now, because it may need to be removed from this morpheme
+    # Check the end of the word for a lang label, and remove it from this morpheme if needed
+    if (word[-1])[-1] in LANG_LABEL_SYMBOLS:
+        lang_label = word[-1][-1]
+        if morpheme[-1] in LANG_LABEL_SYMBOLS:
+            morpheme = morpheme[:-1]
+    # Because of infixes, the end of the word may be part of the penultimate morpheme
+    elif len(word) > 1 and (word[-2])[-1] in LANG_LABEL_SYMBOLS:
+        lang_label = word[-2][-1]
+        if morpheme[-1] in LANG_LABEL_SYMBOLS:
+            morpheme = morpheme[:-1]
+    else:
+        lang_label = None
 
     # Features of the morpheme itself
     features = {
@@ -77,6 +88,11 @@ def morpheme_to_features(word, i):
             "last_morpheme": True
         })
 
+    if lang_label:
+        features.update({
+            "lang_label": lang_label
+        })
+
     return features
 
 # Returns a list of features for each morpheme for each word in the given sentence
@@ -91,6 +107,12 @@ def seg_line_to_features(segmentation_line):
     return featureVectorList
 
 # Gets each X and y into the right format for the model, and returns them
+# Inputs:
+#   X: a list with one entry per sentence, where each entry is a seg line (as a string)
+#   y: a list with one entry per sentence, where each entry is a gloss line (as a string)
+# Outputs:
+#   X: a list with one entry per sentence, where each entry is a list of seg line morphemes, where each entry is a dict of features abt that morpheme
+#   y: a list with one entry per sentence, where each entry is a list of gloss line morphemes, where each entry is just that morpheme (as a string)
 def format_X_and_y(X, y):
     # What form of input do we need?
     # We need a morpheme-by-morpheme breakdown, with each morpheme in the form of a dictionary with features
@@ -105,6 +127,14 @@ def format_X_and_y(X, y):
     # Now that we've used them for features like morpheme_1, we can remove OOL tokens altogether
     remove_OOL_from_X_or_y(X, is_X = True)
     remove_OOL_from_X_or_y(y, is_X = False)
+
+    # Confirm that we either do or do not have language labels, as specified
+    for sentence in X:
+        for morpheme_as_features in sentence:
+            if LANG_IS_LABELED:
+                assert("lang_label" in morpheme_as_features.keys())
+            else:
+                assert(not("lang_label" in morpheme_as_features.keys()))
 
     return X, y
 

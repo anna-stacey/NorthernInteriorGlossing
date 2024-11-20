@@ -3,9 +3,10 @@
 
 import click
 import re
-from gloss import read_datasets, read_file
+from gloss import read_datasets
 from os import getcwd, mkdir, path
 from glossed_data_utilities import handle_OOL_words
+from glossed_data_handling_utilities import LANG_LABEL_REGEX
 
 OUTPUT_FOLDER = "/generated_data/"
 TRAIN_INPUT_NAME = "train.input"
@@ -45,6 +46,13 @@ def general_preprocess(sentence):
     sentence = sentence.lower()
 
     return sentence
+
+def handle_lang_labelling(dataset_y):
+    updated_dataset_y =[]
+    for line in dataset_y:
+        updated_dataset_y.append(re.sub(LANG_LABEL_REGEX, "", line))
+
+    return updated_dataset_y
 
 # Go from a list of sentence strings, to a list of sentences which are lists of words
 def strings_to_word_lists(dataset):
@@ -108,6 +116,10 @@ def main(train_file, dev_file, test_file):
     dev_y = [sentence[1] for sentence in dev]
     test_X = [sentence[0] for sentence in test]
     test_y = [sentence[1] for sentence in test]
+
+    train_y = handle_lang_labelling(train_y)
+    dev_y = handle_lang_labelling(dev_y)
+    test_y = handle_lang_labelling(test_y)
 
     # Convert these to the appropriate format for fairseq
     train_X_formatted, train_y_formatted = format_data(train_X, train_y)

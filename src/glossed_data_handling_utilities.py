@@ -10,6 +10,9 @@ LEFT_REDUP_INFIX_BOUNDARY = "{"
 RIGHT_REDUP_INFIX_BOUNDARY = "}"
 NON_INFIXING_BOUNDARIES = [REGULAR_BOUNDARY, REDUPLICATION_BOUNDARY, CLITIC_BOUNDARY]
 
+LANG_LABEL_SYMBOLS = ["&", "#"]
+LANG_LABEL_REGEX = r"[" + "".join(LANG_LABEL_SYMBOLS) + r"]"
+
 # Removes the brackets but *leaves* the bracketed affix in.
 def ignore_brackets(sentence):
     sentence = re.sub(r'[\[\]]', "", sentence)

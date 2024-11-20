@@ -2,7 +2,7 @@ import click
 from os import path
 import re
 from gloss import make_sentence_list_with_prediction
-from glossed_data_handling_utilities import  REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY
+from glossed_data_handling_utilities import  REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, LANG_LABEL_REGEX
 from glossed_data_utilities import add_back_OOL_words, as_percent, print_results_csv, read_file, create_file_of_sentences, OUT_OF_LANGUAGE_MARKER
 
 OUTPUT_DIR = "generated_data/"
@@ -223,6 +223,10 @@ def reassemble_predicted_line(transcription_lines, predicted_seg_word_list):
         predicted_seg_line.extend(predicted_seg_word_list[current_word_index : current_word_index + line_word_count])
         # Get rid of s p a c e s between letters
         predicted_seg_line = [word.replace(" ", "") for word in predicted_seg_line]
+        # Check if we need to add a lang label (for pipeline input)
+        if re.search(LANG_LABEL_REGEX, transcription_line):
+            lang_label = (re.search(LANG_LABEL_REGEX, transcription_line)).group()
+            predicted_seg_line = [word + lang_label for word in predicted_seg_line]
 
         # Update our progress through the predicted word list
         current_word_index += line_word_count

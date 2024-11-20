@@ -132,9 +132,9 @@ def format_X_and_y(X, y):
     for sentence in X:
         for morpheme_as_features in sentence:
             if LANG_IS_LABELED:
-                assert("lang_label" in morpheme_as_features.keys())
+                assert "lang_label" in morpheme_as_features.keys(), morpheme_as_features
             else:
-                assert(not("lang_label" in morpheme_as_features.keys()))
+                assert not("lang_label" in morpheme_as_features.keys()), morpheme_as_features
 
     return X, y
 
@@ -195,7 +195,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                         # Create a crf model with these parameters
                         crf = create_crf(train_X, train_y, max_iter, alg, min_freq, c2)
                         # And see how the model does on the dev set
-                        result = _get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
+                        result = float(_get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y))))
                         print(f"With {max_iter} (max.) iterations, the {alg} algorithm using a c2 of {c2}, and {min_freq + 1} minimum feature frequency: {result}")
                         if result > best_accuracy:
                             best_accuracy = result
@@ -207,7 +207,7 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                     # Create a crf model with these parameters
                     crf = create_crf(train_X, train_y, max_iter, alg, min_freq, -1)
                     # And see how the model does on the dev set
-                    result = _get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y)))
+                    result = float(_get_simple_morpheme_level_accuracy(dev_y, (run_crf(crf, dev_X, dev_y))))
                     print(f"With {max_iter} (max.) iterations, the {alg} algorithm, and {min_freq + 1} minimum feature frequency: {result}")
                     if result > best_accuracy:
                         best_accuracy = result
@@ -215,11 +215,10 @@ def test_crf(train_X, train_y, dev_X, dev_y):
                         best_alg = alg
                         best_min_freq = min_freq
 
-    best_accuracy_percent = as_percent(best_accuracy)
     if best_alg == 'lbfgs' or best_alg == 'l2sgd':
-        print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm with a c2 of {best_c2}, and with a minimum feature frequency of {best_min_freq + 1}.")
+        print(f"Best result: {best_accuracy}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm with a c2 of {best_c2}, and with a minimum feature frequency of {best_min_freq + 1}.")
     else:
-        print(f"Best result: {best_accuracy_percent}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm and with a minimum feature frequency of {best_min_freq + 1}.")
+        print(f"Best result: {best_accuracy}% accuracy with {best_max_iter} (max.) iterations, using the {best_alg} algorithm and with a minimum feature frequency of {best_min_freq + 1}.")
 
 # Returns the accuracy value (for each morpheme)
 # Expects a list of sentences as lists of morphemes

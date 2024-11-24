@@ -10,7 +10,7 @@ INPUT_1=./src/test_data/test_1.input
 TRAIN_INPUT_1=./src/test_data/test_1.input
 OUTPUT_1=./src/test_data/test_fairseq_1.output
 GOLD_OUTPUT_1=./src/test_data/test_1.output
-EXPECTED_RESULTS_1="100.00%,None,None,None,None,0.00%,None"
+EXPECTED_RESULTS_1="100.00%,None,None,None,None,None,None,None,0.00%,None"
 
 # No gold boundaries, no predicted boundaries, 0% correct, all words OOV
 WHOLE_INPUT_2=./src/test_data/test_1.txt
@@ -18,37 +18,37 @@ INPUT_2=./src/test_data/test_1.input
 TRAIN_INPUT_2=./src/test_data/test_2_train.input
 OUTPUT_2=./src/test_data/test_fairseq_2.output
 GOLD_OUTPUT_2=./src/test_data/test_2.output
-EXPECTED_RESULTS_2="0.00%,None,None,None,None,100.00%,0.00%"
+EXPECTED_RESULTS_2="0.00%,None,None,None,None,None,None,None,100.00%,0.00%"
 
 # Gold boundaries, no predicted boundaries, 0% correct
 WHOLE_INPUT_3=./src/test_data/test_3.txt
 INPUT_3=./src/test_data/test_1.input
 OUTPUT_3=./src/test_data/test_fairseq_3.output
 GOLD_OUTPUT_3=./src/test_data/test_3.output
-EXPECTED_RESULTS_3="0.00%,None,0.00%,0.00%,0.00%,None,None"
+EXPECTED_RESULTS_3="0.00%,None,0.00%,0.00%,None,0.00%,0.00%,0.00%,None,None"
 
 # Gold boundaries, predicted boundaries, 100% correct
 WHOLE_INPUT_4=./src/test_data/test_3.txt
 INPUT_4=./src/test_data/test_1.input
 OUTPUT_4=./src/test_data/test_fairseq_4.output
 GOLD_OUTPUT_4=./src/test_data/test_3.output
-EXPECTED_RESULTS_4="100.00%,100.00%,100.00%,100.00%,100.00%,None,None"
+EXPECTED_RESULTS_4="100.00%,100.00%,100.00%,100.00%,100.00%,100.00%,100.00%,100.00%,None,None"
 
 # Gold boundaries, predicted boundaries, 0% correct
-# TP: i, FP: iii, FN: iii
+# Type-insensitive and type-sensitive: TP: i, FP: iii, FN: iii
 WHOLE_INPUT_5=./src/test_data/test_3.txt
 INPUT_5=./src/test_data/test_1.input
 OUTPUT_5=./src/test_data/test_fairseq_5.output
 GOLD_OUTPUT_5=./src/test_data/test_3.output
-EXPECTED_RESULTS_5="0.00%,25.00%,25.00%,25.00%,100.00%,None,None"
+EXPECTED_RESULTS_5="0.00%,25.00%,25.00%,25.00%,25.00%,25.00%,25.00%,100.00%,None,None"
 
 # Gold boundaries, predicted boundaries, 0% correct
-# TP: i, FP: ii, FN: iii
+# Type-insensitive and type-sensitive: TP: i, FP: ii, FN: iii
 WHOLE_INPUT_6=./src/test_data/test_3.txt
 INPUT_6=./src/test_data/test_1.input
 OUTPUT_6=./src/test_data/test_fairseq_6.output
 GOLD_OUTPUT_6=./src/test_data/test_3.output
-EXPECTED_RESULTS_6="0.00%,33.33%,25.00%,28.57%,75.00%,None,None"
+EXPECTED_RESULTS_6="0.00%,33.33%,25.00%,28.57%,33.33%,25.00%,28.57%,75.00%,None,None"
 
 # Gold boundaries and predicted boundaries
 # Specially looking at diff. boundary types and words with mulitple boundaries
@@ -62,8 +62,9 @@ GOLD_OUTPUT_TIGER=./src/test_data/test_21.output
 # If we do the skip boundaries approach
 # And be boundary-type *insensitive*
 # And assume each infix boundary counts separately
-# TP: iiiiiii, FP: ii, FN: iiii
-EXPECTED_RESULTS_TIGER="0.00%,77.78%,63.64%,70.00%,81.82%,50.00%,0.00%"
+# Type-insensitive: TP: iiiiiii, FP: ii, FN: iiii
+# Type-sensitive: TP: iiiiii FP: iii FN: iiiii
+EXPECTED_RESULTS_TIGER="0.00%,77.78%,63.64%,70.00%,66.67%,54.55%,60.00%,81.82%,50.00%,0.00%"
 
 # Gold all grams, predicted all grams, all wrong
 GOLD_7=./src/test_data/test_1.txt

@@ -10,7 +10,7 @@ GOLD_OUTPUT_FILE_NAME = "seg_gold.txt"
 PRED_OUTPUT_FILE_NAME = "seg_pred.txt"
 ALL_BOUNDARIES = [LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, REGULAR_BOUNDARY, CLITIC_BOUNDARY, REDUPLICATION_BOUNDARY]
 OUTPUT_CSV = "./seg_results.csv"
-OUTPUT_CSV_HEADER = "Acc,Boundary Prec,B Recall,B F1,B Count,OOV Count,OOV Acc"
+OUTPUT_CSV_HEADER = "Acc,Boundary Prec,B Recall,B F1,B Prec (Type-Sensitive),B Recall (Type-Sensitive), B F1 (Type-Sensitive),B Count,OOV Count,OOV Acc"
 DO_PRINT_RESULTS_CSV = True
 NO_RESULT_MARKER = None
 
@@ -160,6 +160,7 @@ def evaluate(output, gold_output):
     print("\n** Segmentation accuracy: **")
     results.append(_evaluate_word_level_acc(output, gold_output))
     results.extend(_evaluate_f1(output, gold_output, is_type_sensitive = False))
+    results.extend(_evaluate_f1(output, gold_output, is_type_sensitive = True))
 
     return results
 

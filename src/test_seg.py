@@ -41,8 +41,7 @@ def format_fairseq_output(output):
 # Gets the boundary-level precision, recall, and F1.
 # Prints them all, or a message letting you know if there was an issue with the calculations.
 # Returns the three values in a list
-def _evaluate_f1(predicted_output, gold_output):
-    is_type_sensitive = False
+def _evaluate_f1(predicted_output, gold_output, is_type_sensitive):
     true_pos = 0
     false_pos = 0
     false_neg = 0
@@ -160,7 +159,7 @@ def evaluate(output, gold_output):
     assert len(output) == len(gold_output), f"\nError: There are {len(output)} predicted words, and {len(gold_output)} gold words."
     print("\n** Segmentation accuracy: **")
     results.append(_evaluate_word_level_acc(output, gold_output))
-    results.extend(_evaluate_f1(output, gold_output))
+    results.extend(_evaluate_f1(output, gold_output, is_type_sensitive = False))
 
     return results
 
@@ -186,25 +185,34 @@ def _get_boundary_count(output):
 
     return boundary_count
 
-# Compare the train and test word-lists to see how many OOV tokens we dealt with
-# (Assuming they're OOV if their output differs (rather than their input))
+# Compare the train and test input word-lists to see how many OOV tokens we dealt with
 # Plus track performance on just those OOV tokens
 # Note that some of these OOV tokens may be repeats
-def evaluate_OOV_performance(output, gold_output, train_output):
+def evaluate_OOV_performance(output, gold_output, train_input, test_input):
+    assert(len(output) == len(gold_output))
+    assert(len(output) == len(test_input))
     OOV_count = 0
     OOV_incorrect_count = 0
-    for output_word, gold_word in zip(output, gold_output):
-        # If this word is OOV
-        if not (gold_word in train_output):
+    for input_word, output_word, gold_output_word in zip(test_input, output, gold_output):
+        # If this word is OOV i.e., its input form is NOT in the train input
+        if not (input_word in train_input):
             OOV_count += 1
-            if gold_word != output_word:
+            if gold_output_word != output_word:
                 OOV_incorrect_count += 1
 
-    OOV_proportion = as_percent(OOV_count / len(output))
-    print(f"\nOOV count: {OOV_count}/{len(output)} words ({OOV_proportion}%).")
+    if len(output):
+        OOV_proportion = as_percent(OOV_count / len(output))
+        print(f"\nOOV count: {OOV_count}/{len(output)} words ({OOV_proportion}%).")
+    else:
+        OOV_proportion = NO_RESULT_MARKER
+        print("\nNo OOV wor dcount value due to no words at all!.")
 
-    OOV_acc = as_percent((OOV_count - OOV_incorrect_count) / OOV_count)
-    print(f"OOV accuracy: {OOV_acc}% on {OOV_count} OOV words.\n")
+    if OOV_count:
+        OOV_acc = as_percent((OOV_count - OOV_incorrect_count) / OOV_count)
+        print(f"\nOOV accuracy: {OOV_acc}% on {OOV_count} OOV words.")
+    else:
+        OOV_acc = NO_RESULT_MARKER
+        print(f"\nNo OOV accuracy due to there being no OOV words.")
 
     return [OOV_proportion, OOV_acc]
 
@@ -246,8 +254,9 @@ def print_predictions(predictions, entire_input):
 # If this not specified, then we assume the output is just a list of words, like the input
 @click.option("--output_file_is_fairseq_formatted", is_flag = True, help = "A flag the output has fairseq formatting and needs to be handled as such.")
 @click.option("--gold_output_file", required=True, help="The name of the gold output file.")
-@click.option("--train_output_file", help="The name of the training output file.")
-def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_output_file, train_output_file = None):
+@click.option("--train_input_file", help="The name of the training input file, for OOV calculations.")
+@click.option("--test_input_file", help="The name of the test input file, for OOV calculations.")
+def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_output_file, train_input_file = None, test_input_file = None):
     print("Comparing these files:", output_file, gold_output_file)
     
     # Get the test results
@@ -262,9 +271,10 @@ def main(whole_input_file, output_file, output_file_is_fairseq_formatted, gold_o
     results = []
     results.extend(evaluate(output, gold_output))
     results.append(compare_boundary_count(output, gold_output))
-    if train_output_file:
-        train_output = read_lines_from_file(train_output_file)
-        results.extend(evaluate_OOV_performance(output, gold_output, train_output))
+    if train_input_file and test_input_file:
+        train_input = read_lines_from_file(train_input_file)
+        test_input = read_lines_from_file(test_input_file)
+        results.extend(evaluate_OOV_performance(output, gold_output, train_input, test_input))
     if DO_PRINT_RESULTS_CSV:
         print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULT_MARKER)
 

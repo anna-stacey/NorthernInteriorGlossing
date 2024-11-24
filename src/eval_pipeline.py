@@ -2,11 +2,11 @@ import click
 from eval_gloss import evaluate_system
 from gloss import add_word_boundaries_to_gloss, deal_with_stems, extract_X_and_y, seg_line_to_features, gloss_line_to_morphemes, reassemble_predicted_words
 from glossed_data_utilities import as_percent, handle_OOL_words, print_results_csv, read_file
-from test_seg import evaluate
+from test_seg import evaluate, evaluate_OOV_performance, read_lines_from_file
 from preprocess_seg import sentence_list_to_word_list
 
 OUTPUT_CSV = "./pipeline_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc,Word Acc (incl. boundaries),Bag o' Words"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc,Word Acc (incl. boundaries),Bag o' Words,OOV Count,OOV Acc"
 NO_RESULTS_MARKER = None
 
 # Expects a list of sentences as lists of words as lists of morphemes
@@ -34,11 +34,13 @@ def bag_of_words(y, pred_y):
     return accuracy
 
 @click.command()
-@click.option("--test_file", help = "The name of the file containing all sentences in the test set.")
-@click.option("--output_file", help = "The name of the file containing all predicted output (i.e., the test set, but with the gloss line replaced with our system's output).")
-@click.option("--segmentation_line_number", help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
-@click.option("--gloss_line_number", help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
-def main(test_file, output_file, segmentation_line_number, gloss_line_number):
+@click.option("--test_file", required = True, help = "The name of the file containing all sentences in the test set.")
+@click.option("--output_file", required = True, help = "The name of the file containing all predicted output (i.e., the test set, but with the gloss line replaced with our system's output).")
+@click.option("--segmentation_line_number", required = True, help = "The line that contains the segmented sentence.  For example if there are four lines each and the segmentation is the second line, this will be 2.")
+@click.option("--gloss_line_number", required = True, help = "The line that contains the glossed sentence.  For example if there are four lines each and the gloss is the third line, this will be 3.")
+@click.option("--train_input_file", help="The name of the training input file, for optional OOV calculations.")
+@click.option("--test_input_file", help="The name of the test input file, for optional OOV calculations.")
+def main(test_file, output_file, segmentation_line_number, gloss_line_number, train_input_file = None, test_input_file = None):
     # Convert right away to prevent off-by-one errors
     segmentation_line_number = int(segmentation_line_number) - 1
     gloss_line_number = int(gloss_line_number) - 1
@@ -69,8 +71,13 @@ def main(test_file, output_file, segmentation_line_number, gloss_line_number):
     pred_y_reassembled = reassemble_predicted_words([line.split() for line in pred_X], pred_y)
     pred_y_word_list = sentence_list_to_word_list(pred_y_reassembled)
     results.append(evaluate(pred_y_word_list, test_y_word_list)[0]) # Omit the boundary-focussed results
-
     results.append(bag_of_words(test_y, pred_y))
+
+    if train_input_file and test_input_file:
+        train_input = read_lines_from_file(train_input_file)
+        test_input = read_lines_from_file(test_input_file)
+        results.extend(evaluate_OOV_performance(pred_y_word_list, test_y_word_list, train_input, test_input))
+
     print_results_csv(results, OUTPUT_CSV_HEADER, OUTPUT_CSV, NO_RESULTS_MARKER)
 
 if __name__ == '__main__':

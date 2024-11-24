@@ -342,7 +342,7 @@ def train_system(train_X, train_y):
     train_y_no_stems, stem_dict = deal_with_stems_helper(train_X, train_y)
     # Train the CRF model for bound morphemes
     # Using the best values found during hyperparameter tuning
-    crf = create_crf(train_X, train_y_no_stems, 50, 'ap', 0, -1)
+    crf = create_crf(train_X, train_y_no_stems, 50, 'pa', 0, -1)
     
     return train_y_no_stems, stem_dict, crf
 

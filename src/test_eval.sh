@@ -125,7 +125,7 @@ GOLD_17=./src/test_data/test_3.txt
 INPUT_17=./src/test_data/test_1.input
 TRAIN_INPUT_17=./src/test_data/test_1.input
 OUTPUT_17=./src/test_data/test_17_pred.txt
-EXPECTED_RESULTS_17="100.00%,100.00%,100.00%,100.00%,50.00%,100.00%,0.00%,None"
+EXPECTED_RESULTS_17="100.00%,100.00%,50.00%,0.00%,None"
 
 # Mixed stems/grams, glosses correct but seg mistakes, (incl. boundary-only mistakes), no OOV words
 # 6/8 morphemes correct (7/8 BoW), 2/4 stems correct, 4/5 grams correct
@@ -133,7 +133,7 @@ GOLD_18=./src/test_data/test_3.txt
 INPUT_18=./src/test_data/test_1.input
 TRAIN_INPUT_18=./src/test_data/test_1.input
 OUTPUT_18=./src/test_data/test_18_pred.txt
-EXPECTED_RESULTS_18="75.00%,50.00%,50.00%,80.00%,0.00%,87.50%,0.00%,None"
+EXPECTED_RESULTS_18="75.00%,87.50%,0.00%,0.00%,None"
 
 # Mixed stems/grams
 # 2/4 morphemes correct (4/4 BoW), 1/3 stems correct, 1/3 grams correct, all words OOV
@@ -141,7 +141,7 @@ GOLD_19=./src/test_data/test_11.txt
 INPUT_19=./src/test_data/test_1.input
 TRAIN_INPUT_19=./src/test_data/test_2_train.input
 OUTPUT_19=./src/test_data/test_19_pred.txt
-EXPECTED_RESULTS_19="50.00%,50.00%,33.33%,33.33%,50.00%,100.00%,100.00%,50.00%"
+EXPECTED_RESULTS_19="50.00%,100.00%,50.00%,100.00%,50.00%"
 
 # Mixed stems/grams
 # 4/7 morphemes correct (6/7 BoW), 3/5 stems correct, 1/2 grams correct, half OOV
@@ -149,7 +149,7 @@ GOLD_20=./src/test_data/test_20.txt
 OUTPUT_20=./src/test_data/test_20_pred.txt
 INPUT_20=./src/test_data/test_1.input
 TRAIN_INPUT_20=./src/test_data/test_21_train.input
-EXPECTED_RESULTS_20="57.14%,50.00%,60.00%,50.00%,50.00%,85.71%,50.00%,0.00%"
+EXPECTED_RESULTS_20="57.14%,85.71%,50.00%,50.00%,0.00%"
 
 echo "Segmentation Test 1:"
 python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 --train_input_file=$TRAIN_INPUT_1 --test_input_file=$INPUT_1 > /dev/null

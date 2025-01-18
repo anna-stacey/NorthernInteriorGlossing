@@ -404,16 +404,20 @@ def write_sentences(examples, file_path, randomize_order = False):
     if randomize_order:
         shuffle(examples_to_write)
 
-    print("\nWriting sentences to", file_path)
+    total_token_count = 0
+    print(f"\nWriting {len(examples_to_write)} sentences to", file_path)
     with open(file_path, "w") as file:
         for i, example in enumerate(examples_to_write):
             if len(example) > 0:
                 for j, line in enumerate(example):
+                    if j == 0:
+                        total_token_count += len(line.split())
                     file.write(line + "\n")
                     # Add blank line after each example (but not if it's the end of the dataset, bc that results in a double newline at EOF)
                     if (j >= len(example) - 1) and (i < len(examples_to_write) - 1):
                         file.write("\n")
         file.close()
+    print(f"{total_token_count} tokens were printed.")
 
 # Problem: a word has stress marked in one of the transcription or segmented lines, but not the other
 # Sol'n: add stress in the right spot to the word in the other line!

@@ -340,6 +340,7 @@ def mark_OOL_words(data, OOL_WORDS, LINES_PER_SENTENCE):
 def handle_OOL_words(datasets, replace = False):
     updated_datasets = []
     for dataset in datasets:
+        OOL_count = 0
         updated_dataset = []
         for example in dataset:
             updated_example = []
@@ -353,6 +354,7 @@ def handle_OOL_words(datasets, replace = False):
                 while word_number < len(updated_words):
                     word = updated_words[word_number]
                     if word.startswith(OUT_OF_LANGUAGE_MARKER) or word == OUT_OF_LANGUAGE_LABEL:
+                        OOL_count += 1
                         updated_words.pop(word_number)
                         if not replace:
                             word_number -= 1 # To cancel out the incrementation
@@ -364,6 +366,11 @@ def handle_OOL_words(datasets, replace = False):
                 updated_example.append(updated_line)
             updated_dataset.append(updated_example)
         updated_datasets.append(updated_dataset)
+        assert(OOL_count % 3 == 0) # Each removal should occur 3x (once in the transcription line, seg line, and gloss line)
+        if replace:
+            print(f"{int(OOL_count/3)} OOL tokens in the current dataset were replaced with {OUT_OF_LANGUAGE_LABEL}.")
+        else:
+            print(f"{int(OOL_count/3)} OOL tokens in the current dataset were removed.")
 
     return updated_datasets
 

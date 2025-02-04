@@ -332,7 +332,7 @@ def gloss_stems(dev_X, interim_pred_dev_y, stem_dict):
         pred_dev_y.append(pred_glossed_sentence)
     
     total_stem_count = known_stem_count + unknown_stem_count
-    print(f"In the test set, {as_percent(unknown_stem_count/total_stem_count)}% ({unknown_stem_count}/{total_stem_count}) of stems were not in the stem dictionary.")
+    print(f"In the test set, {as_percent(unknown_stem_count/total_stem_count)}% ({unknown_stem_count}/{total_stem_count}) of morphemes *identified as stems* were not in the stem dictionary.")
     return pred_dev_y
 
 # Trains and returns the dictionary and the CRF!
@@ -512,6 +512,33 @@ def _is_X_token_OOL(X_token):
 def _is_y_token_OOL(y_token):
     return y_token == OUT_OF_LANGUAGE_LABEL
 
+# The stem OOV proportion is just a property of the test set relative to the train set.
+# It's totally indifferent to any segmentation or glossing processes.
+# For this reason, this score is not being printed at the pipeline stage,
+# because the result would be identical to the result here!
+def print_OOV_stem_proportion(test_X, test_y, stem_dict):
+    stem_count = 0
+    stem_OOV_count = 0
+
+    assert(len(test_X) == len(test_y))
+    for X_sentence, y_sentence in zip(test_X, test_y):
+        assert(len(X_sentence) == len(y_sentence))
+        for morpheme_feature_set, morpheme_gloss in zip(X_sentence, y_sentence):
+            morpheme = morpheme_feature_set['morpheme']
+            # Check if it's a stem - defined as having 1+ lowercase letter in its gloss
+            if re.search(r'[a-z]', morpheme_gloss):
+                # Now -- is this stem in the stem dictionary?
+                potential_match = match_stem(morpheme, stem_dict)
+                if not potential_match:
+                    stem_OOV_count += 1
+                stem_count += 1
+                # If you want to know how many morphemes had non-exact matches,
+                # you can check cases where potential_match exists but != morpheme
+    if stem_count > 0:
+        print(f"In the test set, {as_percent(stem_OOV_count/stem_count)}% ({stem_OOV_count}/{stem_count}) of stems were not in the stem dictionary.")
+    else:
+        print("Unable to determine stem OOV proportion - 0 test set stems found.")
+
 @click.command()
 @click.option("--train_file", required = True, help = "The name of the file containing all sentences in the train set.")
 @click.option("--dev_file", required = True, help = "The name of the file containing all sentences in the dev set.")
@@ -556,9 +583,9 @@ def main(train_file, dev_file, test_file, output_folder, output_file, segmentati
     # Hyper-parameter tuning
     #test_crf(train_X, train_y_no_stems, dev_X, dev_y)
 
+    print_OOV_stem_proportion(test_X, test_y, stem_dict)
     # Generate the output
     pred_y = run_system(test_X, test_y, test_X_with_boundaries, crf, stem_dict)
-
     # Assemble output file of predictions
     # Reassemble the predicted morphemes into string lines
     pred_y_to_print = add_back_OOL_words(original_test_transcription_lines, reassemble_predicted_words([line.split() for line in test_X_with_boundaries], pred_y))

@@ -65,8 +65,7 @@ def main(test_file, output_file, segmentation_line_number, gloss_line_number, tr
     pred_y_no_stems = [deal_with_stems((seg_line_to_features(example[segmentation_line_number])), (gloss_line_to_morphemes(example[gloss_line_number])))[0] for example in predictions]
     # Calling deal_with_stems returns a pred_y without word boundaries, so add them back now to keep our results in a consistent format
     pred_y_no_stems = add_word_boundaries_to_gloss(pred_y_no_stems, pred_X)
-    results = [(evaluate_system(test_y, pred_y, pred_y_no_stems))[0]] # Ditch everything but the morpheme acc (for now...)
-
+    results = [(evaluate_system(test_y, pred_y, pred_y_no_stems, include_stem_gram_scores = False))[0]] # Ditch everything but the morpheme acc (for now...)
     results.append(bag_of_words(test_y, pred_y))
 
     # Run the word-by-word eval from the segmentation stage (unlike the glossing one, it checks boundary type)

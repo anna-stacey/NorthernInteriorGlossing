@@ -69,56 +69,56 @@ EXPECTED_RESULTS_TIGER="0.00%,77.78%,63.64%,70.00%,66.67%,54.55%,60.00%,81.82%,5
 # Gold all grams, predicted all grams, all wrong
 GOLD_7=./src/test_data/test_1.txt
 OUTPUT_7=./src/test_data/test_7_pred.txt
-EXPECTED_RESULTS_7="0.00%,0.00%,None,0.00%"
+EXPECTED_RESULTS_7="0.00%,0.00%,None,0.00%,None,0.00%"
 
 # Gold all grams, predicted all stems, all wrong
 GOLD_8=./src/test_data/test_1.txt
 OUTPUT_8=./src/test_data/test_9_pred.txt
-EXPECTED_RESULTS_8="0.00%,0.00%,0.00%,None"
+EXPECTED_RESULTS_8="0.00%,0.00%,0.00%,None,None,0.00%"
 
 # All grams, all correct
 GOLD_9=./src/test_data/test_1.txt
 OUTPUT_9=./src/test_data/test_1.txt
-EXPECTED_RESULTS_9="100.00%,100.00%,None,100.00%"
+EXPECTED_RESULTS_9="100.00%,100.00%,None,100.00%,None,100.00%"
 
 # Gold all stems, predicted all stems, all wrong
 GOLD_10=./src/test_data/test_10.txt
 OUTPUT_10=./src/test_data/test_9_pred.txt
-EXPECTED_RESULTS_10="0.00%,0.00%,0.00%,None"
+EXPECTED_RESULTS_10="0.00%,0.00%,0.00%,None,0.00%,None"
 
 # Gold all stems, predicted all grams, all wrong
 GOLD_11=./src/test_data/test_10.txt
 OUTPUT_11=./src/test_data/test_7_pred.txt
-EXPECTED_RESULTS_11="0.00%,0.00%,None,0.00%"
+EXPECTED_RESULTS_11="0.00%,0.00%,None,0.00%,0.00%,None"
 
 # All stems, all correct
 GOLD_12=./src/test_data/test_10.txt
 OUTPUT_12=./src/test_data/test_10.txt
-EXPECTED_RESULTS_12="100.00%,100.00%,100.00%,None"
+EXPECTED_RESULTS_12="100.00%,100.00%,100.00%,None,100.00%,None"
 
 # Gold all stems, predicted all stems, partly correct
 # 3 correct stems, 1 incorrect stem, no grams
 GOLD_13=./src/test_data/test_10.txt
 OUTPUT_13=./src/test_data/test_13_pred.txt
-EXPECTED_RESULTS_13="75.00%,75.00%,75.00%,None"
+EXPECTED_RESULTS_13="75.00%,75.00%,75.00%,None,75.00%,None"
 
 # Gold all stems, predicted mixed stems/grams, partly correct
 # 2 correct stems, 1 incorrect stem, 1 incorrect gram
 GOLD_14=./src/test_data/test_10.txt
 OUTPUT_14=./src/test_data/test_14_pred.txt
-EXPECTED_RESULTS_14="50.00%,50.00%,66.67%,0.00%"
+EXPECTED_RESULTS_14="50.00%,50.00%,66.67%,0.00%,50.00%,None"
 
 # Moving into multi-morphemic words
 # Mixed stems/grams, all correct
 GOLD_15=./src/test_data/test_3.txt
 OUTPUT_15=./src/test_data/test_3.txt
-EXPECTED_RESULTS_15="100.00%,100.00%,100.00%,100.00%"
+EXPECTED_RESULTS_15="100.00%,100.00%,100.00%,100.00%,100.00%,100.00%"
 
 # Mixed stems/grams, partly correct
 # 2 correct stems, 1 incorrect stem, 3 correct grams, 2 incorrect grams
 GOLD_16=./src/test_data/test_3.txt
 OUTPUT_16=./src/test_data/test_16_pred.txt
-EXPECTED_RESULTS_16="62.50%,50.00%,66.67%,60.00%"
+EXPECTED_RESULTS_16="62.50%,50.00%,66.67%,60.00%,50.00%,75.00%"
 
 # Mixed stems/grams, glosses correct but seg mistakes, (incl. boundary-only mistakes), no OOV words
 GOLD_17=./src/test_data/test_3.txt

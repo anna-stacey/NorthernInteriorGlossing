@@ -5,7 +5,7 @@ EXPECTED_RESULT_NULL_MARKER = "None"
 
 def check_results(outputted_results, expected_results):
     header = list(outputted_results)
-    assert(len(header) == len(expected_results))
+    assert len(header) == len(expected_results), f"The number of columns in the results file ({len(header)}) does not match the number of expected results ({len(expected_results)})."
     for index, col_name in enumerate(header):
         outputted_result = outputted_results.iloc[0][col_name]
         expected_result = expected_results[index]

@@ -4,7 +4,7 @@ from gloss import add_word_boundaries_to_gloss, deal_with_stems, extract_X_and_y
 from glossed_data_utilities import as_percent, handle_OOL_words, print_results_csv, read_file
 
 OUTPUT_CSV = "./gloss_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Stem Acc,Gram Acc"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Identified Stem Acc,Identified Gram Acc,True Stem Acc,True Gram Acc"
 NO_RESULTS_MARKER = None
 
 # Returns scores (as percents)
@@ -23,9 +23,14 @@ def evaluate_system(y, pred_y, interim_pred_y, include_stem_gram_scores = True):
     # Print by-stem and by-gram accuracy
     if include_stem_gram_scores:
         stem_acc, gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y)
-        print(f"Accuracy for morphemes *identified as* stems: {stem_acc}%." if not(stem_acc == NO_RESULTS_MARKER) else "No stem accuracy because there are no stems!")
-        print(f"Accuracy for morphemes *identified as* grams: {gram_acc}%." if not(gram_acc == NO_RESULTS_MARKER) else "No gram accuracy because there are no grams!")
+        print(f"Accuracy for morphemes *identified as* stems: {stem_acc}%." if not(stem_acc == NO_RESULTS_MARKER) else "No identified stem accuracy because no morphemes were identified as stems!")
+        print(f"Accuracy for morphemes *identified as* grams: {gram_acc}%." if not(gram_acc == NO_RESULTS_MARKER) else "No identified gram accuracy because no morphemes were identified as grams!")
         results.extend([stem_acc, gram_acc])
+
+        actual_stem_acc, actual_gram_acc = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y, use_system_categorization = False)
+        print(f"Accuracy for morphemes that *really are* stems: {actual_stem_acc}%." if not(actual_stem_acc == NO_RESULTS_MARKER) else "No actual stem accuracy because there are no stems!")
+        print(f"Accuracy for morphemes that *really are* grams: {actual_gram_acc}%." if not(actual_gram_acc == NO_RESULTS_MARKER) else "No actual gram accuracy because there are no grams!")
+        results.extend([actual_stem_acc, actual_gram_acc])
 
     return results
 
@@ -86,7 +91,13 @@ def get_word_level_accuracy(y, predicted_y):
 # Returns the two accuracy values (as percents)
 # Note that this metric is only intended for the glossing stage,
 # and is kept simple, not made for the complications of the pipeline stage.
-def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
+# If use_system_categorization = True:
+# Morphemes are categorized into stems/grams based on what the *system* has identified them as.
+# (i.e., if the system marks a morpheme as STEM, it's a stem!)
+# If use_system_categorization = False:
+# Morphemes are categorized into stems/grams based on what they *actually* are in the gold data.
+# (i.e., if the gloss is lowercase, it's a stem!)
+def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y, use_system_categorization = True):
     # Divide up the predictions and gold labels into stems and grams
     # We know which have been identified as stems at this point - they're labelled stem in the interim set
     pred_y_stems = []
@@ -111,12 +122,20 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y):
             assert(len(word_with_stems) == len(gold_word))
             assert(len(word_without_stems) == len(word_with_stems))
             for gloss_without_stems, gloss_with_stems, gold_gloss in zip(word_without_stems, word_with_stems, gold_word):
-                if gloss_without_stems == 'STEM': # It's a stem
-                    pred_y_stems_word.append(gloss_with_stems)
-                    y_stems_word.append(gold_gloss)
-                else: # It's a gram
-                    pred_y_grams_word.append(gloss_without_stems)
-                    y_grams_word.append(gold_gloss)
+                if use_system_categorization:
+                    if gloss_without_stems == 'STEM': # It's a stem
+                        pred_y_stems_word.append(gloss_with_stems)
+                        y_stems_word.append(gold_gloss)
+                    else: # It's a gram
+                        pred_y_grams_word.append(gloss_without_stems)
+                        y_grams_word.append(gold_gloss)
+                else:
+                    if re.search(r'[a-z]', gold_gloss): # It's a stem
+                        pred_y_stems_word.append(gloss_with_stems)
+                        y_stems_word.append(gold_gloss)
+                    else: # It's a gram
+                        pred_y_grams_word.append(gloss_without_stems)
+                        y_grams_word.append(gold_gloss)
 
             # End of word reached; and it to our sentence and reset
             pred_y_stems_sentence.append(pred_y_stems_word)

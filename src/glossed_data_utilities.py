@@ -16,7 +16,10 @@ OUT_OF_LANGUAGE_LABEL = "OOL"
 DOUBLE_OOL_MARKER_REGEX = "\*[\*]+"
 
 NUMBER_OF_LINES = 4
+UNICODE_COMMA_ABOVE = "\u0313"
 UNICODE_STRESS = "\u0301"
+UNICODE_UNDERDOT =  "\u0323"
+UNICODE_UNDERLINE = "\u0332"
 
 def punctuation_list_to_regex(punctuation_list, add_transcription_seg_line_extras = True):
     # Match anything in the punctuation list
@@ -542,3 +545,22 @@ def print_results_csv(results, header, output_file_name, no_result_marker):
 
 def as_percent(number):
     return '{:.2f}'.format(round(number * 100, 2))
+
+# Orthography converter
+def van_Eijk_to_NAPA(target_string):
+    RIGHT_SINGLE_QUOTATION_MARK = "\u2019" #’
+                   # General letter conversions
+    conversions = [["7", "ʔ"], ["t'", "ƛ̓"], ["c", "x"], ["ts", "c"],["r", "γ"], ["g", "ʕ"], ["lh", "ɬ"],
+                   # Labialized letters
+                   ["kw", "kʷ"], ["k'w", "k̓ʷ"], ["qw", "qʷ"], ["q'w", "q̓ʷ"], ["xw", "xʷ"],
+                   # Glottalized letters
+                   ["c'", "c̓"], ["γ'", "γ̓"], ["k'", "k̓"], ["l'", "l̓"], ["m'", "m̓"], ["n'", "n̓"], ["p'", "p̓"], ["q'", "q̓"], ["w'", "w̓"], ["y'", "y̓"], ["z'", "z̓"], ["ʕ'", "ʕ̓"],
+                   # This apostrophe is used for glottalization in our Se data, but not the St'
+                   [RIGHT_SINGLE_QUOTATION_MARK, UNICODE_COMMA_ABOVE],
+                   # Retracted letters
+                   [UNICODE_UNDERLINE, UNICODE_UNDERDOT]]
+
+    for conversion_pair in conversions:
+        target_string = target_string.replace(conversion_pair[0], conversion_pair[1])
+
+    return target_string

@@ -1,10 +1,11 @@
 import click
+import json
+from os import getcwd, mkdir, path
 import re
 import sklearn_crfsuite
+from unicodedata import normalize
 from glossed_data_utilities import add_back_OOL_words, as_percent, handle_OOL_words, read_file, write_sentences, OUT_OF_LANGUAGE_LABEL, UNICODE_STRESS
 from glossed_data_handling_utilities import gloss_line_to_morphemes, ignore_brackets, seg_line_to_morphemes, REGULAR_BOUNDARY, LEFT_INFIX_BOUNDARY, RIGHT_INFIX_BOUNDARY, LEFT_REDUP_INFIX_BOUNDARY, RIGHT_REDUP_INFIX_BOUNDARY, NON_INFIXING_BOUNDARIES, LANG_LABEL_SYMBOLS
-from os import getcwd, mkdir, path
-from unicodedata import normalize
 
 GOLD_OUTPUT_FILE_NAME = "gloss_gold.txt"
 ALL_BOUNDARIES_FOR_REGEX = "[<>\{\}\-=~]"
@@ -594,6 +595,10 @@ def main(train_file, dev_file, test_file, output_folder, output_file, segmentati
     write_output_file(test_with_predictions, output_folder, output_file)
     # And create a file of the gold version, formatted the same way to permit comparison
     write_output_file(original_test, output_folder, GOLD_OUTPUT_FILE_NAME)
+
+    # Write out the stem_dict so that the eval can use it to determine IV stems
+    with open("./stem_dict.txt", "w") as file:
+        json.dump(stem_dict, file)
 
 if __name__ == '__main__':
     main()

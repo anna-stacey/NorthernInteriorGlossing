@@ -36,27 +36,32 @@ def evaluate_system(y, pred_y, interim_pred_y, include_stem_gram_scores = True):
 
 # Returns the accuracy value - this version includes going word-by-word
 # Expects a list of sentences as lists of words as lists of morphemes
-def get_morpheme_level_accuracy(y, predicted_y):
+def get_morpheme_level_accuracy(y, predicted_y, structured = True):
     assert(len(y) == len(predicted_y))
     total = 0
     wrong = 0
 
-    for gold_label_line, predicted_label_line in zip(y, predicted_y):
-        # There must be the same number of words in the gold and the predicted lines
-        # (The number of words is not impacted by the segmentation task)
-        assert len(gold_label_line) == len(predicted_label_line), f"Length mismatch! The gold line has {len(gold_label_line)} words, while the predicted line has {len(predicted_label_line)} words.\nGold line: {gold_label_line}\nPredicted line: {predicted_label_line}"
-        wrong_per_sentence = 0
-        for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
-            # The number of morphemes can vary in the gold word vs the predicted word
-            # So this check simply checks every *gold* morpheme
-            for i, gold_label in enumerate(gold_word):
-                total += 1
-                if i >= len(predicted_word) or gold_label != predicted_word[i]:
-                    wrong += 1
-                    wrong_per_sentence +=1
+    if structured:
+        for gold_label_line, predicted_label_line in zip(y, predicted_y):
+            # There must be the same number of words in the gold and the predicted lines
+            # (The number of words is not impacted by the segmentation task)
+            assert len(gold_label_line) == len(predicted_label_line), f"Length mismatch! The gold line has {len(gold_label_line)} words, while the predicted line has {len(predicted_label_line)} words.\nGold line: {gold_label_line}\nPredicted line: {predicted_label_line}"
+            for gold_word, predicted_word in zip(gold_label_line, predicted_label_line):
+                # The number of morphemes can vary in the gold word vs the predicted word
+                # So this check simply checks every *gold* morpheme
+                for i, gold_label in enumerate(gold_word):
+                    total += 1
+                    if i >= len(predicted_word) or gold_label != predicted_word[i]:
+                        wrong += 1
+    else:
+        for i, gold_label in enumerate(y):
+            total += 1
+            if i >= len(predicted_y) or gold_label != predicted_y[i]:
+                wrong += 1
 
     accuracy = as_percent((total - wrong) / total) if total > 0 else NO_RESULTS_MARKER
     return accuracy
+
 
 # Returns the accuracy value
 # Expects a list of sentences as lists of words as lists of morphemes
@@ -104,15 +109,7 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y, use_system_catego
     pred_y_grams = []
     y_stems = []
     y_grams = []
-    # We need to build up the lists sentence-by-sentence, bc of the way evaluation works
-    pred_y_stems_sentence = []
-    pred_y_stems_word = []
-    pred_y_grams_sentence = []
-    pred_y_grams_word = []
-    y_stems_sentence = []
-    y_stems_word = []
-    y_grams_sentence = []
-    y_grams_word = []
+
     # Go sentence by sentence
     for sentence_without_stems, sentence_with_stems, gold_sentence in zip(interim_pred_y, pred_y, y):
         # Word by word
@@ -124,42 +121,22 @@ def get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y, use_system_catego
             for gloss_without_stems, gloss_with_stems, gold_gloss in zip(word_without_stems, word_with_stems, gold_word):
                 if use_system_categorization:
                     if gloss_without_stems == 'STEM': # It's a stem
-                        pred_y_stems_word.append(gloss_with_stems)
-                        y_stems_word.append(gold_gloss)
+                        pred_y_stems.append(gloss_with_stems)
+                        y_stems.append(gold_gloss)
                     else: # It's a gram
-                        pred_y_grams_word.append(gloss_without_stems)
-                        y_grams_word.append(gold_gloss)
+                        pred_y_grams.append(gloss_without_stems)
+                        y_grams.append(gold_gloss)
                 else:
                     if re.search(r'[a-z]', gold_gloss): # It's a stem
-                        pred_y_stems_word.append(gloss_with_stems)
-                        y_stems_word.append(gold_gloss)
+                        pred_y_stems.append(gloss_with_stems)
+                        y_stems.append(gold_gloss)
                     else: # It's a gram
-                        pred_y_grams_word.append(gloss_without_stems)
-                        y_grams_word.append(gold_gloss)
-
-            # End of word reached; and it to our sentence and reset
-            pred_y_stems_sentence.append(pred_y_stems_word)
-            pred_y_grams_sentence.append(pred_y_grams_word)
-            y_stems_sentence.append(y_stems_word)
-            y_grams_sentence.append(y_grams_word)
-            pred_y_stems_word = []
-            pred_y_grams_word = []
-            y_stems_word = []
-            y_grams_word = []
-
-        # End of sentence reached; add it to our lists and reset
-        pred_y_stems.append(pred_y_stems_sentence)
-        pred_y_grams.append(pred_y_grams_sentence)
-        y_stems.append(y_stems_sentence)
-        y_grams.append(y_grams_sentence)
-        pred_y_stems_sentence = []
-        pred_y_grams_sentence = []
-        y_stems_sentence = []
-        y_grams_sentence = []
+                        pred_y_grams.append(gloss_without_stems)
+                        y_grams.append(gold_gloss)
 
     # Now each list has one entry per sentence, which is itself a list of morphemes
-    stem_acc = get_morpheme_level_accuracy(y_stems, pred_y_stems)
-    gram_acc = get_morpheme_level_accuracy(y_grams, pred_y_grams)
+    stem_acc = get_morpheme_level_accuracy(y_stems, pred_y_stems, structured = False)
+    gram_acc = get_morpheme_level_accuracy(y_grams, pred_y_grams, structured = False)
 
     return stem_acc, gram_acc
 

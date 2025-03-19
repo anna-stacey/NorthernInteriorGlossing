@@ -69,56 +69,66 @@ EXPECTED_RESULTS_TIGER="0.00%,77.78%,63.64%,70.00%,66.67%,54.55%,60.00%,81.82%,5
 # Gold all grams, predicted all grams, all wrong
 GOLD_7=./src/test_data/test_1.txt
 OUTPUT_7=./src/test_data/test_7_pred.txt
-EXPECTED_RESULTS_7="0.00%,0.00%,None,0.00%,None,0.00%"
+STEM_DICT_7="{\"jkasdn\": \"something\", \"kasdn\": \"something\"}"
+EXPECTED_RESULTS_7="0.00%,0.00%,None,0.00%,None,0.00%,None"
 
 # Gold all grams, predicted all stems, all wrong
 GOLD_8=./src/test_data/test_1.txt
 OUTPUT_8=./src/test_data/test_9_pred.txt
-EXPECTED_RESULTS_8="0.00%,0.00%,0.00%,None,None,0.00%"
+STEM_DICT_8="{}"
+EXPECTED_RESULTS_8="0.00%,0.00%,0.00%,None,None,0.00%,None"
 
 # All grams, all correct
 GOLD_9=./src/test_data/test_1.txt
 OUTPUT_9=./src/test_data/test_1.txt
-EXPECTED_RESULTS_9="100.00%,100.00%,None,100.00%,None,100.00%"
+STEM_DICT_9="{\"kasdn\": \"something\"}"
+EXPECTED_RESULTS_9="100.00%,100.00%,None,100.00%,None,100.00%,None"
 
 # Gold all stems, predicted all stems, all wrong
 GOLD_10=./src/test_data/test_10.txt
 OUTPUT_10=./src/test_data/test_9_pred.txt
-EXPECTED_RESULTS_10="0.00%,0.00%,0.00%,None,0.00%,None"
+STEM_DICT_10="{\"jkasdn\": \"something\", \"kasdn\": \"something\"}"
+EXPECTED_RESULTS_10="0.00%,0.00%,0.00%,None,0.00%,None,0.00%"
 
 # Gold all stems, predicted all grams, all wrong
 GOLD_11=./src/test_data/test_10.txt
 OUTPUT_11=./src/test_data/test_7_pred.txt
-EXPECTED_RESULTS_11="0.00%,0.00%,None,0.00%,0.00%,None"
+STEM_DICT_11="{\"jkasdn\": \"something\", \"kasdn\": \"something\"}"
+EXPECTED_RESULTS_11="0.00%,0.00%,None,0.00%,0.00%,None,0.00%"
 
 # All stems, all correct
 GOLD_12=./src/test_data/test_10.txt
 OUTPUT_12=./src/test_data/test_10.txt
-EXPECTED_RESULTS_12="100.00%,100.00%,100.00%,None,100.00%,None"
+STEM_DICT_12="{\"jkasdn\": \"something\", \"kasdn\": \"something\"}"
+EXPECTED_RESULTS_12="100.00%,100.00%,100.00%,None,100.00%,None,100.00%"
 
 # Gold all stems, predicted all stems, partly correct
 # 3 correct stems, 1 incorrect stem, no grams
 GOLD_13=./src/test_data/test_10.txt
 OUTPUT_13=./src/test_data/test_13_pred.txt
-EXPECTED_RESULTS_13="75.00%,75.00%,75.00%,None,75.00%,None"
+STEM_DICT_13="{\"jkasdn\": \"something\", \"kasdn\": \"something\"}"
+EXPECTED_RESULTS_13="75.00%,75.00%,75.00%,None,75.00%,None,100.00%"
 
 # Gold all stems, predicted mixed stems/grams, partly correct
 # 2 correct stems, 1 incorrect stem, 1 incorrect gram
 GOLD_14=./src/test_data/test_10.txt
 OUTPUT_14=./src/test_data/test_14_pred.txt
-EXPECTED_RESULTS_14="50.00%,50.00%,66.67%,0.00%,50.00%,None"
+STEM_DICT_14="{}"
+EXPECTED_RESULTS_14="50.00%,50.00%,66.67%,0.00%,50.00%,None,None"
 
 # Moving into multi-morphemic words
 # Mixed stems/grams, all correct
 GOLD_15=./src/test_data/test_3.txt
 OUTPUT_15=./src/test_data/test_3.txt
-EXPECTED_RESULTS_15="100.00%,100.00%,100.00%,100.00%,100.00%,100.00%"
+STEM_DICT_15="{\"jkasdn\": \"something\", \"kasdn\": \"something\"}"
+EXPECTED_RESULTS_15="100.00%,100.00%,100.00%,100.00%,100.00%,100.00%,100.00%"
 
 # Mixed stems/grams, partly correct
 # 2 correct stems, 1 incorrect stem, 3 correct grams, 2 incorrect grams
 GOLD_16=./src/test_data/test_3.txt
 OUTPUT_16=./src/test_data/test_16_pred.txt
-EXPECTED_RESULTS_16="62.50%,50.00%,66.67%,60.00%,50.00%,75.00%"
+STEM_DICT_16="{\"jkasdn\": \"something\", \"kasdn\": \"something\", \"a\": \"something\"}"
+EXPECTED_RESULTS_16="62.50%,50.00%,66.67%,60.00%,50.00%,75.00%,50.00%"
 
 # Mixed stems/grams, glosses correct but seg mistakes, (incl. boundary-only mistakes), no OOV words
 GOLD_17=./src/test_data/test_3.txt
@@ -180,42 +190,52 @@ python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT_TIGER --output_file=$OUT
 python3 src/test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_TIGER
 
 echo "Gloss Test 1:"
+echo $STEM_DICT_7 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_7 --output_file=$OUTPUT_7 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_7
 
 echo "Gloss Test 2:"
+echo $STEM_DICT_8 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_8 --output_file=$OUTPUT_8 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_8
 
 echo "Gloss Test 3:"
+echo $STEM_DICT_9 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_9 --output_file=$OUTPUT_9 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_9
 
 echo "Gloss Test 4:"
+echo $STEM_DICT_10 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_10 --output_file=$OUTPUT_10 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_10
 
 echo "Gloss Test 5:"
+echo $STEM_DICT_11 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_11 --output_file=$OUTPUT_11 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_11
 
 echo "Gloss Test 6:"
+echo $STEM_DICT_12 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_12 --output_file=$OUTPUT_12 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_12
 
 echo "Gloss Test 7:"
+echo $STEM_DICT_13 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_13 --output_file=$OUTPUT_13 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_13
 
 echo "Gloss Test 8:"
+echo $STEM_DICT_14 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_14 --output_file=$OUTPUT_14 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_14
 
 echo "Gloss Test 9:"
+echo $STEM_DICT_15 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_15 --output_file=$OUTPUT_15 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_15
 
 echo "Gloss Test 10:"
+echo $STEM_DICT_16 > stem_dict.txt
 python3 src/eval_gloss.py --test_file=$GOLD_16 --output_file=$OUTPUT_16 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER > /dev/null
 python3 src/test_eval.py --results_csv=$GLOSS_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_16
 

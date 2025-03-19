@@ -5,7 +5,7 @@ from gloss import add_word_boundaries_to_gloss, deal_with_stems, extract_X_and_y
 from glossed_data_utilities import as_percent, handle_OOL_words, print_results_csv, read_file
 
 OUTPUT_CSV = "./gloss_results.csv"
-OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Identified Stem Acc,Identified Gram Acc,True Stem Acc,True Gram Acc"
+OUTPUT_CSV_HEADER = "Morpheme Acc,Word Acc,Identified Stem Acc,Identified Gram Acc,True Stem Acc,True Gram Acc,IV True Stem Acc"
 NO_RESULTS_MARKER = None
 
 # Returns scores (as percents)
@@ -25,7 +25,7 @@ def evaluate_system(y, pred_y, interim_pred_y, include_stem_gram_scores = True, 
 
     # Print by-stem and by-gram accuracy
     if include_stem_gram_scores:
-        if test_X and stem_dict:
+        if test_X: # stem_dict *can* be None (= empty dictionary)
             accs = get_accuracy_by_stems_and_grams(interim_pred_y, pred_y, y, test_X)
             gram_acc = accs[0]
             stem_acc = accs[1]
@@ -40,7 +40,7 @@ def evaluate_system(y, pred_y, interim_pred_y, include_stem_gram_scores = True, 
             print(f"Accuracy for morphemes that *really are* stems: {actual_stem_acc}%." if not(actual_stem_acc == NO_RESULTS_MARKER) else "No actual stem accuracy because there are no stems!")
             print(f"Accuracy for morphemes that *really are* stems *and are in-vocabulary*: {actual_IV_stem_acc}%." if not(actual_IV_stem_acc == NO_RESULTS_MARKER) else "No actual stem accuracy (for in-vocab stems) because there are no stems!")
             print(f"Accuracy for morphemes that *really are* grams: {actual_gram_acc}%." if not(actual_gram_acc == NO_RESULTS_MARKER) else "No actual gram accuracy because there are no grams!")
-            results.extend([actual_stem_acc, actual_gram_acc])
+            results.extend([actual_stem_acc, actual_gram_acc, actual_IV_stem_acc])
         else:
             print("\nERROR: Can't calculate stem/gram accuracy -- missing input parameters.")
 

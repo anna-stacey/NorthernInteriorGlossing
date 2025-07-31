@@ -1,5 +1,8 @@
 # Automatic Glossing
 This repo provides a system that can be trained to automatically gloss langauge data.  There are two sub-tasks it will learn: segmentation (breaking down language data into its morphemes) and glossing (providing a meaning for each of those morphemes).  Though the final target output is the gloss, the segmentation process is also performed so that you can begin with just regular, unsegmented langauge data as input.
+## Citation
+Please cite this project as follows:
+> Stacey, Anna. 2025. Automatic glossing for Northern Interior languages featuring cross-lingual enhancements. M.A. thesis, University of British Columbia. https://dx.doi.org/10.14288/1.0449331
 ## System Details
 ### Segmentation
 The segmentation works by learning from pairs of unsegmented input data and segmented output data. For example, `train.input` contains a **list of words**, e.g. "t a o w e n m í n a s".  Then `train.output` contains the same list of words but with morpheme boundaries, e.g. "t a o w e n - m í n - a s".  So the model goes word-by-word and tries to learn where each word has morpheme boundaries.

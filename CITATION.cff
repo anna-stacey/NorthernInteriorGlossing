@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Stacey"
+  given-names: "Anna"
+  orcid: ""
+title: "Automatic glossing for Northern Interior languages featuring cross-lingual enhancements"
+version: 0.1.0
+date-released: 2025-07-10
+url: "https://open.library.ubc.ca/soa/cIRcle/collections/ubctheses/24/items/1.0449331"

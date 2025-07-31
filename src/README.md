@@ -46,3 +46,4 @@ You can compare two `..._pred.txt` output files with the simple ``compare_pred.p
 - With pre-training complete, make sure you leave the models that were created as is.
 - For the regular training, change max-epoch in `train_seg.sh` to be the number of pre-training epochs + the number of regular training epochs (because the regular training is seen as a continuation of the previous epochs, not a restart)
 - Now run regular training in the exact same way as the pre-training, including with the extra command line args.
+- By the way, when you're running `dev_seg.sh` to predict and evaluate, you should first re-generated `train.output`.  Otherwise, you'll end up with OOV proportions/scores based only on the monolingual training set.  You can do so by re-running `dev_prepare_seg.sh`, and changing the train set back to the combined one, and commenting out the call to  `train_seg.sh`.  Or you could just store the file initially!

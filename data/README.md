@@ -1,4 +1,6 @@
 # Data
+For reference, tiny sample train/dev/test files are provided in `data/`, but should be replaced by your own three files.  The sample data is in St'át'imcets and comes from *Sqwéqwel’ múta7 sptakwlh: St̓át̓imcets Narratives by Qwa7yán’ak (Carl Alexander)* (Alexander, 2016).
+
 ## Boundary System
 We use an inventory of several symbols to indicate different kinds of morpheme boundaries.  These are the boundaries the system expects to recognize and handle.  There is nonetheless some flexibility in how closely your data must share the same boundaries.  
 You can:

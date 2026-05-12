@@ -6,67 +6,10 @@ Note that some of the scripts found in src/ and in the data repos can be helpful
 For reference, three tiny sample train/dev/test files are provided here. This sample data is in St'át'imcets and comes from *Sqwéqwel’ múta7 sptakwlh: St'át'imcets Narratives by Qwa7yán’ak (Carl Alexander)* (Alexander, 2016).  More examples of data in this format can be found in [StatimcetsGlossedData](https://github.com/anna-stacey/StatimcetsGlossedData) and [nle7kepmxcinGlossedData](https://github.com/anna-stacey/nle7kepmxcinGlossedData).  You'll want replace the sample files with your own data files before making use of any of the tools in src/.
 
 ## Contents
-- [Boundary System](#boundary-system)
-- [Brackets](#brackets)
 - [Basic Expectations](#basic-expectations)
 - [Full Expectations](#data-expectations)
-
-## Boundary System
-An inventory of several symbols is used to indicate different kinds of morpheme boundaries.  These are the boundaries the system expects to recognize and handle.  There is nonetheless some flexibility in how closely your data must share the same boundaries.  
-You can:
-- *Not* use some of the boundaries.  If some of these boundary types simply never occur in your data, that's absolutely fine.  But make sure you don't use them for another purpose, because they will get recognized as a boundary by the system.
-- Use some of the boundaries for a different purpose.  As discussed more below, the only crucial differences is between infixing and non-infixing boundaries, but within these groups, the purpose of a boundary is not set in stone.  So, for example, if '=' is used in your data, but to indicate a lexical suffix rather than a clitic, that's totally fine.
-
-But, you cannot:
-- Use other symbols for morpheme boundaries.  The system will not be able to recognize them as such.
-- Use one of the non-infixing boundaries for infixes, or one of the infixing boundaries for non-infixes.  Because these two classes of boundaries are handled differently in the code, they cannot be swapped about at will.
-
-With that out of the way, here are the boundaries that the system handles and that are used in the datasets from this project.  Examples are in St'át'imcets, from Alexander (2016).
-
-#### Non-Infixing Boundaries
-
-- regular boundary: -
-    - e.g. *s-xát'-su* (gloss: NMLZ-want-SSGP)
-- clitic boundary: =
-    - e.g. *skalúl7=a* (gloss: owl-EXIS)
-- reduplication boundary: ~
-    - e.g. *celh~cálh-ts-as* (gloss: TRED-willing+CAUS-FSGO-TE)
-
-#### Infixing Boundaries
-
-- regular infix boundaries: <>
-    - e.g. *má<7>eg'* (gloss: light-INCH)
-- reduplicating infix boundaries: {}
-    - e.g. *má{m'}teq* (gloss: walk-CRED)
-
-Finally, a word on non-infixing vs. infixing boundaries.  The only distinction that is fundamentally important when breaking up morphemes is that of infixes vs. non-infixing (linearly-attaching) morphemes.  This is because infixes need to be specially handled to make sure morphemes are correctly identified.  Consider a regular case:  
-`morpheme1-morpheme2-morpheme3`  
-`gloss1-gloss2-gloss3`  
-...versus a word with an infix:  
-`start.of.morpheme1<morpheme2>more.morpheme1-morpheme3`  
-`gloss1<gloss2>-gloss3`  
-As you can see, infixes cause complications.  In the glossing line, we can break things down as usual (because of course no glosses are split).  But in the segmentation line, we have to break things apart carefully if we want to reassemble the underling morphemes (i.e., we have to grab and combine `start.of.morpheme1` and `more.morpheme1` and map them together to `gloss1`, and then get `morpheme2` so that we know it aligns to `gloss2`, etc.)
-
-## Brackets
-Many fieldworkers use some system of brackets to indicate material that is only present underlyingly.  However, the details of this practice vary along several parameters:
-1. What is the purpose of the brackets? What are they conveying about the bracketed material?
-2. What kind of brackets are used? e.g., [] () {}
-4. In which lines does the bracketed *content* appear?
-3. In which of the lines specified in (3) do the *brackets* appear?
-5. In the case of whole morphemes bracketed, does the morpheme boundary go in or out of the brackets? i.e., [-t] vs -[t]
-
-The standards developed in this project are such that the data:
-- only uses [] (no other bracket types, i.e., no parentheses)
-- includes the bracketed content in the segmentation and gloss lines, but *not* the transcription line
-- only includes the brackets themselves in the segmentation line
-- writes the morpheme boundary *outside* of the brackets
-These expectations are included in the list [in this document](#data-expectations).
-
-An example from St'át'imcets is provided here (Alexander, 2016):  
-> nílh t'u7 sawenítas i smúlhatsa kástskacw  
-nílh t'u7 [s]=saw-en-ítas i smúlhats=a kás-ts=kacw  
-COP EXCL NMLZ=ask-DIR-TPle PL.DET woman=EXIS how-CAUS=2SG.SBJ  
-So they asked the women, ``How did you do it?''
+- [Boundary System](#boundary-system)
+- [Brackets](#brackets)
 
 ## Basic Expectations
 The expected data format is a list of sentences (with a newline in between each sentence).  However, there are no restrictions on the lengths of these sentences, so they could be a single word or actually contain mulitiple sentences written as one line.  Your glossed data must contain a minimum of three lines per sentence:
@@ -164,3 +107,60 @@ Multiple stress markers (the acute accent) will be flagged as a mistake.  This w
 
 18. **Stress marking is consistent (between the transcription and segmentation lines).**  
 If stress is marked on a word, then it should be marked on the same place in the segmented version of a word.  Again, this is not a necessity for system functioning, but a standard we selected to prevent conflicting practices in the datasets.  Alternative approaches include not marking any stress in the segmentation line, or marking stress in the segmentation line to reveal some additional information about where stress comes from.  Our rule was chosen based on simplicity and popularity.
+
+## Boundary System
+An inventory of several symbols is used to indicate different kinds of morpheme boundaries.  These are the boundaries the system expects to recognize and handle.  There is nonetheless some flexibility in how closely your data must share the same boundaries.  
+You can:
+- *Not* use some of the boundaries.  If some of these boundary types simply never occur in your data, that's absolutely fine.  But make sure you don't use them for another purpose, because they will get recognized as a boundary by the system.
+- Use some of the boundaries for a different purpose.  As discussed more below, the only crucial differences is between infixing and non-infixing boundaries, but within these groups, the purpose of a boundary is not set in stone.  So, for example, if '=' is used in your data, but to indicate a lexical suffix rather than a clitic, that's totally fine.
+
+But, you cannot:
+- Use other symbols for morpheme boundaries.  The system will not be able to recognize them as such.
+- Use one of the non-infixing boundaries for infixes, or one of the infixing boundaries for non-infixes.  Because these two classes of boundaries are handled differently in the code, they cannot be swapped about at will.
+
+With that out of the way, here are the boundaries that the system handles and that are used in the datasets from this project.  Examples are in St'át'imcets, from Alexander (2016).
+
+#### Non-Infixing Boundaries
+
+- regular boundary: -
+    - e.g. *s-xát'-su* (gloss: NMLZ-want-SSGP)
+- clitic boundary: =
+    - e.g. *skalúl7=a* (gloss: owl-EXIS)
+- reduplication boundary: ~
+    - e.g. *celh~cálh-ts-as* (gloss: TRED-willing+CAUS-FSGO-TE)
+
+#### Infixing Boundaries
+
+- regular infix boundaries: <>
+    - e.g. *má<7>eg'* (gloss: light-INCH)
+- reduplicating infix boundaries: {}
+    - e.g. *má{m'}teq* (gloss: walk-CRED)
+
+Finally, a word on non-infixing vs. infixing boundaries.  The only distinction that is fundamentally important when breaking up morphemes is that of infixes vs. non-infixing (linearly-attaching) morphemes.  This is because infixes need to be specially handled to make sure morphemes are correctly identified.  Consider a regular case:  
+`morpheme1-morpheme2-morpheme3`  
+`gloss1-gloss2-gloss3`  
+...versus a word with an infix:  
+`start.of.morpheme1<morpheme2>more.morpheme1-morpheme3`  
+`gloss1<gloss2>-gloss3`  
+As you can see, infixes cause complications.  In the glossing line, we can break things down as usual (because of course no glosses are split).  But in the segmentation line, we have to break things apart carefully if we want to reassemble the underling morphemes (i.e., we have to grab and combine `start.of.morpheme1` and `more.morpheme1` and map them together to `gloss1`, and then get `morpheme2` so that we know it aligns to `gloss2`, etc.)
+
+## Brackets
+Many fieldworkers use some system of brackets to indicate material that is only present underlyingly.  However, the details of this practice vary along several parameters:
+1. What is the purpose of the brackets? What are they conveying about the bracketed material?
+2. What kind of brackets are used? e.g., [] () {}
+4. In which lines does the bracketed *content* appear?
+3. In which of the lines specified in (3) do the *brackets* appear?
+5. In the case of whole morphemes bracketed, does the morpheme boundary go in or out of the brackets? i.e., [-t] vs -[t]
+
+The standards developed in this project are such that the data:
+- only uses [] (no other bracket types, i.e., no parentheses)
+- includes the bracketed content in the segmentation and gloss lines, but *not* the transcription line
+- only includes the brackets themselves in the segmentation line
+- writes the morpheme boundary *outside* of the brackets
+These expectations are included in the list [in this document](#data-expectations).
+
+An example from St'át'imcets is provided here (Alexander, 2016):  
+> nílh t'u7 sawenítas i smúlhatsa kástskacw  
+nílh t'u7 [s]=saw-en-ítas i smúlhats=a kás-ts=kacw  
+COP EXCL NMLZ=ask-DIR-TPle PL.DET woman=EXIS how-CAUS=2SG.SBJ  
+So they asked the women, ``How did you do it?''

@@ -3,6 +3,8 @@
 ## Contents
 - [Automatic Glossing System Details](#automatic-glossing-system-details)
 - [Running the Scripts](#running-the-scripts)
+- [References](#references)
+
 ## Automatic Glossing System Details
 ### Segmentation
 The segmentation works by learning from pairs of unsegmented input data and segmented output data. For example, `train.input` contains a **list of words**, e.g. the word "t a o w e n m í n a s" (with spaces inserted between characters).  Then, `train.output` contains the same list of words but with morpheme boundaries added , e.g. "t a o w e n - m í n - a s".  So the model goes word-by-word and tries to learn where each word has morpheme boundaries.
@@ -108,3 +110,13 @@ This process was used for the monolingual fine-tuning discussed in the thesis, w
 - For the regular training, change max-epoch in `train_seg.sh` to be the number of pre-training epochs + the number of regular training epochs (because the regular training is seen as a continuation of the previous epochs, not a restart).
 - Now run regular training in the exact same way as the pre-training, including with the extra command line args.
 - By the way, specifically for the monolingual fine-tuning case, when you're running `dev_seg.sh` to predict and evaluate, you should first re-generate `train.output`.  Otherwise, you'll end up with OOV proportions/scores based only on the monolingual training set.  You can do so by re-running `dev_prepare_seg.sh`, and changing the train set back to the combined one, and commenting out the call to  `train_seg.sh`.  Or you could just store the file initially!
+
+## References
+Lafferty, John, Andrew McCallum & Fernando Pereira. 2001. Conditional Random Fields:
+Probabilistic Models for Segmenting and Labeling Sequence Data. *Proceedings of the
+Eighteenth International Conference on Machine Learning*, 282–289. San Francisco,
+California: Morgan Kaufmann Publishers Inc.
+
+Ott, Myle, Sergey Edunov, Alexei Baevski, Angela Fan, Sam Gross, Nathan Ng, David Grangier & Michael Auli. 2019. fairseq: A Fast, Extensible Toolkit for Sequence Modeling. In Waleed Ammar, Annie Louis & Nasrin Mostafazadeh (eds.), *Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations)*, 48–53. Minneapolis, Minnesota: Association for Computational Linguistics.
+
+Vaswani, Ashish, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser & Illia Polosukhin. 2017. Attention Is All You Need. *Advances in Neural Information Processing Systems*(30), 5998–6008.

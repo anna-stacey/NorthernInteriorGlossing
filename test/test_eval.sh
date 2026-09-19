@@ -162,31 +162,31 @@ TRAIN_INPUT_20=./test_data/test_21_train.input
 EXPECTED_RESULTS_20="57.14%,85.71%,50.00%,50.00%,0.00%"
 
 echo "Segmentation Test 1:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 --train_input_file=$TRAIN_INPUT_1 --test_input_file=$INPUT_1 > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_1 --output_file=$OUTPUT_1 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_1 --train_input_file=$TRAIN_INPUT_1 --test_input_file=$INPUT_1 > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_1
 
 echo "Segmentation Test 2:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_2 --output_file=$OUTPUT_2 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_2 --train_input_file=$TRAIN_INPUT_2 --test_input_file=$INPUT_2 > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_2 --output_file=$OUTPUT_2 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_2 --train_input_file=$TRAIN_INPUT_2 --test_input_file=$INPUT_2 > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_2
 
 echo "Segmentation Test 3:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_3 --output_file=$OUTPUT_3 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_3 > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_3 --output_file=$OUTPUT_3 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_3 > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_3
 
 echo "Segmentation Test 4:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_4 --output_file=$OUTPUT_4 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_4 > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_4 --output_file=$OUTPUT_4 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_4 > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_4
 
 echo "Segmentation Test 5:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_5 --output_file=$OUTPUT_5 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_5 > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_5 --output_file=$OUTPUT_5 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_5 > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_5
 
 echo "Segmentation Test 6:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_6 --output_file=$OUTPUT_6 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_6 > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_6 --output_file=$OUTPUT_6 --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_6 > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_6
 
 echo "Segmentation Test 7:"
-python3 ../src/test_seg.py --whole_input_file=$WHOLE_INPUT_TIGER --output_file=$OUTPUT_TIGER --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_TIGER --train_input_file=$TRAIN_INPUT_TIGER --test_input_file=$INPUT_TIGER > /dev/null
+python3 ../src/eval_seg.py --whole_input_file=$WHOLE_INPUT_TIGER --output_file=$OUTPUT_TIGER --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT_TIGER --train_input_file=$TRAIN_INPUT_TIGER --test_input_file=$INPUT_TIGER > /dev/null
 python3 test_eval.py --results_csv=$SEG_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_TIGER
 
 echo "Gloss Test 1:"

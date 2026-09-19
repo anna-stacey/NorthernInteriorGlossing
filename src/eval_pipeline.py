@@ -3,7 +3,7 @@ from copy import deepcopy
 from eval_gloss import evaluate_system
 from gloss import add_word_boundaries_to_gloss, deal_with_stems, extract_X_and_y, seg_line_to_features, gloss_line_to_morphemes, reassemble_predicted_words
 from glossed_data_utilities import as_percent, handle_OOL_words, print_results_csv, read_file
-from test_seg import evaluate, evaluate_OOV_performance, read_lines_from_file
+from eval_seg import evaluate, evaluate_OOV_performance, read_lines_from_file
 from preprocess_seg import sentence_list_to_word_list
 
 OUTPUT_CSV = "./pipeline_results.csv"

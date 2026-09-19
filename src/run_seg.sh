@@ -13,4 +13,4 @@ for i in $(seq 1 $SEED_COUNT); do MODELS=$MODELS":models_seed"$i"/checkpoint"$EP
 echo "Using model(s): "$MODELS
 
 cat $INPUT | fairseq-interactive --path $MODELS data-bin > $OUTPUT
-python3 src/test_seg.py --whole_input_file=$WHOLE_INPUT --output_file=$OUTPUT --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT --train_output_file=$TRAIN_OUTPUT
+python3 src/eval_seg.py --whole_input_file=$WHOLE_INPUT --output_file=$OUTPUT --output_file_is_fairseq_formatted --gold_output_file=$GOLD_OUTPUT --train_output_file=$TRAIN_OUTPUT

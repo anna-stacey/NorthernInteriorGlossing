@@ -254,3 +254,10 @@ python3 test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXP
 echo "Pipeline Test 4:"
 python3 ../src/eval_pipeline.py --test_file=$GOLD_20 --output_file=$OUTPUT_20 --segmentation_line_number=$SEG_LINE_NUMBER --gloss_line_number=$GLOSS_LINE_NUMBER --train_input_file=$TRAIN_INPUT_20 --test_input_file=$INPUT_20 > /dev/null
 python3 test_eval.py --results_csv=$PIPELINE_RESULTS_CSV --expected_results=$EXPECTED_RESULTS_20
+
+# Clean-up
+rm ./seg_results.csv
+rm ./gloss_results.csv
+rm ./pipeline_results.csv
+rm ./stem_dict.txt
+rm -r ./generated_data/

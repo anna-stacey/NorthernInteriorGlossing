@@ -3,7 +3,7 @@
 TRAIN_SET=data/train.txt
 DEV_SET=data/dev.txt
 TEST_SET=data/test.txt
-SEED_COUNT=0 # Starts at 0 so you'll train n + 1 models
+SEED_COUNT=9 # Starts at 0 so you'll train n + 1 models
 
 # Prepare the data for fairseq
 python3 src/preprocess_seg.py --train_file=$TRAIN_SET --dev_file=$DEV_SET --test_file=$TEST_SET

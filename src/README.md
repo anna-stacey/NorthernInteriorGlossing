@@ -67,19 +67,16 @@ To ensure compliance with the formatting anticipated by the segmenting and gloss
 - `sh src/prescreen.sh`
 
 ### Preprocess and Train the Segmentation Model
-- Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling train_seg.sh).  Once it's done running (i.e. when you see output telling you the last epoch has completed), you have to manually press enter to make it finish.
-- To run on the dev set: ``sh src/dev_prepare_seg.sh``
+- Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling `train_seg.sh`).  Note that once it's done running (i.e., when you see output telling you the last epoch has completed), you have to manually press enter to make it finish.
 - To run on the test set: ``sh src/prepare_seg.sh``
 
 ### Run the Segmentation Model
 Takes a couple of mintutes.
-- To run on the dev set: ``sh src/dev_seg.sh``
 - To run on the test set: ``sh src/run_seg.sh``
 
 ### Run (and Train) the Glossing Model
 Doesn't take any time.  
 There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!  
-- To run on the dev set: ``sh src/dev_gloss.sh``
 - To run on the test set: ``sh src/run_gloss.sh``
 
 After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
@@ -89,7 +86,6 @@ After running the above, run this to evaluate using the sigmorphon evaluation sy
 The pipeline makes use of the segmentation predictions, so be sure to first [train](#preprocess-and-train-the-segmentation-model) and [run](#run-the-segmentation-model) the segmentation model.  
 Takes a couple of minutes.  
 There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!  
-- To run on the dev set: ``sh src/dev_pipeline.sh``
 - To run on the test set: ``sh src/run_pipeline.sh``
 
 After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
@@ -109,7 +105,7 @@ This process was used for the monolingual fine-tuning discussed in the thesis, w
 - With pre-training complete, make sure you leave the models that were created as is.
 - For the regular training, change max-epoch in `train_seg.sh` to be the number of pre-training epochs + the number of regular training epochs (because the regular training is seen as a continuation of the previous epochs, not a restart).
 - Now run regular training in the exact same way as the pre-training, including with the extra command line args.
-- By the way, specifically for the monolingual fine-tuning case, when you're running `dev_seg.sh` to predict and evaluate, you should first re-generate `train.output`.  Otherwise, you'll end up with OOV proportions/scores based only on the monolingual training set.  You can do so by re-running `dev_prepare_seg.sh`, and changing the train set back to the combined one, and commenting out the call to  `train_seg.sh`.  Or you could just store the file initially!
+- By the way, specifically for the monolingual fine-tuning case, when you're running `run_seg.sh` to predict and evaluate, you should first re-generate `train.output`.  Otherwise, you'll end up with OOV proportions/scores based only on the monolingual training set.  You can do so by re-running `prepare_seg.sh`, and changing the train set back to the combined one, and commenting out the call to  `train_seg.sh`.  Or you could just store the file initially!
 
 ## References
 Lafferty, John, Andrew McCallum & Fernando Pereira. 2001. Conditional Random Fields:

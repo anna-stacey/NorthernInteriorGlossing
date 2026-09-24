@@ -1,9 +1,10 @@
 *.xlsx
+*.csv
 .DS_Store
-gloss_dict.txt
+*_dict.txt
 __pycache__/
-data/
 data-bin/
 generated_data/
-models/
+models*/
 sigmorphon/
+wandb/

@@ -67,26 +67,56 @@ To ensure compliance with the formatting anticipated by the segmenting and gloss
 - `sh src/prescreen.sh`
 
 ### Preprocess and Train the Segmentation Model
-- Takes a while. Gets all three datasets into the right format for fairseq, then trains fairseq (by calling `train_seg.sh`).  Note that once it's done running (i.e., when you see output telling you the last epoch has completed), you have to manually press enter to make it finish.
-- To run on the test set: ``sh src/prepare_seg.sh``
+This step takes a while. It gets all three datasets into the right format for fairseq, then trains fairseq (by calling `train_seg.sh`).  Note that once it's done running (i.e., when you see output telling you the last epoch has completed), you have to manually press enter to make it finish.
+
+To run on the test set: ``sh src/prepare_seg.sh``
+
+Outputs:
+- `data-bin/`: internal files for fairseq.  Possibly of interest are the input and output dictionary files which are human-readable and give a list of all the characters in the input and output files, respectively (plus their occurrence counts).
+- `generated_data/`: An input and output file for each dataset (i.e., 2 x 3 = 6 files, because of the three datasets (train, dev, test)).  These contain all and only the info provided in the `data/` files, but re-formatted for fairseq's use.  These files are still human-readable.
+- `models_seedx/`: One folder for each model that you train.  The number of these is determined by the `SEED_COUNT` parameter in `prepare_seg.sh.`.  For example, if you want to train 10 models and thus get ten `models_seedx/` folders numbered 0-9, `SEED_COUNT` must be set to 9.
+    - Each folder contains a `checkpoint_best.pt` and a `checkpoint_last.pt`.  In the training process, many 'versions' of the model are created, and we retain only the final version (= 'last') and the version that scored best on the dev set (= 'best').
 
 ### Run the Segmentation Model
-Takes a couple of mintutes.
-- To run on the test set: ``sh src/run_seg.sh``
+This step takes a couple of mintutes.
+
+To run on the test set: ``sh src/run_seg.sh``
+
+Outputs:
+- `generated_data/test_fairseq.output`: This is the predicted output.  The format is fairseq-specific so it is somewhat human-readable.  It lists, in order, each unsegmented input word, and the segmented output word predicted by the model.  This gets compared to `generated_data/test.output`, which is the segmentations from `data/test.txt` -- i.e., the gold standard segmentations.
+- `generated_data/seg_pred.txt`:  The test data in the standard format (a four-line gloss), but with the *predicted* segmentations instead of the gold ones.  In other words, this is identical to `data/test.txt` in all lines *except* the segmentation line.  This provides a nice way to look into what kind of predictions the model made.
+- `generated_data/seg_gold.txt`: A counterpart to `seg_pred.txt` but with the correct segmentations.  Identical to `data/test.txt`.
+- `seg_results.csv`: A record of the accuracy scores of the segmentation predictions.  This script will generate this file if needed and adds a new row indicating the performance of this model.  The same scores are also printed to stdout for quick reference.
 
 ### Run (and Train) the Glossing Model
 Doesn't take any time.  
-There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!  
-- To run on the test set: ``sh src/run_gloss.sh``
+
+There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!
+
+To run on the test set: ``sh src/run_gloss.sh``
+
+Outputs:
+- `generated_data/gloss_pred.txt`: The test data in the standard format (a four-line gloss), but with the *predicted* glosses instead of the gold ones.  In other words, this is identical to `data/test.txt` in all lines *except* the gloss line.  This provides a nice way to look into what kind of predictions the model made.
+- `generated_data/gloss_gold.txt`: A counterpart to `gloss_pred.txt` but with the correct glosses.  Identical to `data/test.txt`.
+- `gloss_results.csv`: A record of the accuracy scores of the gloss predictions.  This script will generate this file if needed and adds a new row indicating the performance of this model.  The same scores are also printed to stdout for quick reference.
 
 After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
 - ``python3 src/sigmorphon/eval.py --pred generated_data/gloss_pred.txt --gold generated_data/gloss_gold.txt``
 
 ### Run the Entire Pipeline
 The pipeline makes use of the segmentation predictions, so be sure to first [train](#preprocess-and-train-the-segmentation-model) and [run](#run-the-segmentation-model) the segmentation model.  
-Takes a couple of minutes.  
-There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!  
-- To run on the test set: ``sh src/run_pipeline.sh``
+
+This step doesn't take any time.
+
+There is a parameter in the shell scripts for specifying which line number contains the gloss - check that this is set correctly for the given language data!
+
+To run on the test set: ``sh src/run_pipeline.sh``
+
+Outputs:  
+These files are all equivalent to those described for the segmentation and glossing stages above.
+- `generated_data/pipeline_pred.txt`
+- `generated_data/pipeline_gold.txt`
+- `pipeline_results.csv`
 
 After running the above, run this to evaluate using the sigmorphon evaluation system (this code, eval.py, is not included in this repo):  
 - ``python3 src/sigmorphon/eval.py --pred generated_data/pipeline_pred.txt --gold generated_data/pipeline_gold.txt``
